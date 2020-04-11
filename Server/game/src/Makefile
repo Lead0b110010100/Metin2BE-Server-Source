@@ -29,11 +29,14 @@ endif
 # Standard Libraries
 LIBS = -lm -lmd
 
+# Project libraries
+LIBDIR += -L../../../Extern/lib
+
 # Project Flags
-CFLAGS  = -m32 -g -Wall -O2 -pipe -fexceptions -fno-strict-aliasing -pthread -D_THREAD_SAFE -DNDEBUG
+CFLAGS  = -m32 -g3 -w -O0 -pipe -fexceptions -fno-strict-aliasing -pthread -D_THREAD_SAFE -DNDEBUG
 CFLAGS += -Wno-deprecated-declarations -Wno-nonnull-compare -Wno-deprecated-declarations -Wno-array-bounds -Wno-address
-CFLAGS += -Wno-int-in-bool-context -Wno-format-truncation -Wno-stringop-truncation
-CXXFLAGS = -std=c++11 -Wl,-rpath=/usr/local/lib/gcc8
+CFLAGS += -Wno-int-in-bool-context -Wno-format-truncation -Wno-stringop-truncation -Wno-class-memaccess
+CXXFLAGS = -std=c++11 -Wl,-rpath=/usr/home/serverlibs
 
 ifeq ($(ENABLE_STATIC), 1)
 CFLAGS += -static
@@ -60,16 +63,20 @@ LIBS += ../../../Extern/lib/libIL.a\
 		../../../Extern/lib/libtiff.a\
 		../../../Extern/lib/libjbig.a\
 		../../../Extern/lib/libmng.a\
-		/usr/lib/liblzma.a\
+		../../../Extern/lib/liblzma.a\
 		../../../Extern/lib/liblcms.a\
-		../../../Extern/lib/libjpeg.a
+		../../../Extern/lib/libjpeg.a\
+		../../../Extern/lib/libgcc_s.so.1
 
 # MySQL
 INCDIR += -I/usr/local/include/mysql
-LIBS += /usr/local/lib/mysql/libmysqlclient.a /usr/lib/libz.a
+LIBS += -lmysqlclient -lz
 
 # CryptoPP
 LIBS += ../../../Extern/lib/libcryptopp.a
+
+# Libstdc++
+LIBS += -lstdc++
 
 # GTest
 ifeq ($(ENABLE_GOOGLE_TEST), 1)
@@ -123,7 +130,7 @@ CPPFILE = BattleArena.cpp FSM.cpp MarkConvert.cpp MarkImage.cpp MarkManager.cpp 
 		  arena.cpp banword.cpp battle.cpp blend_item.cpp block_country.cpp buffer_manager.cpp building.cpp castle.cpp\
 		  char.cpp char_affect.cpp char_battle.cpp char_change_empire.cpp char_horse.cpp char_item.cpp char_manager.cpp\
 		  char_quickslot.cpp char_resist.cpp char_skill.cpp char_state.cpp PetSystem.cpp cmd.cpp cmd_emotion.cpp cmd_general.cpp\
-		  cmd_gm.cpp cmd_oxevent.cpp config.cpp constants.cpp crc32.cpp cube.cpp db.cpp desc.cpp\
+		  cmd_gm.cpp cmd_oxevent.cpp config.cpp constants.cpp crc32.cpp db.cpp desc.cpp\
 		  desc_client.cpp desc_manager.cpp desc_p2p.cpp dev_log.cpp dungeon.cpp empire_text_convert.cpp entity.cpp\
 		  entity_view.cpp event.cpp event_queue.cpp exchange.cpp file_loader.cpp fishing.cpp gm.cpp guild.cpp\
 		  guild_manager.cpp guild_war.cpp horse_rider.cpp horsename_manager.cpp input.cpp input_auth.cpp input_db.cpp\
@@ -146,7 +153,7 @@ CPPFILE = BattleArena.cpp FSM.cpp MarkConvert.cpp MarkImage.cpp MarkManager.cpp 
 		  auction_manager.cpp FileMonitor_FreeBSD.cpp ClientPackageCryptInfo.cpp cipher.cpp\
 		  buff_on_attributes.cpp dragon_soul_table.cpp DragonSoul.cpp\
 		  group_text_parse_tree.cpp char_dragonsoul.cpp questlua_dragonsoul.cpp\
-		  shop_manager.cpp shopEx.cpp item_manager_read_tables.cpp shutdown_manager.cpp
+		  shop_manager.cpp shopEx.cpp item_manager_read_tables.cpp shutdown_manager.cpp cube.cpp
 # PROJECT_SRC_FILES END
 
 # PROJECT_OBJ_FILES BEGIN
@@ -166,6 +173,7 @@ endif
 
 # Target Paths
 MAIN_TARGET = $(BINDIR)/game
+MAIN_TARGET_DEBUG = $(BINDIR)/game_debug
 
 default: $(MAIN_TARGET)
 test: $(TEST_TARGET)
@@ -193,6 +201,12 @@ limit_time:
 $(MAIN_TARGET): $(CPPOBJS) $(COBJS) $(MAINOBJ)
 	@echo linking $(MAIN_TARGET)
 	@$(CC) $(CFLAGS) $(CXXFLAGS) $(LIBDIR) $(COBJS) $(CPPOBJS) $(MAINOBJ) $(LIBS) -o $(MAIN_TARGET)
+	@gmake restart_debug_core
+
+restart_debug_core:
+	-killall -9 game_debug
+	@\cp -fR $(MAIN_TARGET) $(MAIN_TARGET_DEBUG)
+	@pidof db >/dev/null && (cd /usr/home/game/main/srv1/chan/ch1/debug/ && ./srv1-ch1-debug &) > /dev/null 2>&1
 
 dump:
 	@$(CC) -dM -E - < /dev/null > .nope.nope

@@ -19,10 +19,10 @@ DEPFILE = Depend
 endif
 
 # Project Flags
-CFLAGS  = -m32 -g -Wall -O2 -pipe -fno-rtti -fno-exceptions -Wno-long-long -pthread -D_THREAD_SAFE
+CFLAGS  = -m32 -g -w -O2 -pipe -fno-rtti -fno-exceptions -Wno-long-long -pthread -D_THREAD_SAFE
 CFLAGS += -Wno-deprecated-declarations -Wno-nonnull-compare -Wno-deprecated-declarations -Wno-array-bounds -Wno-address
-CFLAGS += -Wno-int-in-bool-context -Wno-format-truncation
-CXXFLAGS = -std=c++11 -Wl,-rpath=/usr/local/lib/gcc8
+CFLAGS += -Wno-int-in-bool-context -Wno-format-truncation -Wno-class-memaccess
+CXXFLAGS = -std=c++11 -Wl,-rpath=/usr/home/serverlibs
 
 ifeq ($(ENABLE_STATIC), 1)
 CFLAGS += -static
@@ -36,12 +36,15 @@ INCDIR += -I../../../Extern/include/boost
 
 # MySQL
 INCDIR += -I/usr/local/include/mysql
-LIBS += /usr/local/lib/mysql/libmysqlclient.a /usr/lib/libz.a
+LIBS += -lmysqlclient -lz
+
+# Libstc++
+LIBS += -lstdc++
 
 # Project Libraries
 INCDIR += -I/usr/local/include
 INCDIR += -I../../../Extern/include
-LIBDIR += -I../../../Extern/lib
+LIBDIR += -L../../../Extern/lib
 
 LIBDIR += -L../../libthecore/lib -L../../libsql -L../../libpoly -L../../libgame/lib
 LIBS += -lthecore -lsql -lpoly -lgame -lm
