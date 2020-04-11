@@ -1,0 +1,6 @@
+*.o
+*.d
+Server/game/game
+Server/game/game_debug
+Server/db/db
+.vs
