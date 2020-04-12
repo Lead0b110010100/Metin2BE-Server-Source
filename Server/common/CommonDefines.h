@@ -17,7 +17,7 @@ enum eCommonDefines {
 
 //////////////////////////////////////////////////////////////////////////
 // ### CommonDefines Systems ###
-#define ENABLE_WOLFMAN_CHARACTER
+// #define ENABLE_WOLFMAN_CHARACTER
 #ifdef ENABLE_WOLFMAN_CHARACTER
 #define USE_MOB_BLEEDING_AS_POISON
 #define USE_MOB_CLAW_AS_DAGGER
@@ -27,11 +27,11 @@ enum eCommonDefines {
 #define USE_WOLFMAN_BOOKS
 #endif
 
-#define ENABLE_PLAYER_PER_ACCOUNT5
+// #define ENABLE_PLAYER_PER_ACCOUNT5
 #define ENABLE_DICE_SYSTEM
 #define ENABLE_EXTEND_INVEN_SYSTEM
 
-#define ENABLE_MOUNT_COSTUME_SYSTEM
+// #define ENABLE_MOUNT_COSTUME_SYSTEM
 #define ENABLE_WEAPON_COSTUME_SYSTEM
 
 // #define ENABLE_MAGIC_REDUCTION_SYSTEM
