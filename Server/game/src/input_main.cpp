@@ -40,7 +40,6 @@
 #include "locale_service.h"
 #include "HackShield.h"
 #include "XTrapManager.h"
-#include "DragonSoul.h"
 #include "belt_inventory_helper.h" // @fixme119
 #include "../../common/CommonDefines.h"
 
@@ -2132,8 +2131,7 @@ void CInputMain::SafeboxCheckin(LPCHARACTER ch, const char * c_pData)
 	// @fixme140 END
 
 	pkItem->RemoveFromCharacter();
-	if (!pkItem->IsDragonSoul())
-		ch->SyncQuickslot(QUICKSLOT_TYPE_ITEM, p->ItemPos.cell, 255);
+	ch->SyncQuickslot(QUICKSLOT_TYPE_ITEM, p->ItemPos.cell, 255);
 	pkSafebox->Add(p->bSafePos, pkItem);
 
 	char szHint[128];
@@ -2166,56 +2164,15 @@ void CInputMain::SafeboxCheckout(LPCHARACTER ch, const char * c_pData, bool bMal
 	if (!ch->IsEmptyItemGrid(p->ItemPos, pkItem->GetSize()))
 		return;
 
-	// 아이템 몰에서 인벤으로 옮기는 부분에서 용혼석 특수 처리
-	// (몰에서 만드는 아이템은 item_proto에 정의된대로 속성이 붙기 때문에,
-	//  용혼석의 경우, 이 처리를 하지 않으면 속성이 하나도 붙지 않게 된다.)
-	if (pkItem->IsDragonSoul())
+	if (p->ItemPos.IsBeltInventoryPosition() && false == CBeltInventoryHelper::CanMoveIntoBeltInventory(pkItem))
 	{
-		if (bMall)
-		{
-			DSManager::instance().DragonSoulItemInitialize(pkItem);
-		}
-
-		if (DRAGON_SOUL_INVENTORY != p->ItemPos.window_type)
-		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<창고> 옮길 수 없는 위치입니다."));
-			return;
-		}
-
-		TItemPos DestPos = p->ItemPos;
-		if (!DSManager::instance().IsValidCellForThisItem(pkItem, DestPos))
-		{
-			int iCell = ch->GetEmptyDragonSoulInventory(pkItem);
-			if (iCell < 0)
-			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<창고> 옮길 수 없는 위치입니다."));
-				return ;
-			}
-			DestPos = TItemPos (DRAGON_SOUL_INVENTORY, iCell);
-		}
-
-		pkSafebox->Remove(p->bSafePos);
-		pkItem->AddToCharacter(ch, DestPos);
-		ITEM_MANAGER::instance().FlushDelayedSave(pkItem);
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("이 아이템은 벨트 인벤토리로 옮길 수 없습니다."));
+		return;
 	}
-	else
-	{
-		if (DRAGON_SOUL_INVENTORY == p->ItemPos.window_type)
-		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<창고> 옮길 수 없는 위치입니다."));
-			return;
-		}
-		// @fixme119
-		if (p->ItemPos.IsBeltInventoryPosition() && false == CBeltInventoryHelper::CanMoveIntoBeltInventory(pkItem))
-		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("이 아이템은 벨트 인벤토리로 옮길 수 없습니다."));
-			return;
-		}
 
-		pkSafebox->Remove(p->bSafePos);
-		pkItem->AddToCharacter(ch, p->ItemPos);
-		ITEM_MANAGER::instance().FlushDelayedSave(pkItem);
-	}
+	pkSafebox->Remove(p->bSafePos);
+	pkItem->AddToCharacter(ch, p->ItemPos);
+	ITEM_MANAGER::instance().FlushDelayedSave(pkItem);
 
 	DWORD dwID = pkItem->GetID();
 	db_clientdesc->DBPacketHeader(HEADER_GD_ITEM_FLUSH, 0, sizeof(DWORD));
@@ -3310,33 +3267,6 @@ int CInputMain::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 				TPacketXTrapCSVerify* p = reinterpret_cast<TPacketXTrapCSVerify*>((void*)c_pData);
 				CXTrapManager::instance().Verify_CSStep3(d->GetCharacter(), p->bPacketData);
 			}
-			break;
-		case HEADER_CG_DRAGON_SOUL_REFINE:
-			{
-				TPacketCGDragonSoulRefine* p = reinterpret_cast <TPacketCGDragonSoulRefine*>((void*)c_pData);
-				switch(p->bSubType)
-				{
-				case DS_SUB_HEADER_CLOSE:
-					ch->DragonSoul_RefineWindow_Close();
-					break;
-				case DS_SUB_HEADER_DO_REFINE_GRADE:
-					{
-						DSManager::instance().DoRefineGrade(ch, p->ItemGrid);
-					}
-					break;
-				case DS_SUB_HEADER_DO_REFINE_STEP:
-					{
-						DSManager::instance().DoRefineStep(ch, p->ItemGrid);
-					}
-					break;
-				case DS_SUB_HEADER_DO_REFINE_STRENGTH:
-					{
-						DSManager::instance().DoRefineStrength(ch, p->ItemGrid);
-					}
-					break;
-				}
-			}
-
 			break;
 	}
 	return (iExtraLen);

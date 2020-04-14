@@ -62,7 +62,6 @@
 #include "skill_power.h"
 #include "SpeedServer.h"
 #include "XTrapManager.h"
-#include "DragonSoul.h"
 #include <boost/bind.hpp>
 #ifndef __WIN32__
 	#include "limit_time.h"
@@ -431,7 +430,6 @@ int main(int argc, char **argv)
 	CXTrapManager		XTManager;
 
 	CSpeedServerManager SSManager;
-	DSManager dsManager;
 
 #ifdef __AUCTION__
 	AuctionManager auctionManager;

@@ -17,7 +17,6 @@
 #include "item.h"
 #include "item_manager.h"
 #include "affect.h"
-#include "DragonSoul.h"
 #include "buff_on_attributes.h"
 #include "belt_inventory_helper.h"
 #include "../../common/VnumHelper.h"
@@ -252,28 +251,22 @@ bool CItem::SetCount(DWORD count)
 
 			RemoveFromCharacter();
 
-			if (!IsDragonSoul())
-			{
-				LPITEM pItem = pOwner->FindSpecifyItem(GetVnum());
+			LPITEM pItem = pOwner->FindSpecifyItem(GetVnum());
 
-				if (NULL != pItem)
-				{
-					pOwner->ChainQuickslotItem(pItem, QUICKSLOT_TYPE_ITEM, wCell);
-				}
-				else
-				{
-					pOwner->SyncQuickslot(QUICKSLOT_TYPE_ITEM, wCell, 255);
-				}
+			if (NULL != pItem)
+			{
+				pOwner->ChainQuickslotItem(pItem, QUICKSLOT_TYPE_ITEM, wCell);
+			}
+			else
+			{
+				pOwner->SyncQuickslot(QUICKSLOT_TYPE_ITEM, wCell, 255);
 			}
 
 			M2_DESTROY_ITEM(this);
 		}
 		else
 		{
-			if (!IsDragonSoul())
-			{
-				m_pOwner->SyncQuickslot(QUICKSLOT_TYPE_ITEM, m_wCell, 255);
-			}
+			m_pOwner->SyncQuickslot(QUICKSLOT_TYPE_ITEM, m_wCell, 255);
 			M2_DESTROY_ITEM(RemoveFromCharacter());
 		}
 
@@ -309,23 +302,13 @@ LPITEM CItem::RemoveFromCharacter()
 	{
 		if (GetWindow() != SAFEBOX && GetWindow() != MALL)
 		{
-			if (IsDragonSoul())
-			{
-				if (m_wCell >= DRAGON_SOUL_INVENTORY_MAX_NUM)
-					sys_err("CItem::RemoveFromCharacter: pos >= DRAGON_SOUL_INVENTORY_MAX_NUM");
-				else
-					pOwner->SetItem(TItemPos(m_bWindow, m_wCell), NULL);
-			}
+			TItemPos cell(INVENTORY, m_wCell);
+
+			if (false == cell.IsDefaultInventoryPosition() && false == cell.IsBeltInventoryPosition()) // 아니면 소지품에?
+				sys_err("CItem::RemoveFromCharacter: Invalid Item Position");
 			else
 			{
-				TItemPos cell(INVENTORY, m_wCell);
-
-				if (false == cell.IsDefaultInventoryPosition() && false == cell.IsBeltInventoryPosition()) // 아니면 소지품에?
-					sys_err("CItem::RemoveFromCharacter: Invalid Item Position");
-				else
-				{
-					pOwner->SetItem(cell, NULL);
-				}
+				pOwner->SetItem(cell, NULL);
 			}
 		}
 
@@ -348,14 +331,6 @@ bool CItem::AddToCharacter(LPCHARACTER ch, TItemPos Cell)
 	if (INVENTORY == window_type)
 	{
 		if (m_wCell >= INVENTORY_MAX_NUM && BELT_INVENTORY_SLOT_START > m_wCell)
-		{
-			sys_err("CItem::AddToCharacter: cell overflow: %s to %s cell %d", m_pProto->szName, ch->GetName(), m_wCell);
-			return false;
-		}
-	}
-	else if (DRAGON_SOUL_INVENTORY == window_type)
-	{
-		if (m_wCell >= DRAGON_SOUL_INVENTORY_MAX_NUM)
 		{
 			sys_err("CItem::AddToCharacter: cell overflow: %s to %s cell %d", m_pProto->szName, ch->GetName(), m_wCell);
 			return false;
@@ -478,35 +453,10 @@ bool CItem::CanUsedBy(LPCHARACTER ch)
 
 int CItem::FindEquipCell(LPCHARACTER ch, int iCandidateCell)
 {
-	// 코스츔 아이템(ITEM_COSTUME)은 WearFlag 없어도 됨. (sub type으로 착용위치 구분. 귀찮게 또 wear flag 줄 필요가 있나..)
-	// 용혼석(ITEM_DS, ITEM_SPECIAL_DS)도  SUB_TYPE으로 구분. 신규 반지, 벨트는 ITEM_TYPE으로 구분 -_-
-	if ((0 == GetWearFlag() || ITEM_TOTEM == GetType()) && ITEM_COSTUME != GetType() && ITEM_DS != GetType() && ITEM_SPECIAL_DS != GetType() && ITEM_RING != GetType() && ITEM_BELT != GetType())
+	if ((0 == GetWearFlag() || ITEM_TOTEM == GetType()) && ITEM_COSTUME != GetType() && ITEM_RING != GetType() && ITEM_BELT != GetType())
 		return -1;
 
-	// 용혼석 슬롯을 WEAR로 처리할 수가 없어서(WEAR는 최대 32개까지 가능한데 용혼석을 추가하면 32가 넘는다.)
-	// 인벤토리의 특정 위치((INVENTORY_MAX_NUM + WEAR_MAX_NUM)부터 (INVENTORY_MAX_NUM + WEAR_MAX_NUM + DRAGON_SOUL_DECK_MAX_NUM * DS_SLOT_MAX - 1)까지)를
-	// 용혼석 슬롯으로 정함.
-	// return 할 때에, INVENTORY_MAX_NUM을 뺀 이유는,
-	// 본래 WearCell이 INVENTORY_MAX_NUM를 빼고 return 하기 때문.
-	if (GetType() == ITEM_DS || GetType() == ITEM_SPECIAL_DS)
-	{
-		if (iCandidateCell < 0)
-		{
-			return WEAR_MAX_NUM + GetSubType();
-		}
-		else
-		{
-			for (int i = 0; i < DRAGON_SOUL_DECK_MAX_NUM; i++)
-			{
-				if (WEAR_MAX_NUM + i * DS_SLOT_MAX + GetSubType() == iCandidateCell)
-				{
-					return iCandidateCell;
-				}
-			}
-			return -1;
-		}
-	}
-	else if (GetType() == ITEM_COSTUME)
+	if (GetType() == ITEM_COSTUME)
 	{
 		if (GetSubType() == COSTUME_BODY)
 			return WEAR_COSTUME_BODY;
@@ -847,8 +797,6 @@ bool CItem::IsEquipable() const
 	case ITEM_ROD:
 	case ITEM_PICK:
 	case ITEM_UNIQUE:
-	case ITEM_DS:
-	case ITEM_SPECIAL_DS:
 	case ITEM_RING:
 	case ITEM_BELT:
 		return true;
@@ -867,22 +815,10 @@ bool CItem::EquipTo(LPCHARACTER ch, BYTE bWearCell)
 		return false;
 	}
 
-	// 용혼석 슬롯 index는 WEAR_MAX_NUM 보다 큼.
-	if (IsDragonSoul())
+	if (bWearCell >= WEAR_MAX_NUM)
 	{
-		if (bWearCell < WEAR_MAX_NUM || bWearCell >= WEAR_MAX_NUM + DRAGON_SOUL_DECK_MAX_NUM * DS_SLOT_MAX)
-		{
-			sys_err("EquipTo: invalid dragon soul cell (this: #%d %s wearflag: %d cell: %d)", GetOriginalVnum(), GetName(), GetSubType(), bWearCell - WEAR_MAX_NUM);
-			return false;
-		}
-	}
-	else
-	{
-		if (bWearCell >= WEAR_MAX_NUM)
-		{
-			sys_err("EquipTo: invalid wear cell (this: #%d %s wearflag: %d cell: %d)", GetOriginalVnum(), GetName(), GetWearFlag(), bWearCell);
-			return false;
-		}
+		sys_err("EquipTo: invalid wear cell (this: #%d %s wearflag: %d cell: %d)", GetOriginalVnum(), GetName(), GetWearFlag(), bWearCell);
+		return false;
 	}
 
 	if (ch->GetWear(bWearCell))
@@ -915,21 +851,14 @@ bool CItem::EquipTo(LPCHARACTER ch, BYTE bWearCell)
 	m_pOwner->SetImmuneFlag(dwImmuneFlag);
 #endif
 
-	if (IsDragonSoul())
-	{
-		DSManager::instance().ActivateDragonSoul(this);
-	}
-	else
-	{
-		ModifyPoints(true);
-		StartUniqueExpireEvent();
-		if (-1 != GetProto()->cLimitTimerBasedOnWearIndex)
-			StartTimerBasedOnWearExpireEvent();
+	ModifyPoints(true);
+	StartUniqueExpireEvent();
+	if (-1 != GetProto()->cLimitTimerBasedOnWearIndex)
+		StartTimerBasedOnWearExpireEvent();
 
-		// ACCESSORY_REFINE
-		StartAccessorySocketExpireEvent();
-		// END_OF_ACCESSORY_REFINE
-	}
+	// ACCESSORY_REFINE
+	StartAccessorySocketExpireEvent();
+	// END_OF_ACCESSORY_REFINE
 
 	ch->BuffOnAttr_AddBuffsFromItem(this);
 
@@ -963,15 +892,7 @@ bool CItem::Unequip()
 	if (IsRideItem())
 		ClearMountAttributeAndAffect();
 
-	if (IsDragonSoul())
-	{
-		DSManager::instance().DeactivateDragonSoul(this);
-	}
-	else
-	{
-		ModifyPoints(false);
-	}
-
+	ModifyPoints(false);
 	StopUniqueExpireEvent();
 
 	if (-1 != GetProto()->cLimitTimerBasedOnWearIndex)
@@ -1360,15 +1281,7 @@ EVENTFUNC(timer_based_on_wear_expire_event)
 		pkItem->SetTimerBasedOnWearExpireEvent(NULL);
 		pkItem->SetSocket(ITEM_SOCKET_REMAIN_SEC, 0);
 
-		// 일단 timer based on wear 용혼석은 시간 다 되었다고 없애지 않는다.
-		if (pkItem->IsDragonSoul())
-		{
-			DSManager::instance().DeactivateDragonSoul(pkItem);
-		}
-		else
-		{
-			ITEM_MANAGER::instance().RemoveItem(pkItem, "TIMER_BASED_ON_WEAR_EXPIRE");
-		}
+		ITEM_MANAGER::instance().RemoveItem(pkItem, "TIMER_BASED_ON_WEAR_EXPIRE");
 		return 0;
 	}
 	pkItem->SetSocket(ITEM_SOCKET_REMAIN_SEC, remain_time);
@@ -2039,61 +1952,6 @@ void CItem::CopyToRawData (TPlayerItem* new_item)
 	new_item->owner = m_pOwner->GetPlayerID();
 }
 #endif
-
-bool CItem::IsDragonSoul()
-{
-	return GetType() == ITEM_DS;
-}
-
-int CItem::GiveMoreTime_Per(float fPercent)
-{
-	if (IsDragonSoul())
-	{
-		DWORD duration = DSManager::instance().GetDuration(this);
-		DWORD remain_sec = GetSocket(ITEM_SOCKET_REMAIN_SEC);
-		DWORD given_time = fPercent * duration / 100u;
-		if (remain_sec == duration)
-			return false;
-		if ((given_time + remain_sec) >= duration)
-		{
-			SetSocket(ITEM_SOCKET_REMAIN_SEC, duration);
-			return duration - remain_sec;
-		}
-		else
-		{
-			SetSocket(ITEM_SOCKET_REMAIN_SEC, given_time + remain_sec);
-			return given_time;
-		}
-	}
-	// 우선 용혼석에 관해서만 하도록 한다.
-	else
-		return 0;
-}
-
-int CItem::GiveMoreTime_Fix(DWORD dwTime)
-{
-	if (IsDragonSoul())
-	{
-		DWORD duration = DSManager::instance().GetDuration(this);
-		DWORD remain_sec = GetSocket(ITEM_SOCKET_REMAIN_SEC);
-		if (remain_sec == duration)
-			return false;
-		if ((dwTime + remain_sec) >= duration)
-		{
-			SetSocket(ITEM_SOCKET_REMAIN_SEC, duration);
-			return duration - remain_sec;
-		}
-		else
-		{
-			SetSocket(ITEM_SOCKET_REMAIN_SEC, dwTime + remain_sec);
-			return dwTime;
-		}
-	}
-	// 우선 용혼석에 관해서만 하도록 한다.
-	else
-		return 0;
-}
-
 
 int	CItem::GetDuration()
 {

@@ -269,15 +269,7 @@ int CShop::Buy(LPCHARACTER ch, BYTE pos)
 	}
 #endif
 
-	int iEmptyPos;
-	if (item->IsDragonSoul())
-	{
-		iEmptyPos = ch->GetEmptyDragonSoulInventory(item);
-	}
-	else
-	{
-		iEmptyPos = ch->GetEmptyInventory(item->GetSize());
-	}
+	int iEmptyPos = ch->GetEmptyInventory(item->GetSize());
 
 	if (iEmptyPos < 0)
 	{
@@ -346,10 +338,7 @@ int CShop::Buy(LPCHARACTER ch, BYTE pos)
 			}
 
 			item->RemoveFromCharacter();
-			if (item->IsDragonSoul())
-				item->AddToCharacter(ch, TItemPos(DRAGON_SOUL_INVENTORY, iEmptyPos));
-			else
-				item->AddToCharacter(ch, TItemPos(INVENTORY, iEmptyPos));
+			item->AddToCharacter(ch, TItemPos(INVENTORY, iEmptyPos));
 			ITEM_MANAGER::instance().FlushDelayedSave(item);
 
 
@@ -372,10 +361,7 @@ int CShop::Buy(LPCHARACTER ch, BYTE pos)
 	}
 	else
 	{
-		if (item->IsDragonSoul())
-			item->AddToCharacter(ch, TItemPos(DRAGON_SOUL_INVENTORY, iEmptyPos));
-		else
-			item->AddToCharacter(ch, TItemPos(INVENTORY, iEmptyPos));
+		item->AddToCharacter(ch, TItemPos(INVENTORY, iEmptyPos));
 		ITEM_MANAGER::instance().FlushDelayedSave(item);
 		LogManager::instance().ItemLog(ch, item, "BUY", item->GetName());
 

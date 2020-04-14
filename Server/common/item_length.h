@@ -34,17 +34,10 @@ enum EItemMisc
 const BYTE ITEM_SOCKET_REMAIN_SEC = 0;
 enum EItemValueIdice
 {
-	ITEM_VALUE_DRAGON_SOUL_POLL_OUT_BONUS_IDX = 0,
 	ITEM_VALUE_CHARGING_AMOUNT_IDX = 0,
 	ITEM_VALUE_SECONDARY_COIN_UNIT_IDX = 0,
 };
-enum EItemDragonSoulSockets
-{
-	ITEM_SOCKET_DRAGON_SOUL_ACTIVE_IDX = 2,
-	ITEM_SOCKET_CHARGING_AMOUNT_IDX = 2,
-};
-// 헐 이거 미친거 아니야?
-// 나중에 소켓 확장하면 어쩌려고 이지랄 -_-;;;
+
 enum EItemUniqueSockets
 {
 	ITEM_SOCKET_UNIQUE_SAVE_TIME = ITEM_SOCKET_MAX_NUM - 2,
@@ -82,8 +75,8 @@ enum EItemTypes
     ITEM_TOTEM,             //26//토템
 	ITEM_BLEND,				//27//생성될때 랜덤하게 속성이 붙는 약물
 	ITEM_COSTUME,			//28//코스츔 아이템 (2011년 8월 추가된 코스츔 시스템용 아이템)
-	ITEM_DS,				//29 //용혼석
-	ITEM_SPECIAL_DS,		//30 // 특수한 용혼석 (DS_SLOT에 착용하는 UNIQUE 아이템이라 생각하면 됨)
+	ITEM_UNUSED1,
+	ITEM_UNUSED2,
 	ITEM_EXTRACT,			//31 추출도구.
 	ITEM_SECONDARY_COIN,	//32 ?? 명도전??
 	ITEM_RING,				//33 반지
@@ -138,44 +131,6 @@ enum ECostumeSubTypes
 	COSTUME_WEAPON	= 4,
 #endif
 	COSTUME_NUM_TYPES,
-};
-
-enum EDragonSoulSubType
-{
-	DS_SLOT1,
-	DS_SLOT2,
-	DS_SLOT3,
-	DS_SLOT4,
-	DS_SLOT5,
-	DS_SLOT6,
-	DS_SLOT_MAX,
-};
-
-enum EDragonSoulGradeTypes
-{
-	DRAGON_SOUL_GRADE_NORMAL,
-	DRAGON_SOUL_GRADE_BRILLIANT,
-	DRAGON_SOUL_GRADE_RARE,
-	DRAGON_SOUL_GRADE_ANCIENT,
-	DRAGON_SOUL_GRADE_LEGENDARY,
-	DRAGON_SOUL_GRADE_MAX,
-
-};
-
-enum EDragonSoulStepTypes
-{
-	DRAGON_SOUL_STEP_LOWEST,
-	DRAGON_SOUL_STEP_LOW,
-	DRAGON_SOUL_STEP_MID,
-	DRAGON_SOUL_STEP_HIGH,
-	DRAGON_SOUL_STEP_HIGHEST,
-	DRAGON_SOUL_STEP_MAX,
-};
-#define DRAGON_SOUL_STRENGTH_MAX 7
-
-enum EDSInventoryMaxNum
-{
-	DRAGON_SOUL_INVENTORY_MAX_NUM = DS_SLOT_MAX * DRAGON_SOUL_GRADE_MAX * DRAGON_SOUL_BOX_SIZE,
 };
 
 enum EFishSubTypes
@@ -245,12 +200,6 @@ enum EUseSubTypes
 	USE_RESET_COSTUME_ATTR,				// 32
 };
 
-enum EExtractSubTypes
-{
-	EXTRACT_DRAGON_SOUL,
-	EXTRACT_DRAGON_HEART,
-};
-
 enum EAutoUseSubTypes
 {
 	AUTOUSE_POTION,
@@ -268,9 +217,6 @@ enum EMaterialSubTypes
 	MATERIAL_ROOT,
 	MATERIAL_NEEDLE,
 	MATERIAL_JEWEL,
-	MATERIAL_DS_REFINE_NORMAL,
-	MATERIAL_DS_REFINE_BLESSED,
-	MATERIAL_DS_REFINE_HOLLY,
 };
 
 enum ESpecialSubTypes

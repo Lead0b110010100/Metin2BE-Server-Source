@@ -70,10 +70,6 @@ enum EMisc
 	MOB_SKILL_MAX_NUM		= 5,
 
     POINT_MAX_NUM = 255,
-	DRAGON_SOUL_BOX_SIZE = 32,
-	DRAGON_SOUL_BOX_COLUMN_NUM = 8,
-	DRAGON_SOUL_BOX_ROW_NUM = DRAGON_SOUL_BOX_SIZE / DRAGON_SOUL_BOX_COLUMN_NUM,
-	DRAGON_SOUL_REFINE_GRID_SIZE = 15,
 	MAX_AMOUNT_OF_MALL_BONUS	= 20,
 
 	WEAR_MAX_NUM				= 32,
@@ -95,24 +91,6 @@ enum EMisc
 	BELT_INVENTORY_SLOT_HEIGHT= 4,
 
 	BELT_INVENTORY_SLOT_COUNT = BELT_INVENTORY_SLOT_WIDTH * BELT_INVENTORY_SLOT_HEIGHT,
-
-
-/**
-	 **** 현재까지 할당 된 아이템 영역 정리 (DB상 Item Position) ****
-	+------------------------------------------------------+ 0
-	| 캐릭터 기본 인벤토리 (45칸 * 2페이지) 90칸           |
-	+------------------------------------------------------+ 90 = INVENTORY_MAX_NUM(90)
-	| 캐릭터 장비 창 (착용중인 아이템) 32칸                |
-	+------------------------------------------------------+ 122 = INVENTORY_MAX_NUM(90) + WEAR_MAX_NUM(32)
-	| 용혼석 장비 창 (착용중인 용혼석) 12칸                |
-	+------------------------------------------------------+ 134 = 122 + DS_SLOT_MAX(6) * DRAGON_SOUL_DECK_MAX_NUM(2)
-	| 용혼석 장비 창 예약 (아직 미사용) 18칸               |
-	+------------------------------------------------------+ 152 = 134 + DS_SLOT_MAX(6) * DRAGON_SOUL_DECK_RESERVED_MAX_NUM(3)
-	| 벨트 인벤토리 (벨트 착용시에만 벨트 레벨에 따라 활성)|
-	+------------------------------------------------------+ 168 = 152 + BELT_INVENTORY_SLOT_COUNT(16) = INVENTORY_AND_EQUIP_CELL_MAX
-	| 미사용                                               |
-	+------------------------------------------------------+ ??
-*/
 };
 
 enum EMatrixCard
@@ -162,15 +140,6 @@ enum EWearPositions
 #endif
 
 	WEAR_MAX = 32	//
-};
-
-enum EDragonSoulDeckType
-{
-	DRAGON_SOUL_DECK_0,
-	DRAGON_SOUL_DECK_1,
-	DRAGON_SOUL_DECK_MAX_NUM = 2,
-
-	DRAGON_SOUL_DECK_RESERVED_MAX_NUM = 3,	// NOTE: 중요! 아직 사용중이진 않지만, 3페이지 분량을 예약 해 둠. DS DECK을 늘릴 경우 반드시 그 수만큼 RESERVED에서 차감해야 함!
 };
 
 enum ESex
@@ -507,7 +476,6 @@ enum EWindows
 	EQUIPMENT,
 	SAFEBOX,
 	MALL,
-	DRAGON_SOUL_INVENTORY,
 	BELT_INVENTORY,
 #ifdef __AUCTION__
 	AUCTION,
@@ -738,23 +706,9 @@ enum ETeenFlags
 
 #include "item_length.h"
 
-// inventory의 position을 나타내는 구조체
-// int와의 암시적 형변환이 있는 이유는,
-// 인벤 관련된 모든 함수가 window_type은 받지 않고, cell 하나만 받았기 때문에,(기존에는 인벤이 하나 뿐이어서 inventory type이란게 필요없었기 때문에,)
-// 인벤 관련 모든 함수 호출부분을 수정하는 것이 난감하기 떄문이다.
-
-enum EDragonSoulRefineWindowSize
-{
-	DRAGON_SOUL_REFINE_GRID_MAX = 15,
-};
-
 enum EMisc2
 {
-	DRAGON_SOUL_EQUIP_SLOT_START = INVENTORY_MAX_NUM + WEAR_MAX_NUM,
-	DRAGON_SOUL_EQUIP_SLOT_END = DRAGON_SOUL_EQUIP_SLOT_START + (DS_SLOT_MAX * DRAGON_SOUL_DECK_MAX_NUM),
-	DRAGON_SOUL_EQUIP_RESERVED_SLOT_END = DRAGON_SOUL_EQUIP_SLOT_END + (DS_SLOT_MAX * DRAGON_SOUL_DECK_RESERVED_MAX_NUM),
-
-	BELT_INVENTORY_SLOT_START = DRAGON_SOUL_EQUIP_RESERVED_SLOT_END,
+	BELT_INVENTORY_SLOT_START = INVENTORY_MAX_NUM + WEAR_MAX_NUM,
 	BELT_INVENTORY_SLOT_END = BELT_INVENTORY_SLOT_START + BELT_INVENTORY_SLOT_COUNT,
 
 	INVENTORY_AND_EQUIP_SLOT_MAX = BELT_INVENTORY_SLOT_END,
@@ -788,9 +742,6 @@ typedef struct SItemPos
 		case EQUIPMENT:
 		case BELT_INVENTORY:
 			return cell < INVENTORY_AND_EQUIP_SLOT_MAX;
-		case DRAGON_SOUL_INVENTORY:
-			return cell < (DRAGON_SOUL_INVENTORY_MAX_NUM);
-		// 동적으로 크기가 정해지는 window는 valid 체크를 할 수가 없다.
 		case SAFEBOX:
 		case MALL:
 			return false;
@@ -802,13 +753,7 @@ typedef struct SItemPos
 
 	bool IsEquipPosition() const
 	{
-		return ((INVENTORY == window_type || EQUIPMENT == window_type) && cell >= INVENTORY_MAX_NUM && cell < INVENTORY_MAX_NUM + WEAR_MAX_NUM)
-			|| IsDragonSoulEquipPosition();
-	}
-
-	bool IsDragonSoulEquipPosition() const
-	{
-		return (DRAGON_SOUL_EQUIP_SLOT_START <= cell) && (DRAGON_SOUL_EQUIP_SLOT_END > cell);
+		return ((INVENTORY == window_type || EQUIPMENT == window_type) && cell >= INVENTORY_MAX_NUM && cell < INVENTORY_MAX_NUM + WEAR_MAX_NUM);
 	}
 
 	bool IsBeltInventoryPosition() const

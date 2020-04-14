@@ -61,7 +61,6 @@
 #ifdef __PET_SYSTEM__
 #include "PetSystem.h"
 #endif
-#include "DragonSoul.h"
 #include "../../common/CommonDefines.h"
 
 extern const BYTE g_aBuffOnAttrPoints;
@@ -430,7 +429,6 @@ void CHARACTER::Initialize()
 	m_fAttMul = 1.0f;
 	m_fDamMul = 1.0f;
 
-	m_pointsInstant.iDragonSoulActiveDeck = -1;
 #ifdef ENABLE_ANTI_CMD_FLOOD
 	m_dwCmdAntiFloodCount = 0;
 	m_dwCmdAntiFloodPulse = 0;
@@ -520,7 +518,6 @@ void CHARACTER::Destroy()
 
 	if (NULL == m_pkMobData)
 	{
-		DragonSoul_CleanUp();
 		ClearItem();
 	}
 
@@ -2435,24 +2432,6 @@ void CHARACTER::ComputePoints()
 		{
 			pItem->ModifyPoints(true);
 			SET_BIT(m_pointsInstant.dwImmuneFlag, GetWear(i)->GetImmuneFlag());
-		}
-	}
-
-	// 용혼석 시스템
-	// ComputePoints에서는 케릭터의 모든 속성값을 초기화하고,
-	// 아이템, 버프 등에 관련된 모든 속성값을 재계산하기 때문에,
-	// 용혼석 시스템도 ActiveDeck에 있는 모든 용혼석의 속성값을 다시 적용시켜야 한다.
-	if (DragonSoul_IsDeckActivated())
-	{
-		for (int i = WEAR_MAX_NUM + DS_SLOT_MAX * DragonSoul_GetActiveDeck();
-			i < WEAR_MAX_NUM + DS_SLOT_MAX * (DragonSoul_GetActiveDeck() + 1); i++)
-		{
-			LPITEM pItem = GetWear(i);
-			if (pItem)
-			{
-				if (DSManager::instance().IsTimeLeftDragonSoul(pItem))
-					pItem->ModifyPoints(true);
-			}
 		}
 	}
 

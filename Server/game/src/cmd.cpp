@@ -277,7 +277,6 @@ ACMD (do_attr_full_set);
 ACMD (do_all_skill_master);
 // 아이템 착용. icon이 없어 클라에서 확인 할 수 없는 아이템 착용을 위해 만듦.
 ACMD (do_use_item);
-ACMD (do_dragon_soul);
 ACMD (do_ds_list);
 ACMD (do_clear_affect);
 
@@ -608,8 +607,6 @@ struct command_info cmd_info[] =
 	{ "all_skill_master",	do_all_skill_master,	0,	POS_DEAD,	GM_LOW_WIZARD},
 	{ "use_item",		do_use_item,	0, POS_DEAD,		GM_LOW_WIZARD},
 
-	{ "dragon_soul",				do_dragon_soul,				0,	POS_DEAD,	GM_PLAYER	},
-	{ "ds_list",				do_ds_list,				0,	POS_DEAD,	GM_PLAYER	},
 	{ "do_clear_affect", do_clear_affect, 	0, POS_DEAD,		GM_LOW_WIZARD},
 #ifdef ENABLE_NEWSTUFF
 	//item

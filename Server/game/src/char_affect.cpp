@@ -16,7 +16,6 @@
 #include "arena.h"
 #include "horsename_manager.h"
 #include "item.h"
-#include "DragonSoul.h"
 #include "../../common/CommonDefines.h"
 
 #define IS_NO_SAVE_AFFECT(type) ((type) == AFFECT_WAR_FLAG || (type) == AFFECT_REVIVE_INVISIBLE || ((type) >= AFFECT_PREMIUM_START && (type) <= AFFECT_PREMIUM_END))
@@ -515,9 +514,6 @@ void CHARACTER::LoadAffect(DWORD dwCount, TPacketAffectElement * pElements)
 	StartAffectEvent();
 
 	m_bIsLoadedAffect = true;
-
-	// 용혼석 셋팅 로드 및 초기화
-	DragonSoul_Initialize();
 
 	// @fixme118 (regain affect hp/mp)
 	if (!IsDead())

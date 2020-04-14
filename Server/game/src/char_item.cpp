@@ -46,7 +46,6 @@
 #endif
 
 #include "../../common/VnumHelper.h"
-#include "DragonSoul.h"
 #include "buff_on_attributes.h"
 #include "belt_inventory_helper.h"
 #include "../../common/CommonDefines.h"
@@ -230,7 +229,7 @@ bool CHARACTER::CanHandleItem(bool bSkipCheckRefine, bool bSkipObserver)
 		if (m_bUnderRefine)
 			return false;
 
-	if (IsCubeOpen() || NULL != DragonSoul_RefineWindow_GetOpener())
+	if (IsCubeOpen())
 		return false;
 
 	if (IsWarping())
@@ -259,13 +258,6 @@ LPITEM CHARACTER::GetItem(TItemPos Cell) const
 			return NULL;
 		}
 		return m_pointsInstant.pItems[wCell];
-	case DRAGON_SOUL_INVENTORY:
-		if (wCell >= DRAGON_SOUL_INVENTORY_MAX_NUM)
-		{
-			sys_err("CHARACTER::GetInventoryItem: invalid DS item cell %d", wCell);
-			return NULL;
-		}
-		return m_pointsInstant.pDSItems[wCell];
 
 	default:
 		return NULL;
@@ -347,61 +339,6 @@ void CHARACTER::SetItem(TItemPos Cell, LPITEM pItem)
 			m_pointsInstant.pItems[wCell] = pItem;
 		}
 		break;
-	// 용혼석 인벤토리
-	case DRAGON_SOUL_INVENTORY:
-		{
-			LPITEM pOld = m_pointsInstant.pDSItems[wCell];
-
-			if (pOld)
-			{
-				if (wCell < DRAGON_SOUL_INVENTORY_MAX_NUM)
-				{
-					for (int i = 0; i < pOld->GetSize(); ++i)
-					{
-						int p = wCell + (i * DRAGON_SOUL_BOX_COLUMN_NUM);
-
-						if (p >= DRAGON_SOUL_INVENTORY_MAX_NUM)
-							continue;
-
-						if (m_pointsInstant.pDSItems[p] && m_pointsInstant.pDSItems[p] != pOld)
-							continue;
-
-						m_pointsInstant.wDSItemGrid[p] = 0;
-					}
-				}
-				else
-					m_pointsInstant.wDSItemGrid[wCell] = 0;
-			}
-
-			if (pItem)
-			{
-				if (wCell >= DRAGON_SOUL_INVENTORY_MAX_NUM)
-				{
-					sys_err("CHARACTER::SetItem: invalid DS item cell %d", wCell);
-					return;
-				}
-
-				if (wCell < DRAGON_SOUL_INVENTORY_MAX_NUM)
-				{
-					for (int i = 0; i < pItem->GetSize(); ++i)
-					{
-						int p = wCell + (i * DRAGON_SOUL_BOX_COLUMN_NUM);
-
-						if (p >= DRAGON_SOUL_INVENTORY_MAX_NUM)
-							continue;
-
-						// wCell + 1 로 하는 것은 빈곳을 체크할 때 같은
-						// 아이템은 예외처리하기 위함
-						m_pointsInstant.wDSItemGrid[p] = wCell + 1;
-					}
-				}
-				else
-					m_pointsInstant.wDSItemGrid[wCell] = wCell + 1;
-			}
-
-			m_pointsInstant.pDSItems[wCell] = pItem;
-		}
-		break;
 	default:
 		sys_err ("Invalid Inventory type %d", window_type);
 		return;
@@ -420,7 +357,7 @@ void CHARACTER::SetItem(TItemPos Cell, LPITEM pItem)
 			pack.vnum = pItem->GetVnum();
 			pack.flags = pItem->GetFlag();
 			pack.anti_flags	= pItem->GetAntiFlag();
-			pack.highlight = (Cell.window_type == DRAGON_SOUL_INVENTORY);
+			pack.highlight = false;
 
 			thecore_memcpy(pack.alSockets, pItem->GetSockets(), sizeof(pack.alSockets));
 			thecore_memcpy(pack.aAttr, pItem->GetAttributes(), sizeof(pack.aAttr));
@@ -453,9 +390,6 @@ void CHARACTER::SetItem(TItemPos Cell, LPITEM pItem)
 			else
 				pItem->SetWindow(EQUIPMENT);
 			break;
-		case DRAGON_SOUL_INVENTORY:
-			pItem->SetWindow(DRAGON_SOUL_INVENTORY);
-			break;
 		}
 	}
 }
@@ -463,7 +397,7 @@ void CHARACTER::SetItem(TItemPos Cell, LPITEM pItem)
 LPITEM CHARACTER::GetWear(BYTE bCell) const
 {
 	// > WEAR_MAX_NUM : 용혼석 슬롯들.
-	if (bCell >= WEAR_MAX_NUM + DRAGON_SOUL_DECK_MAX_NUM * DS_SLOT_MAX)
+	if (bCell >= WEAR_MAX_NUM)
 	{
 		sys_err("CHARACTER::GetWear: invalid wear cell %d", bCell);
 		return NULL;
@@ -474,8 +408,7 @@ LPITEM CHARACTER::GetWear(BYTE bCell) const
 
 void CHARACTER::SetWear(BYTE bCell, LPITEM item)
 {
-	// > WEAR_MAX_NUM : 용혼석 슬롯들.
-	if (bCell >= WEAR_MAX_NUM + DRAGON_SOUL_DECK_MAX_NUM * DS_SLOT_MAX)
+	if (bCell >= WEAR_MAX_NUM)
 	{
 		sys_err("CHARACTER::SetItem: invalid item cell %d", bCell);
 		return;
@@ -510,17 +443,6 @@ void CHARACTER::ClearItem()
 			M2_DESTROY_ITEM(item);
 
 			SyncQuickslot(QUICKSLOT_TYPE_ITEM, i, 255);
-		}
-	}
-	for (i = 0; i < DRAGON_SOUL_INVENTORY_MAX_NUM; ++i)
-	{
-		if ((item = GetItem(TItemPos(DRAGON_SOUL_INVENTORY, i))))
-		{
-			item->SetSkipSave(true);
-			ITEM_MANAGER::instance().FlushDelayedSave(item);
-
-			item->RemoveFromCharacter();
-			M2_DESTROY_ITEM(item);
 		}
 	}
 }
@@ -622,67 +544,6 @@ bool CHARACTER::IsEmptyItemGrid(TItemPos Cell, BYTE bSize, int iExceptionCell) c
 			}
 		}
 		break;
-	case DRAGON_SOUL_INVENTORY:
-		{
-			WORD wCell = Cell.cell;
-			if (wCell >= DRAGON_SOUL_INVENTORY_MAX_NUM)
-				return false;
-
-			// bItemCell은 0이 false임을 나타내기 위해 + 1 해서 처리한다.
-			// 따라서 iExceptionCell에 1을 더해 비교한다.
-			iExceptionCell++;
-
-			if (m_pointsInstant.wDSItemGrid[wCell])
-			{
-				if (m_pointsInstant.wDSItemGrid[wCell] == iExceptionCell)
-				{
-					if (bSize == 1)
-						return true;
-
-					int j = 1;
-
-					do
-					{
-						int p = wCell + (DRAGON_SOUL_BOX_COLUMN_NUM * j);
-
-						if (p >= DRAGON_SOUL_INVENTORY_MAX_NUM)
-							return false;
-
-						if (m_pointsInstant.wDSItemGrid[p])
-							if (m_pointsInstant.wDSItemGrid[p] != iExceptionCell)
-								return false;
-					}
-					while (++j < bSize);
-
-					return true;
-				}
-				else
-					return false;
-			}
-
-			// 크기가 1이면 한칸을 차지하는 것이므로 그냥 리턴
-			if (1 == bSize)
-				return true;
-			else
-			{
-				int j = 1;
-
-				do
-				{
-					int p = wCell + (DRAGON_SOUL_BOX_COLUMN_NUM * j);
-
-					if (p >= DRAGON_SOUL_INVENTORY_MAX_NUM)
-						return false;
-
-					if (m_pointsInstant.bItemGrid[p])
-						if (m_pointsInstant.wDSItemGrid[p] != iExceptionCell)
-							return false;
-				}
-				while (++j < bSize);
-
-				return true;
-			}
-		}
 	}
 	return false;
 }
@@ -695,34 +556,6 @@ int CHARACTER::GetEmptyInventory(BYTE size) const
 		if (IsEmptyItemGrid(TItemPos (INVENTORY, i), size))
 			return i;
 	return -1;
-}
-
-int CHARACTER::GetEmptyDragonSoulInventory(LPITEM pItem) const
-{
-	if (NULL == pItem || !pItem->IsDragonSoul())
-		return -1;
-	if (!DragonSoul_IsQualified())
-	{
-		return -1;
-	}
-	BYTE bSize = pItem->GetSize();
-	WORD wBaseCell = DSManager::instance().GetBasePosition(pItem);
-
-	if (WORD_MAX == wBaseCell)
-		return -1;
-
-	for (int i = 0; i < DRAGON_SOUL_BOX_SIZE; ++i)
-		if (IsEmptyItemGrid(TItemPos(DRAGON_SOUL_INVENTORY, i + wBaseCell), bSize))
-			return i + wBaseCell;
-
-	return -1;
-}
-
-void CHARACTER::CopyDragonSoulItemGrid(std::vector<WORD>& vDragonSoulItemGrid) const
-{
-	vDragonSoulItemGrid.resize(DRAGON_SOUL_INVENTORY_MAX_NUM);
-
-	std::copy(m_pointsInstant.wDSItemGrid, m_pointsInstant.wDSItemGrid + DRAGON_SOUL_INVENTORY_MAX_NUM, vDragonSoulItemGrid.begin());
 }
 
 int CHARACTER::CountEmptyInventory() const
@@ -1902,23 +1735,6 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 			else
 				UnequipItem(item);
 			break;
-			// 착용하지 않은 용혼석은 사용할 수 없다.
-			// 정상적인 클라라면, 용혼석에 관하여 item use 패킷을 보낼 수 없다.
-			// 용혼석 착용은 item move 패킷으로 한다.
-			// 착용한 용혼석은 추출한다.
-		case ITEM_DS:
-			{
-				if (!item->IsEquipped())
-					return false;
-				return DSManager::instance().PullOut(this, NPOS, item);
-			break;
-			}
-		case ITEM_SPECIAL_DS:
-			if (!item->IsEquipped())
-				EquipItem(item);
-			else
-				UnequipItem(item);
-			break;
 
 		case ITEM_FISH:
 			{
@@ -2052,15 +1868,6 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 				std::vector <DWORD> dwCounts;
 				std::vector <LPITEM> item_gets(0);
 				int count = 0;
-
-				if( dwBoxVnum > 51500 && dwBoxVnum < 52000 )	// 용혼원석들
-				{
-					if( !(this->DragonSoul_IsQualified()) )
-					{
-						ChatPacket(CHAT_TYPE_INFO,LC_TEXT("먼저 용혼석 퀘스트를 완료하셔야 합니다."));
-						return false;
-					}
-				}
 
 				if (GiveItemFromSpecialItemGroup(dwBoxVnum, dwVnums, dwCounts, item_gets, count))
 				{
@@ -2401,53 +2208,8 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 							{
 								return false;
 							}
-							// 우선 용혼석에 관해서만 하도록 한다.
-							if (pDestItem->IsDragonSoul())
-							{
-								int ret;
-								char buf[128];
-								if (item->GetVnum() == DRAGON_HEART_VNUM)
-								{
-									ret = pDestItem->GiveMoreTime_Per((float)item->GetSocket(ITEM_SOCKET_CHARGING_AMOUNT_IDX));
-								}
-								else
-								{
-									ret = pDestItem->GiveMoreTime_Per((float)item->GetValue(ITEM_VALUE_CHARGING_AMOUNT_IDX));
-								}
-								if (ret > 0)
-								{
-									if (item->GetVnum() == DRAGON_HEART_VNUM)
-									{
-										sprintf(buf, "Inc %ds by item{VN:%d SOC%d:%ld}", ret, item->GetVnum(), ITEM_SOCKET_CHARGING_AMOUNT_IDX, item->GetSocket(ITEM_SOCKET_CHARGING_AMOUNT_IDX));
-									}
-									else
-									{
-										sprintf(buf, "Inc %ds by item{VN:%d VAL%d:%ld}", ret, item->GetVnum(), ITEM_VALUE_CHARGING_AMOUNT_IDX, item->GetValue(ITEM_VALUE_CHARGING_AMOUNT_IDX));
-									}
 
-									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%d초 만큼 충전되었습니다."), ret);
-									item->SetCount(item->GetCount() - 1);
-									LogManager::instance().ItemLog(this, item, "DS_CHARGING_SUCCESS", buf);
-									return true;
-								}
-								else
-								{
-									if (item->GetVnum() == DRAGON_HEART_VNUM)
-									{
-										sprintf(buf, "No change by item{VN:%d SOC%d:%ld}", item->GetVnum(), ITEM_SOCKET_CHARGING_AMOUNT_IDX, item->GetSocket(ITEM_SOCKET_CHARGING_AMOUNT_IDX));
-									}
-									else
-									{
-										sprintf(buf, "No change by item{VN:%d VAL%d:%ld}", item->GetVnum(), ITEM_VALUE_CHARGING_AMOUNT_IDX, item->GetValue(ITEM_VALUE_CHARGING_AMOUNT_IDX));
-									}
-
-									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("충전할 수 없습니다."));
-									LogManager::instance().ItemLog(this, item, "DS_CHARGING_FAILED", buf);
-									return false;
-								}
-							}
-							else
-								return false;
+							return false;
 						}
 						break;
 					case USE_TIME_CHARGE_FIX:
@@ -2457,29 +2219,8 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 							{
 								return false;
 							}
-							// 우선 용혼석에 관해서만 하도록 한다.
-							if (pDestItem->IsDragonSoul())
-							{
-								int ret = pDestItem->GiveMoreTime_Fix(item->GetValue(ITEM_VALUE_CHARGING_AMOUNT_IDX));
-								char buf[128];
-								if (ret)
-								{
-									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%d초 만큼 충전되었습니다."), ret);
-									sprintf(buf, "Increase %ds by item{VN:%d VAL%d:%ld}", ret, item->GetVnum(), ITEM_VALUE_CHARGING_AMOUNT_IDX, item->GetValue(ITEM_VALUE_CHARGING_AMOUNT_IDX));
-									LogManager::instance().ItemLog(this, item, "DS_CHARGING_SUCCESS", buf);
-									item->SetCount(item->GetCount() - 1);
-									return true;
-								}
-								else
-								{
-									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("충전할 수 없습니다."));
-									sprintf(buf, "No change by item{VN:%d VAL%d:%ld}", item->GetVnum(), ITEM_VALUE_CHARGING_AMOUNT_IDX, item->GetValue(ITEM_VALUE_CHARGING_AMOUNT_IDX));
-									LogManager::instance().ItemLog(this, item, "DS_CHARGING_FAILED", buf);
-									return false;
-								}
-							}
-							else
-								return false;
+
+							return false;
 						}
 						break;
 					case USE_SPECIAL:
@@ -5282,23 +5023,8 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 				{
 					return false;
 				}
-				switch (item->GetSubType())
-				{
-				case EXTRACT_DRAGON_SOUL:
-					if (pDestItem->IsDragonSoul())
-					{
-						return DSManager::instance().PullOut(this, NPOS, pDestItem, item);
-					}
-					return false;
-				case EXTRACT_DRAGON_HEART:
-					if (pDestItem->IsDragonSoul())
-					{
-						return DSManager::instance().ExtractDragonHeart(this, pDestItem, item);
-					}
-					return false;
-				default:
-					return false;
-				}
+
+				return false;
 			}
 			break;
 
@@ -5520,8 +5246,6 @@ bool CHARACTER::DropItem(TItemPos Cell, BYTE bCount)
 
 	if (!CanHandleItem())
 	{
-		if (NULL != DragonSoul_RefineWindow_GetOpener())
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("강화창을 연 상태에서는 아이템을 옮길 수 없습니다."));
 		return false;
 	}
 #ifdef ENABLE_NEWSTUFF
@@ -5690,8 +5414,6 @@ bool CHARACTER::MoveItem(TItemPos Cell, TItemPos DestCell, BYTE count)
 
 	if (!CanHandleItem())
 	{
-		if (NULL != DragonSoul_RefineWindow_GetOpener())
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("강화창을 연 상태에서는 아이템을 옮길 수 없습니다."));
 		return false;
 	}
 
@@ -5738,27 +5460,6 @@ bool CHARACTER::MoveItem(TItemPos Cell, TItemPos DestCell, BYTE count)
 	}
 	else
 	{
-		if (item->IsDragonSoul())
-		{
-			if (item->IsEquipped())
-			{
-				return DSManager::instance().PullOut(this, DestCell, item);
-			}
-			else
-			{
-				if (DestCell.window_type != DRAGON_SOUL_INVENTORY)
-				{
-					return false;
-				}
-
-				if (!DSManager::instance().IsValidCellForThisItem(item, DestCell))
-					return false;
-			}
-		}
-		// 용혼석이 아닌 아이템은 용혼석 인벤에 들어갈 수 없다.
-		else if (DRAGON_SOUL_INVENTORY == DestCell.window_type)
-			return false;
-
 		LPITEM item2;
 
 		if ((item2 = GetItem(DestCell)) && item != item2 && item2->IsStackable() &&
@@ -6009,31 +5710,15 @@ bool CHARACTER::PickupItem(DWORD dwVID)
 				}
 
 				int iEmptyCell;
-				if (item->IsDragonSoul())
+				if ((iEmptyCell = GetEmptyInventory(item->GetSize())) == -1)
 				{
-					if ((iEmptyCell = GetEmptyDragonSoulInventory(item)) == -1)
-					{
-						sys_log(0, "No empty ds inventory pid %u size %ud itemid %u", GetPlayerID(), item->GetSize(), item->GetID());
-						ChatPacket(CHAT_TYPE_INFO, LC_TEXT("소지하고 있는 아이템이 너무 많습니다."));
-						return false;
-					}
-				}
-				else
-				{
-					if ((iEmptyCell = GetEmptyInventory(item->GetSize())) == -1)
-					{
-						sys_log(0, "No empty inventory pid %u size %ud itemid %u", GetPlayerID(), item->GetSize(), item->GetID());
-						ChatPacket(CHAT_TYPE_INFO, LC_TEXT("소지하고 있는 아이템이 너무 많습니다."));
-						return false;
-					}
+					sys_log(0, "No empty inventory pid %u size %ud itemid %u", GetPlayerID(), item->GetSize(), item->GetID());
+					ChatPacket(CHAT_TYPE_INFO, LC_TEXT("소지하고 있는 아이템이 너무 많습니다."));
+					return false;
 				}
 
 				item->RemoveFromGround();
-
-				if (item->IsDragonSoul())
-					item->AddToCharacter(this, TItemPos(DRAGON_SOUL_INVENTORY, iEmptyCell));
-				else
-					item->AddToCharacter(this, TItemPos(INVENTORY, iEmptyCell));
+				item->AddToCharacter(this, TItemPos(INVENTORY, iEmptyCell));
 
 				char szHint[32+1];
 				snprintf(szHint, sizeof(szHint), "%s %u %u", item->GetName(), item->GetCount(), item->GetOriginalVnum());
@@ -6061,39 +5746,19 @@ bool CHARACTER::PickupItem(DWORD dwVID)
 
 			int iEmptyCell;
 
-			if (item->IsDragonSoul())
+			if (!(owner && (iEmptyCell = owner->GetEmptyInventory(item->GetSize())) != -1))
 			{
-				if (!(owner && (iEmptyCell = owner->GetEmptyDragonSoulInventory(item)) != -1))
-				{
-					owner = this;
+				owner = this;
 
-					if ((iEmptyCell = GetEmptyDragonSoulInventory(item)) == -1)
-					{
-						owner->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("소지하고 있는 아이템이 너무 많습니다."));
-						return false;
-					}
-				}
-			}
-			else
-			{
-				if (!(owner && (iEmptyCell = owner->GetEmptyInventory(item->GetSize())) != -1))
+				if ((iEmptyCell = GetEmptyInventory(item->GetSize())) == -1)
 				{
-					owner = this;
-
-					if ((iEmptyCell = GetEmptyInventory(item->GetSize())) == -1)
-					{
-						owner->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("소지하고 있는 아이템이 너무 많습니다."));
-						return false;
-					}
+					owner->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("소지하고 있는 아이템이 너무 많습니다."));
+					return false;
 				}
 			}
 
 			item->RemoveFromGround();
-
-			if (item->IsDragonSoul())
-				item->AddToCharacter(owner, TItemPos(DRAGON_SOUL_INVENTORY, iEmptyCell));
-			else
-				item->AddToCharacter(owner, TItemPos(INVENTORY, iEmptyCell));
+			item->AddToCharacter(owner, TItemPos(INVENTORY, iEmptyCell));
 
 			char szHint[32+1];
 			snprintf(szHint, sizeof(szHint), "%s %u %u", item->GetName(), item->GetCount(), item->GetOriginalVnum());
@@ -6123,12 +5788,6 @@ bool CHARACTER::SwapItem(BYTE bCell, BYTE bDestCell)
 		return false;
 
 	TItemPos srcCell(INVENTORY, bCell), destCell(INVENTORY, bDestCell);
-
-	// 올바른 Cell 인지 검사
-	// 용혼석은 Swap할 수 없으므로, 여기서 걸림.
-	//if (bCell >= INVENTORY_MAX_NUM + WEAR_MAX_NUM || bDestCell >= INVENTORY_MAX_NUM + WEAR_MAX_NUM)
-	if (srcCell.IsDragonSoulEquipPosition() || destCell.IsDragonSoulEquipPosition())
-		return false;
 
 	// 같은 CELL 인지 검사
 	if (bCell == bDestCell)
@@ -6171,8 +5830,7 @@ bool CHARACTER::SwapItem(BYTE bCell, BYTE bDestCell)
 		BYTE bEquipCell = item2->GetCell() - INVENTORY_MAX_NUM;
 		BYTE bInvenCell = item1->GetCell();
 
-		// 착용중인 아이템을 벗을 수 있고, 착용 예정 아이템이 착용 가능한 상태여야만 진행
-		if (item2->IsDragonSoul() || item2->GetType() == ITEM_BELT) // @fixme117
+		if (item2->GetType() == ITEM_BELT)
 		{
 			if (false == CanUnequipNow(item2) || false == CanEquipNow(item1))
 				return false;
@@ -6221,23 +5879,14 @@ bool CHARACTER::UnequipItem(LPITEM item)
 	if (false == CanUnequipNow(item))
 		return false;
 
-	int pos;
-	if (item->IsDragonSoul())
-		pos = GetEmptyDragonSoulInventory(item);
-	else
-		pos = GetEmptyInventory(item->GetSize());
+	int pos = GetEmptyInventory(item->GetSize());
 
 	// HARD CODING
 	if (item->GetVnum() == UNIQUE_ITEM_HIDE_ALIGNMENT_TITLE)
 		ShowAlignment(true);
 
 	item->RemoveFromCharacter();
-	if (item->IsDragonSoul())
-	{
-		item->AddToCharacter(this, TItemPos(DRAGON_SOUL_INVENTORY, pos));
-	}
-	else
-		item->AddToCharacter(this, TItemPos(INVENTORY, pos));
+	item->AddToCharacter(this, TItemPos(INVENTORY, pos));
 
 	CheckMaximumPoints();
 
@@ -6335,45 +5984,24 @@ bool CHARACTER::EquipItem(LPITEM item, int iCandidateCell)
 	}
 #endif
 
-	// 용혼석 특수 처리
-	if (item->IsDragonSoul())
+	if (GetWear(iWearCell) && !IS_SET(GetWear(iWearCell)->GetFlag(), ITEM_FLAG_IRREMOVABLE))
 	{
-		// 같은 타입의 용혼석이 이미 들어가 있다면 착용할 수 없다.
-		// 용혼석은 swap을 지원하면 안됨.
-		if(GetInventoryItem(INVENTORY_MAX_NUM + iWearCell))
-		{
-			ChatPacket(CHAT_TYPE_INFO, "이미 같은 종류의 용혼석을 착용하고 있습니다.");
+		// 이 아이템은 한번 박히면 변경 불가. swap 역시 완전 불가
+		if (item->GetWearFlag() == WEARABLE_ABILITY)
 			return false;
-		}
 
-		if (!item->EquipTo(this, iWearCell))
+		if (false == SwapItem(item->GetCell(), INVENTORY_MAX_NUM + iWearCell))
 		{
 			return false;
 		}
 	}
-	// 용혼석이 아님.
 	else
 	{
-		// 착용할 곳에 아이템이 있다면,
-		if (GetWear(iWearCell) && !IS_SET(GetWear(iWearCell)->GetFlag(), ITEM_FLAG_IRREMOVABLE))
-		{
-			// 이 아이템은 한번 박히면 변경 불가. swap 역시 완전 불가
-			if (item->GetWearFlag() == WEARABLE_ABILITY)
-				return false;
+		BYTE bOldCell = item->GetCell();
 
-			if (false == SwapItem(item->GetCell(), INVENTORY_MAX_NUM + iWearCell))
-			{
-				return false;
-			}
-		}
-		else
+		if (item->EquipTo(this, iWearCell))
 		{
-			BYTE bOldCell = item->GetCell();
-
-			if (item->EquipTo(this, iWearCell))
-			{
-				SyncQuickslot(QUICKSLOT_TYPE_ITEM, bOldCell, iWearCell);
-			}
+			SyncQuickslot(QUICKSLOT_TYPE_ITEM, bOldCell, iWearCell);
 		}
 	}
 
@@ -6709,23 +6337,11 @@ void CHARACTER::AutoGiveItem(LPITEM item, bool longOwnerShip)
 		return;
 	}
 
-	int cell;
-	if (item->IsDragonSoul())
-	{
-		cell = GetEmptyDragonSoulInventory(item);
-	}
-	else
-	{
-		cell = GetEmptyInventory (item->GetSize());
-	}
+	int cell = GetEmptyInventory (item->GetSize());
 
 	if (cell != -1)
 	{
-		if (item->IsDragonSoul())
-			item->AddToCharacter(this, TItemPos(DRAGON_SOUL_INVENTORY, cell));
-		else
-			item->AddToCharacter(this, TItemPos(INVENTORY, cell));
-
+		item->AddToCharacter(this, TItemPos(INVENTORY, cell));
 		LogManager::instance().ItemLog(this, item, "SYSTEM", item->GetName());
 
 		if (item->GetType() == ITEM_USE && item->GetSubType() == USE_POTION)
@@ -6833,23 +6449,14 @@ LPITEM CHARACTER::AutoGiveItem(DWORD dwItemVnum, BYTE bCount, int iRarePct, bool
 		}
 	}
 
-	int iEmptyCell;
-	if (item->IsDragonSoul())
-	{
-		iEmptyCell = GetEmptyDragonSoulInventory(item);
-	}
-	else
-		iEmptyCell = GetEmptyInventory(item->GetSize());
+	int iEmptyCell = GetEmptyInventory(item->GetSize());
 
 	if (iEmptyCell != -1)
 	{
 		if (bMsg)
 			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("아이템 획득: %s"), item->GetName());
 
-		if (item->IsDragonSoul())
-			item->AddToCharacter(this, TItemPos(DRAGON_SOUL_INVENTORY, iEmptyCell));
-		else
-			item->AddToCharacter(this, TItemPos(INVENTORY, iEmptyCell));
+		item->AddToCharacter(this, TItemPos(INVENTORY, iEmptyCell));
 		LogManager::instance().ItemLog(this, item, "SYSTEM", item->GetName());
 
 		if (item->GetType() == ITEM_USE && item->GetSubType() == USE_POTION)
@@ -7658,9 +7265,6 @@ bool CHARACTER::IsValidItemPosition(TItemPos Pos) const
 	case EQUIPMENT:
 		return cell < (INVENTORY_AND_EQUIP_SLOT_MAX);
 
-	case DRAGON_SOUL_INVENTORY:
-		return cell < (DRAGON_SOUL_INVENTORY_MAX_NUM);
-
 	case SAFEBOX:
 		if (NULL != m_pkSafebox)
 			return m_pkSafebox->IsValidPosition(cell);
@@ -7802,13 +7406,7 @@ bool CHARACTER::CanUnequipNow(const LPITEM item, const TItemPos& srcCell, const 
 
 	// 아이템 unequip시 인벤토리로 옮길 때 빈 자리가 있는 지 확인
 	{
-		int pos = -1;
-
-		if (item->IsDragonSoul())
-			pos = GetEmptyDragonSoulInventory(item);
-		else
-			pos = GetEmptyInventory(item->GetSize());
-
+		int pos = GetEmptyInventory(item->GetSize());
 		VERIFY_MSG( -1 == pos, "소지품에 빈 공간이 없습니다." );
 	}
 

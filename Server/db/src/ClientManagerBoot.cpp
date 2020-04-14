@@ -1528,9 +1528,6 @@ bool CClientManager::InitializeItemTableFromDB()
 
 #if !defined(ENABLE_AUTODETECT_VNUMRANGE)
 		VERIFY_IFIELD(IProto::vnum_range,		item_table->dwVnumRange);
-#else
-		if (item_table->bType==ITEM_DS)
-			item_table->dwVnumRange = 99;
 #endif
 
 		m_map_itemTableByVnum.insert(std::map<DWORD, TItemTable *>::value_type(item_table->dwVnum, item_table));

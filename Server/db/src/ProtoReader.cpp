@@ -72,9 +72,9 @@ int get_Item_Type_Value(string inputString)
 		"ITEM_SKILLFORGET", "ITEM_GIFTBOX",
 		"ITEM_PICK", "ITEM_HAIR",
 		"ITEM_TOTEM", "ITEM_BLEND",
-		"ITEM_COSTUME", "ITEM_DS",					//30개
+		"ITEM_COSTUME", "ITEM_UNUSED1",					//30개
 
-		"ITEM_SPECIAL_DS",	"ITEM_EXTRACT",
+		"ITEM_UNUSED2",	"ITEM_EXTRACT",
 		"ITEM_SECONDARY_COIN",						//33개
 
 		"ITEM_RING",
@@ -113,8 +113,7 @@ int get_Item_SubType_Value(unsigned int type_value, string inputString)
 				"USE_ADD_ATTRIBUTE2", "USE_RECIPE", "USE_CHANGE_ATTRIBUTE2", "USE_BIND", "USE_UNBIND", "USE_TIME_CHARGE_PER", "USE_TIME_CHARGE_FIX", "USE_PUT_INTO_BELT_SOCKET", "USE_PUT_INTO_RING_SOCKET",
 				"USE_CHANGE_COSTUME_ATTR", "USE_RESET_COSTUME_ATTR", "USE_UNK33", "USE_CHANGE_ATTRIBUTE_PLUS"};
 	static string arSub4[] = { "AUTOUSE_POTION", "AUTOUSE_ABILITY_UP", "AUTOUSE_BOMB", "AUTOUSE_GOLD", "AUTOUSE_MONEYBAG", "AUTOUSE_TREASURE_BOX"};
-	static string arSub5[] = { "MATERIAL_LEATHER", "MATERIAL_BLOOD", "MATERIAL_ROOT", "MATERIAL_NEEDLE", "MATERIAL_JEWEL",
-		"MATERIAL_DS_REFINE_NORMAL", "MATERIAL_DS_REFINE_BLESSED", "MATERIAL_DS_REFINE_HOLLY"};
+	static string arSub5[] = { "MATERIAL_LEATHER", "MATERIAL_BLOOD", "MATERIAL_ROOT", "MATERIAL_NEEDLE", "MATERIAL_JEWEL"};
 	static string arSub6[] = { "SPECIAL_MAP", "SPECIAL_KEY", "SPECIAL_DOC", "SPECIAL_SPIRIT"};
 	static string arSub7[] = { "TOOL_FISHING_ROD" };
 	static string arSub8[] = { "LOTTERY_TICKET", "LOTTERY_INSTANT" };
@@ -127,7 +126,6 @@ int get_Item_SubType_Value(unsigned int type_value, string inputString)
 					"UNIQUE_6", "UNIQUE_7", "UNIQUE_8", "UNIQUE_9", "USE_SPECIAL"};
 	static string arSub28[] = { "COSTUME_BODY", "COSTUME_HAIR", "COSTUME_MOUNT", "COSTUME_ACCE", "COSTUME_WEAPON" };
 	static string arSub29[] = { "DS_SLOT1", "DS_SLOT2", "DS_SLOT3", "DS_SLOT4", "DS_SLOT5", "DS_SLOT6" };
-	static string arSub31[] = { "EXTRACT_DRAGON_SOUL", "EXTRACT_DRAGON_HEART" };
 
 	static string* arSubType[] = {0,	//0
 		arSub1,		//1
@@ -160,7 +158,7 @@ int get_Item_SubType_Value(unsigned int type_value, string inputString)
 		arSub28,	//28
 		arSub29,		//29
 		arSub29,	//30
-		arSub31,	//31
+		0,	//31
 		0,			//32
 		0,			//33 반지
 		0,			//34 벨트
@@ -201,7 +199,7 @@ int get_Item_SubType_Value(unsigned int type_value, string inputString)
 		sizeof(arSub28)/sizeof(arSub28[0]),
 		sizeof(arSub29)/sizeof(arSub29[0]),
 		sizeof(arSub29)/sizeof(arSub29[0]),
-		sizeof(arSub31)/sizeof(arSub31[0]),
+		0,
 		0, // 32
 		0, // 33 반지
 		0, // 34 벨트

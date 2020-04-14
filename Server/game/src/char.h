@@ -446,10 +446,6 @@ typedef struct character_point_instant
 	LPITEM			pItems[INVENTORY_AND_EQUIP_SLOT_MAX];
 	BYTE			bItemGrid[INVENTORY_AND_EQUIP_SLOT_MAX];
 
-	// 용혼석 인벤토리.
-	LPITEM			pDSItems[DRAGON_SOUL_INVENTORY_MAX_NUM];
-	WORD			wDSItemGrid[DRAGON_SOUL_INVENTORY_MAX_NUM];
-
 	// by mhh
 	LPITEM			pCubeItems[CUBE_MAX_NUM];
 	LPCHARACTER		pCubeNpc;
@@ -463,9 +459,6 @@ typedef struct character_point_instant
 	int				iMaxStamina;
 
 	BYTE			bBlockMode;
-
-	int				iDragonSoulActiveDeck;
-	LPENTITY		m_pDragonSoulRefineWindowOpener;
 } CHARACTER_POINT_INSTANT;
 
 #define TRIGGERPARAM		LPCHARACTER ch, LPCHARACTER causer
@@ -1176,9 +1169,6 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		void			AutoGiveItem(LPITEM item, bool longOwnerShip = false);
 
 		int				GetEmptyInventory(BYTE size) const;
-		int				GetEmptyDragonSoulInventory(LPITEM pItem) const;
-		void			CopyDragonSoulItemGrid(std::vector<WORD>& vDragonSoulItemGrid) const;
-
 		int				CountEmptyInventory() const;
 
 		int				CountSpecifyItem(DWORD vnum) const;
@@ -2076,39 +2066,6 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 	private:
 		bool IsValidItemPosition(TItemPos Pos) const;
 
-	public:
-		//용혼석
-
-		// 캐릭터의 affect, quest가 load 되기 전에 DragonSoul_Initialize를 호출하면 안된다.
-		// affect가 가장 마지막에 로드되어 LoadAffect에서 호출함.
-		void	DragonSoul_Initialize();
-
-		bool	DragonSoul_IsQualified() const;
-		void	DragonSoul_GiveQualification();
-
-		int		DragonSoul_GetActiveDeck() const;
-		bool	DragonSoul_IsDeckActivated() const;
-		bool	DragonSoul_ActivateDeck(int deck_idx);
-
-		void	DragonSoul_DeactivateAll();
-		// 반드시 ClearItem 전에 불러야 한다.
-		// 왜냐하면....
-		// 용혼석 하나 하나를 deactivate할 때마다 덱에 active인 용혼석이 있는지 확인하고,
-		// active인 용혼석이 하나도 없다면, 캐릭터의 용혼석 affect와, 활성 상태를 제거한다.
-		//
-		// 하지만 ClearItem 시, 캐릭터가 착용하고 있는 모든 아이템을 unequip하는 바람에,
-		// 용혼석 Affect가 제거되고, 결국 로그인 시, 용혼석이 활성화되지 않는다.
-		// (Unequip할 때에는 로그아웃 상태인지, 아닌지 알 수 없다.)
-		// 용혼석만 deactivate시키고 캐릭터의 용혼석 덱 활성 상태는 건드리지 않는다.
-		void	DragonSoul_CleanUp();
-		// 용혼석 강화창
-	public:
-		bool		DragonSoul_RefineWindow_Open(LPENTITY pEntity);
-		bool		DragonSoul_RefineWindow_Close();
-		LPENTITY	DragonSoul_RefineWindow_GetOpener() { return  m_pointsInstant.m_pDragonSoulRefineWindowOpener; }
-		bool		DragonSoul_RefineWindow_CanRefine();
-
-		//독일 선물 기능 패킷 임시 저장
 	private:
 		unsigned int itemAward_vnum;
 		char		 itemAward_cmd[20];

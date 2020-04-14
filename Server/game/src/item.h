@@ -261,11 +261,6 @@ class CItem : public CEntity
 		DWORD		GetMaskVnum()			{	return m_dwMaskVnum; }
 		bool		IsMaskedItem()	{	return m_dwMaskVnum != 0;	}
 
-		// øÎ»•ºÆ
-		bool		IsDragonSoul();
-		int		GiveMoreTime_Per(float fPercent);
-		int		GiveMoreTime_Fix(DWORD dwTime);
-
 	private:
 		TItemTable const * m_pProto;		// «¡∑Œ≈‰ ≈∏¿Ÿ
 

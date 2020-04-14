@@ -19,7 +19,6 @@
 #include "item_manager.h"
 
 #include "../../common/VnumHelper.h"
-#include "DragonSoul.h"
 #include "cube.h"
 
 ITEM_MANAGER::ITEM_MANAGER()
@@ -388,11 +387,6 @@ LPITEM ITEM_MANAGER::CreateItem(DWORD vnum, DWORD count, DWORD id, bool bTryMagi
 		}
 	}
 
-	// 货肺 积己登绰 侩去籍 贸府.
-	if (item->IsDragonSoul() && 0 == id)
-	{
-		DSManager::instance().DragonSoulItemInitialize(item);
-	}
 	return item;
 }
 
@@ -1504,13 +1498,6 @@ void ITEM_MANAGER::CreateQuestDropItem(LPCHARACTER pkChr, LPCHARACTER pkKiller, 
 		const static DWORD xmas_sock = 50010;
 		pkKiller->AutoGiveItem (xmas_sock, 1);
 	}
-
-	//if (pkChr->GetLevel() >= 30 && (GetDropPerKillPct(50, 100, iDeltaPercent, "ds_drop") >= number(1, iRandRange)))
-	//{
-	//	const static DWORD dragon_soul_gemstone = 30270;
-	//	if ((item = CreateItem(dragon_soul_gemstone, 1, 0, true)))
-	//		vec_item.push_back(item);
-	//}
 
 	if ( GetDropPerKillPct(100, 2000, iDeltaPercent, "halloween_drop") >= number(1, iRandRange) )
 	{

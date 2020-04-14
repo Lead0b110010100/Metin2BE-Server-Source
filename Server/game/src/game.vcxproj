@@ -141,7 +141,6 @@
     <ClCompile Include="char_affect.cpp" />
     <ClCompile Include="char_battle.cpp" />
     <ClCompile Include="char_change_empire.cpp" />
-    <ClCompile Include="char_dragonsoul.cpp" />
     <ClCompile Include="char_hackshield.cpp" />
     <ClCompile Include="char_horse.cpp" />
     <ClCompile Include="char_item.cpp" />
@@ -167,9 +166,7 @@
     <ClCompile Include="desc_manager.cpp" />
     <ClCompile Include="desc_p2p.cpp" />
     <ClCompile Include="dev_log.cpp" />
-    <ClCompile Include="dragon_soul_table.cpp" />
     <ClCompile Include="DragonLair.cpp" />
-    <ClCompile Include="DragonSoul.cpp" />
     <ClCompile Include="dungeon.cpp" />
     <ClCompile Include="empire_text_convert.cpp" />
     <ClCompile Include="entity.cpp" />

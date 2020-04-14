@@ -47,8 +47,6 @@
 #include "HackShield.h"
 #include "XTrapManager.h"
 
-#include "DragonSoul.h"
-
 #include "shutdown_manager.h"
 #include "../../common/CommonDefines.h"
 
@@ -931,7 +929,6 @@ void CInputDB::Boot(const char* data)
 	char szSpecialItemGroupFileName[FILE_NAME_LEN];
 	char szMapIndexFileName[FILE_NAME_LEN];
 	char szItemVnumMaskTableFileName[FILE_NAME_LEN];
-	char szDragonSoulTableFileName[FILE_NAME_LEN];
 
 	snprintf(szCommonDropItemFileName, sizeof(szCommonDropItemFileName),
 			"%s/common_drop_item.txt", LocaleService_GetBasePath().c_str());
@@ -947,8 +944,6 @@ void CInputDB::Boot(const char* data)
 			"%s/index", LocaleService_GetMapPath().c_str());
 	snprintf(szItemVnumMaskTableFileName, sizeof(szItemVnumMaskTableFileName),
 			"%s/ori_to_new_table.txt", LocaleService_GetBasePath().c_str());
-	snprintf(szDragonSoulTableFileName, sizeof(szDragonSoulTableFileName),
-			"%s/dragon_soul_table.txt", LocaleService_GetBasePath().c_str());
 
 	sys_log(0, "Initializing Informations of Cube System");
 	Cube_InformationInitialize();
@@ -1005,14 +1000,6 @@ void CInputDB::Boot(const char* data)
 		sys_err("cannot load MapIndex: %s", szMapIndexFileName);
 		thecore_shutdown();
 		return;
-	}
-
-	sys_log(0, "LoadLocaleFile: DragonSoulTable: %s", szDragonSoulTableFileName);
-	if (!DSManager::instance().ReadDragonSoulTableFile(szDragonSoulTableFileName))
-	{
-		sys_err("cannot load DragonSoulTable: %s", szDragonSoulTableFileName);
-		//thecore_shutdown();
-		//return;
 	}
 
 	// END_OF_LOCALE_SERVICE
@@ -1564,7 +1551,6 @@ void CInputDB::ItemLoad(LPDESC d, const char * c_pData)
 			switch (p->window)
 			{
 				case INVENTORY:
-				case DRAGON_SOUL_INVENTORY:
 					item->AddToCharacter(ch, TItemPos(p->window, p->pos));
 					break;
 

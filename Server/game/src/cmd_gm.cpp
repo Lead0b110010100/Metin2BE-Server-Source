@@ -35,7 +35,6 @@
 #include "pcbang.h"
 #include "threeway_war.h"
 #include "unique_item.h"
-#include "DragonSoul.h"
 #include "../../common/CommonDefines.h"
 
 extern bool DropEvent_RefineBox_SetValue(const std::string& name, int value);
@@ -540,40 +539,17 @@ ACMD(do_item)
 
 	if (item)
 	{
-		if (item->IsDragonSoul())
-		{
-			int iEmptyPos = ch->GetEmptyDragonSoulInventory(item);
+		int iEmptyPos = ch->GetEmptyInventory(item->GetSize());
 
-			if (iEmptyPos != -1)
-			{
-				item->AddToCharacter(ch, TItemPos(DRAGON_SOUL_INVENTORY, iEmptyPos));
-				LogManager::instance().ItemLog(ch, item, "GM", item->GetName());
-			}
-			else
-			{
-				M2_DESTROY_ITEM(item);
-				if (!ch->DragonSoul_IsQualified())
-				{
-					ch->ChatPacket(CHAT_TYPE_INFO, "인벤이 활성화 되지 않음.");
-				}
-				else
-					ch->ChatPacket(CHAT_TYPE_INFO, "Not enough inventory space.");
-			}
+		if (iEmptyPos != -1)
+		{
+			item->AddToCharacter(ch, TItemPos(INVENTORY, iEmptyPos));
+			LogManager::instance().ItemLog(ch, item, "GM", item->GetName());
 		}
 		else
 		{
-			int iEmptyPos = ch->GetEmptyInventory(item->GetSize());
-
-			if (iEmptyPos != -1)
-			{
-				item->AddToCharacter(ch, TItemPos(INVENTORY, iEmptyPos));
-				LogManager::instance().ItemLog(ch, item, "GM", item->GetName());
-			}
-			else
-			{
-				M2_DESTROY_ITEM(item);
-				ch->ChatPacket(CHAT_TYPE_INFO, "Not enough inventory space.");
-			}
+			M2_DESTROY_ITEM(item);
+			ch->ChatPacket(CHAT_TYPE_INFO, "Not enough inventory space.");
 		}
 	}
 	else
@@ -938,7 +914,6 @@ ACMD(do_item_purge)
 		ch->ChatPacket(CHAT_TYPE_INFO, " all");
 		ch->ChatPacket(CHAT_TYPE_INFO, " inventory or inv");
 		ch->ChatPacket(CHAT_TYPE_INFO, " equipment or equip");
-		ch->ChatPacket(CHAT_TYPE_INFO, " dragonsoul or ds");
 		ch->ChatPacket(CHAT_TYPE_INFO, " belt");
 		return;
 	}
@@ -955,13 +930,6 @@ ACMD(do_item_purge)
 			{
 				ITEM_MANAGER::instance().RemoveItem(item, "PURGE");
 				ch->SyncQuickslot(QUICKSLOT_TYPE_ITEM, i, 255);
-			}
-		}
-		for (i = 0; i < DRAGON_SOUL_INVENTORY_MAX_NUM; ++i)
-		{
-			if ((item = ch->GetItem(TItemPos(DRAGON_SOUL_INVENTORY, i ))))
-			{
-				ITEM_MANAGER::instance().RemoveItem(item, "PURGE");
 			}
 		}
 	}
@@ -987,16 +955,6 @@ ACMD(do_item_purge)
 			}
 		}
 	}
-	else if (!strArg.compare(0, 6, "dragon") || !strArg.compare(0, 2, "ds"))
-	{
-		for (i = 0; i < DRAGON_SOUL_INVENTORY_MAX_NUM; ++i)
-		{
-			if ((item = ch->GetItem(TItemPos(DRAGON_SOUL_INVENTORY, i ))))
-			{
-				ITEM_MANAGER::instance().RemoveItem(item, "PURGE");
-			}
-		}
-	}
 	else if (!strArg.compare(0, 4, "belt"))
 	{
 		for (i = 0; i < BELT_INVENTORY_SLOT_COUNT; ++i)
@@ -1018,13 +976,6 @@ ACMD(do_item_purge)
 		{
 			ITEM_MANAGER::instance().RemoveItem(item, "PURGE");
 			ch->SyncQuickslot(QUICKSLOT_TYPE_ITEM, i, 255);
-		}
-	}
-	for (i = 0; i < DRAGON_SOUL_INVENTORY_MAX_NUM; ++i)
-	{
-		if ((item = ch->GetItem(TItemPos(DRAGON_SOUL_INVENTORY, i ))))
-		{
-			ITEM_MANAGER::instance().RemoveItem(item, "PURGE");
 		}
 	}
 #endif
@@ -4743,41 +4694,4 @@ ACMD (do_use_item)
 ACMD (do_clear_affect)
 {
 	ch->ClearAffect(true);
-}
-
-ACMD (do_dragon_soul)
-{
-	char arg1[512];
-	const char* rest = one_argument (argument, arg1, sizeof(arg1));
-	switch (arg1[0])
-	{
-	case 'a':
-		{
-			one_argument (rest, arg1, sizeof(arg1));
-			int deck_idx;
-			if (str_to_number(deck_idx, arg1) == false)
-			{
-				return;
-			}
-			ch->DragonSoul_ActivateDeck(deck_idx);
-		}
-		break;
-	case 'd':
-		{
-			ch->DragonSoul_DeactivateAll();
-		}
-		break;
-	}
-}
-
-ACMD (do_ds_list)
-{
-	for (int i = 0; i < DRAGON_SOUL_INVENTORY_MAX_NUM; i++)
-	{
-		TItemPos cell(DRAGON_SOUL_INVENTORY, i);
-
-		LPITEM item = ch->GetItem(cell);
-		if (item != NULL)
-			ch->ChatPacket(CHAT_TYPE_INFO, "cell : %d, name : %s, id : %d", item->GetCell(), item->GetName(), item->GetID());
-	}
 }

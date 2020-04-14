@@ -137,8 +137,6 @@ bool CHARACTER::SwapQuickslot(BYTE a, BYTE b)
 
 void CHARACTER::ChainQuickslotItem(LPITEM pItem, BYTE bType, BYTE bOldPos)
 {
-	if (pItem->IsDragonSoul())
-		return;
 	for ( int i=0; i < QUICKSLOT_MAX_NUM; ++i )
 	{
 		if ( m_quickslot[i].type == bType && m_quickslot[i].pos == bOldPos )

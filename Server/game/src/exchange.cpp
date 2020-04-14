@@ -12,7 +12,6 @@
 #include "locale_service.h"
 #include "../../common/length.h"
 #include "exchange.h"
-#include "DragonSoul.h"
 #include "questmanager.h" // @fixme150
 
 void exchange_packet(LPCHARACTER ch, BYTE sub_header, bool is_me, DWORD arg1, TItemPos arg2, DWORD arg3, void * pvData = NULL);
@@ -345,90 +344,32 @@ bool CExchange::CheckSpace()
 	}
 #endif
 
-	// 아... 뭔가 개병신 같지만... 용혼석 인벤을 노멀 인벤 보고 따라 만든 내 잘못이다 ㅠㅠ
-	static std::vector <WORD> s_vDSGrid(DRAGON_SOUL_INVENTORY_MAX_NUM);
-
-	// 일단 용혼석을 교환하지 않을 가능성이 크므로, 용혼석 인벤 복사는 용혼석이 있을 때 하도록 한다.
-	bool bDSInitialized = false;
-
 	for (i = 0; i < EXCHANGE_ITEM_MAX_NUM; ++i)
 	{
 		if (!(item = m_apItems[i]))
 			continue;
 
-		if (item->IsDragonSoul())
+		int iPos;
+		if ((iPos = s_grid1.FindBlank(1, item->GetSize())) >= 0)
 		{
-			if (!victim->DragonSoul_IsQualified())
-			{
-				return false;
-			}
-
-			if (!bDSInitialized)
-			{
-				bDSInitialized = true;
-				victim->CopyDragonSoulItemGrid(s_vDSGrid);
-			}
-
-			bool bExistEmptySpace = false;
-			WORD wBasePos = DSManager::instance().GetBasePosition(item);
-			if (wBasePos >= DRAGON_SOUL_INVENTORY_MAX_NUM)
-				return false;
-
-			for (int i = 0; i < DRAGON_SOUL_BOX_SIZE; i++)
-			{
-				WORD wPos = wBasePos + i;
-				if (0 == s_vDSGrid[wPos]) // @fixme159 (wBasePos to wPos)
-				{
-					bool bEmpty = true;
-					for (int j = 1; j < item->GetSize(); j++)
-					{
-						if (s_vDSGrid[wPos + j * DRAGON_SOUL_BOX_COLUMN_NUM])
-						{
-							bEmpty = false;
-							break;
-						}
-					}
-					if (bEmpty)
-					{
-						for (int j = 0; j < item->GetSize(); j++)
-						{
-							s_vDSGrid[wPos + j * DRAGON_SOUL_BOX_COLUMN_NUM] =  wPos + 1;
-						}
-						bExistEmptySpace = true;
-						break;
-					}
-				}
-				if (bExistEmptySpace)
-					break;
-			}
-			if (!bExistEmptySpace)
-				return false;
+			s_grid1.Put(iPos, 1, item->GetSize());
 		}
-		else
+		else if ((iPos = s_grid2.FindBlank(1, item->GetSize())) >= 0)
 		{
-			int iPos;
-
-			if ((iPos = s_grid1.FindBlank(1, item->GetSize())) >= 0)
-			{
-				s_grid1.Put(iPos, 1, item->GetSize());
-			}
-			else if ((iPos = s_grid2.FindBlank(1, item->GetSize())) >= 0)
-			{
-				s_grid2.Put(iPos, 1, item->GetSize());
-			}
+			s_grid2.Put(iPos, 1, item->GetSize());
+		}
 #ifdef ENABLE_EXTEND_INVEN_SYSTEM
-			else if ((iPos = s_grid3.FindBlank(1, item->GetSize())) >= 0)
-			{
-				s_grid3.Put(iPos, 1, item->GetSize());
-			}
-			else if ((iPos = s_grid4.FindBlank(1, item->GetSize())) >= 0)
-			{
-				s_grid4.Put(iPos, 1, item->GetSize());
-			}
-#endif
-			else
-				return false;
+		else if ((iPos = s_grid3.FindBlank(1, item->GetSize())) >= 0)
+		{
+			s_grid3.Put(iPos, 1, item->GetSize());
 		}
+		else if ((iPos = s_grid4.FindBlank(1, item->GetSize())) >= 0)
+		{
+			s_grid4.Put(iPos, 1, item->GetSize());
+		}
+#endif
+		else
+			return false;
 	}
 
 	return true;
@@ -447,10 +388,7 @@ bool CExchange::Done()
 		if (!(item = m_apItems[i]))
 			continue;
 
-		if (item->IsDragonSoul())
-			empty_pos = victim->GetEmptyDragonSoulInventory(item);
-		else
-			empty_pos = victim->GetEmptyInventory(item->GetSize());
+		empty_pos = victim->GetEmptyInventory(item->GetSize());
 
 		if (empty_pos < 0)
 		{
@@ -470,10 +408,7 @@ bool CExchange::Done()
 		m_pOwner->SyncQuickslot(QUICKSLOT_TYPE_ITEM, item->GetCell(), 255);
 
 		item->RemoveFromCharacter();
-		if (item->IsDragonSoul())
-			item->AddToCharacter(victim, TItemPos(DRAGON_SOUL_INVENTORY, empty_pos));
-		else
-			item->AddToCharacter(victim, TItemPos(INVENTORY, empty_pos));
+		item->AddToCharacter(victim, TItemPos(INVENTORY, empty_pos));
 		ITEM_MANAGER::instance().FlushDelayedSave(item);
 
 		item->SetExchanging(false);
