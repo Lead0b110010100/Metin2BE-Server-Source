@@ -40,7 +40,6 @@
 #include "locale_service.h"
 #include "HackShield.h"
 #include "XTrapManager.h"
-#include "belt_inventory_helper.h" // @fixme119
 #include "../../common/CommonDefines.h"
 
 #include "input.h"
@@ -2122,14 +2121,6 @@ void CInputMain::SafeboxCheckin(LPCHARACTER ch, const char * c_pData)
 	}
 #endif
 
-	// @fixme140 BEGIN
-	if (ITEM_BELT == pkItem->GetType() && CBeltInventoryHelper::IsExistItemInBeltInventory(ch))
-	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("벨트 인벤토리에 아이템이 존재하면 해제할 수 없습니다."));
-		return;
-	}
-	// @fixme140 END
-
 	pkItem->RemoveFromCharacter();
 	ch->SyncQuickslot(QUICKSLOT_TYPE_ITEM, p->ItemPos.cell, 255);
 	pkSafebox->Add(p->bSafePos, pkItem);
@@ -2163,12 +2154,6 @@ void CInputMain::SafeboxCheckout(LPCHARACTER ch, const char * c_pData, bool bMal
 
 	if (!ch->IsEmptyItemGrid(p->ItemPos, pkItem->GetSize()))
 		return;
-
-	if (p->ItemPos.IsBeltInventoryPosition() && false == CBeltInventoryHelper::CanMoveIntoBeltInventory(pkItem))
-	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("이 아이템은 벨트 인벤토리로 옮길 수 없습니다."));
-		return;
-	}
 
 	pkSafebox->Remove(p->bSafePos);
 	pkItem->AddToCharacter(ch, p->ItemPos);

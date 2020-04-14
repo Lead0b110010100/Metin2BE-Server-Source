@@ -18,7 +18,6 @@
 #include "item_manager.h"
 #include "affect.h"
 #include "buff_on_attributes.h"
-#include "belt_inventory_helper.h"
 #include "../../common/VnumHelper.h"
 #include "../../common/CommonDefines.h"
 
@@ -304,7 +303,7 @@ LPITEM CItem::RemoveFromCharacter()
 		{
 			TItemPos cell(INVENTORY, m_wCell);
 
-			if (false == cell.IsDefaultInventoryPosition() && false == cell.IsBeltInventoryPosition()) // 아니면 소지품에?
+			if (false == cell.IsDefaultInventoryPosition())
 				sys_err("CItem::RemoveFromCharacter: Invalid Item Position");
 			else
 			{
@@ -330,7 +329,7 @@ bool CItem::AddToCharacter(LPCHARACTER ch, TItemPos Cell)
 
 	if (INVENTORY == window_type)
 	{
-		if (m_wCell >= INVENTORY_MAX_NUM && BELT_INVENTORY_SLOT_START > m_wCell)
+		if (m_wCell >= INVENTORY_MAX_NUM)
 		{
 			sys_err("CItem::AddToCharacter: cell overflow: %s to %s cell %d", m_pProto->szName, ch->GetName(), m_wCell);
 			return false;
@@ -453,7 +452,7 @@ bool CItem::CanUsedBy(LPCHARACTER ch)
 
 int CItem::FindEquipCell(LPCHARACTER ch, int iCandidateCell)
 {
-	if ((0 == GetWearFlag() || ITEM_TOTEM == GetType()) && ITEM_COSTUME != GetType() && ITEM_RING != GetType() && ITEM_BELT != GetType())
+	if ((0 == GetWearFlag() || ITEM_TOTEM == GetType()) && ITEM_COSTUME != GetType() && ITEM_RING != GetType())
 		return -1;
 
 	if (GetType() == ITEM_COSTUME)
@@ -484,8 +483,6 @@ int CItem::FindEquipCell(LPCHARACTER ch, int iCandidateCell)
 			return WEAR_RING1;
 	}
 #endif
-	else if (GetType() == ITEM_BELT)
-		return WEAR_BELT;
 	else if (GetWearFlag() & WEARABLE_BODY)
 		return WEAR_BODY;
 	else if (GetWearFlag() & WEARABLE_HEAD)
@@ -798,7 +795,6 @@ bool CItem::IsEquipable() const
 	case ITEM_PICK:
 	case ITEM_UNIQUE:
 	case ITEM_RING:
-	case ITEM_BELT:
 		return true;
 	}
 
@@ -1467,8 +1463,7 @@ int CItem::GetSpecialGroup() const
 //
 bool CItem::IsAccessoryForSocket()
 {
-	return (m_pProto->bType == ITEM_ARMOR && (m_pProto->bSubType == ARMOR_WRIST || m_pProto->bSubType == ARMOR_NECK || m_pProto->bSubType == ARMOR_EAR)) ||
-		(m_pProto->bType == ITEM_BELT);				// 2013년 2월 새로 추가된 '벨트' 아이템의 경우 기획팀에서 악세서리 소켓 시스템을 그대로 이용하자고 함.
+	return (m_pProto->bType == ITEM_ARMOR && (m_pProto->bSubType == ARMOR_WRIST || m_pProto->bSubType == ARMOR_NECK || m_pProto->bSubType == ARMOR_EAR));
 }
 
 void CItem::SetAccessorySocketGrade(int iGrade)
@@ -1673,10 +1668,7 @@ static const bool CanPutIntoRing(LPITEM ring, LPITEM item)
 
 bool CItem::CanPutInto(LPITEM item)
 {
-	if (item->GetType() == ITEM_BELT)
-		return this->GetSubType() == USE_PUT_INTO_BELT_SOCKET;
-
-	else if(item->GetType() == ITEM_RING)
+	if(item->GetType() == ITEM_RING)
 		return CanPutIntoRing(item, this);
 
 	else if (item->GetType() != ITEM_ARMOR)

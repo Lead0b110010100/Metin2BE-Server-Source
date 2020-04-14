@@ -435,15 +435,6 @@ void ITEM_MANAGER::SaveSingleItem(LPITEM item)
 		case EQUIPMENT:
 			t.pos = item->GetCell() - INVENTORY_MAX_NUM;
 			break;
-#ifdef ENABLE_BELT_INVENTORY_EX
-		case INVENTORY:
-			if (BELT_INVENTORY_SLOT_START <= item->GetCell() && BELT_INVENTORY_SLOT_END > item->GetCell())
-			{
-				t.window = BELT_INVENTORY;
-				t.pos = item->GetCell() - BELT_INVENTORY_SLOT_START;
-				break;
-			}
-#endif
 		default:
 			t.pos = item->GetCell();
 			break;

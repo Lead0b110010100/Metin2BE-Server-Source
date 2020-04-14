@@ -47,7 +47,6 @@
 
 #include "../../common/VnumHelper.h"
 #include "buff_on_attributes.h"
-#include "belt_inventory_helper.h"
 #include "../../common/CommonDefines.h"
 
 //auction_temp
@@ -385,7 +384,7 @@ void CHARACTER::SetItem(TItemPos Cell, LPITEM pItem)
 		{
 		case INVENTORY:
 		case EQUIPMENT:
-			if ((wCell < INVENTORY_MAX_NUM) || (BELT_INVENTORY_SLOT_START <= wCell && BELT_INVENTORY_SLOT_END > wCell))
+			if (wCell < INVENTORY_MAX_NUM)
 				pItem->SetWindow(INVENTORY);
 			else
 				pItem->SetWindow(EQUIPMENT);
@@ -459,29 +458,7 @@ bool CHARACTER::IsEmptyItemGrid(TItemPos Cell, BYTE bSize, int iExceptionCell) c
 			// 따라서 iExceptionCell에 1을 더해 비교한다.
 			++iExceptionCell;
 
-			if (Cell.IsBeltInventoryPosition())
-			{
-				LPITEM beltItem = GetWear(WEAR_BELT);
-
-				if (NULL == beltItem)
-					return false;
-
-				if (false == CBeltInventoryHelper::IsAvailableCell(bCell - BELT_INVENTORY_SLOT_START, beltItem->GetValue(0)))
-					return false;
-
-				if (m_pointsInstant.bItemGrid[bCell])
-				{
-					if (m_pointsInstant.bItemGrid[bCell] == iExceptionCell)
-						return true;
-
-					return false;
-				}
-
-				if (bSize == 1)
-					return true;
-
-			}
-			else if (bCell >= INVENTORY_MAX_NUM)
+			if (bCell >= INVENTORY_MAX_NUM)
 				return false;
 
 			if (m_pointsInstant.bItemGrid[bCell])
@@ -1519,25 +1496,6 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 		return false;
 	}
 
-	// @fixme141 BEGIN
-	if (TItemPos(item->GetWindow(), item->GetCell()).IsBeltInventoryPosition())
-	{
-		LPITEM beltItem = GetWear(WEAR_BELT);
-
-		if (NULL == beltItem)
-		{
-			ChatPacket(CHAT_TYPE_INFO, "<Belt> You can't use this item if you have no equipped belt.");
-			return false;
-		}
-
-		if (false == CBeltInventoryHelper::IsAvailableCell(item->GetCell() - BELT_INVENTORY_SLOT_START, beltItem->GetValue(0)))
-		{
-			ChatPacket(CHAT_TYPE_INFO, "<Belt> You can't use this item if you don't upgrade your belt.");
-			return false;
-		}
-	}
-	// @fixme141 END
-
 	// 아이템 최초 사용 이후부터는 사용하지 않아도 시간이 차감되는 방식 처리.
 	if (-1 != iLimitRealtimeStartFirstUseFlagIndex)
 	{
@@ -1725,11 +1683,8 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 		case ITEM_WEAPON:
 		case ITEM_ARMOR:
 		case ITEM_ROD:
-		case ITEM_RING:		// 신규 반지 아이템
-		case ITEM_BELT:		// 신규 벨트 아이템
-			// MINING
+		case ITEM_RING:
 		case ITEM_PICK:
-			// END_OF_MINING
 			if (!item->IsEquipped())
 				EquipItem(item);
 			else
@@ -4358,8 +4313,6 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 							break;
 						}
 
-						//  ACCESSORY_REFINE & ADD/CHANGE_ATTRIBUTES
-					case USE_PUT_INTO_BELT_SOCKET:
 					case USE_PUT_INTO_RING_SOCKET:
 					case USE_PUT_INTO_ACCESSORY_SOCKET:
 					case USE_ADD_ACCESSORY_SOCKET:
@@ -4702,7 +4655,6 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 									}
 									break;
 
-								case USE_PUT_INTO_BELT_SOCKET:
 								case USE_PUT_INTO_ACCESSORY_SOCKET:
 									if (item2->IsAccessoryForSocket() && item->CanPutInto(item2))
 									{
@@ -5417,14 +5369,6 @@ bool CHARACTER::MoveItem(TItemPos Cell, TItemPos DestCell, BYTE count)
 		return false;
 	}
 
-	// 기획자의 요청으로 벨트 인벤토리에는 특정 타입의 아이템만 넣을 수 있다.
-	if (DestCell.IsBeltInventoryPosition() && false == CBeltInventoryHelper::CanMoveIntoBeltInventory(item))
-	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("이 아이템은 벨트 인벤토리로 옮길 수 없습니다."));
-		return false;
-	}
-
-	// 이미 착용중인 아이템을 다른 곳으로 옮기는 경우, '장책 해제' 가능한 지 확인하고 옮김
 	if (Cell.IsEquipPosition())
 	{
 		if (!CanUnequipNow(item))
@@ -5830,12 +5774,6 @@ bool CHARACTER::SwapItem(BYTE bCell, BYTE bDestCell)
 		BYTE bEquipCell = item2->GetCell() - INVENTORY_MAX_NUM;
 		BYTE bInvenCell = item1->GetCell();
 
-		if (item2->GetType() == ITEM_BELT)
-		{
-			if (false == CanUnequipNow(item2) || false == CanEquipNow(item1))
-				return false;
-		}
-
 		if (bEquipCell != item1->FindEquipCell(this)) // 같은 위치일때만 허용
 			return false;
 
@@ -6188,12 +6126,6 @@ LPITEM CHARACTER::FindSpecifyItem(DWORD vnum) const
 LPITEM CHARACTER::FindItemByID(DWORD id) const
 {
 	for (int i=0 ; i < INVENTORY_MAX_NUM ; ++i)
-	{
-		if (NULL != GetInventoryItem(i) && GetInventoryItem(i)->GetID() == id)
-			return GetInventoryItem(i);
-	}
-
-	for (int i=BELT_INVENTORY_SLOT_START; i < BELT_INVENTORY_SLOT_END ; ++i)
 	{
 		if (NULL != GetInventoryItem(i) && GetInventoryItem(i)->GetID() == id)
 			return GetInventoryItem(i);
@@ -7393,18 +7325,11 @@ bool CHARACTER::CanEquipNow(const LPITEM item, const TItemPos& srcCell, const TI
 	return true;
 }
 
-/// 현재 캐릭터의 상태를 바탕으로 착용 중인 item을 벗을 수 있는 지 확인하고, 불가능 하다면 캐릭터에게 이유를 알려주는 함수
-bool CHARACTER::CanUnequipNow(const LPITEM item, const TItemPos& srcCell, const TItemPos& destCell) /*const*/
+bool CHARACTER::CanUnequipNow(const LPITEM item, const TItemPos& srcCell, const TItemPos& destCell)
 {
-
-	if (ITEM_BELT == item->GetType())
-		VERIFY_MSG(CBeltInventoryHelper::IsExistItemInBeltInventory(this), "벨트 인벤토리에 아이템이 존재하면 해제할 수 없습니다.");
-
-	// 영원히 해제할 수 없는 아이템
 	if (IS_SET(item->GetFlag(), ITEM_FLAG_IRREMOVABLE))
 		return false;
 
-	// 아이템 unequip시 인벤토리로 옮길 때 빈 자리가 있는 지 확인
 	{
 		int pos = GetEmptyInventory(item->GetSize());
 		VERIFY_MSG( -1 == pos, "소지품에 빈 공간이 없습니다." );

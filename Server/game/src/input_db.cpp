@@ -1532,14 +1532,6 @@ void CInputDB::ItemLoad(LPDESC d, const char * c_pData)
 		item->SetSockets(p->alSockets);
 		item->SetAttributes(p->aAttr);
 
-#ifdef ENABLE_BELT_INVENTORY_EX
-		if (p->window == BELT_INVENTORY)
-		{
-			p->window = INVENTORY;
-			p->pos = p->pos + BELT_INVENTORY_SLOT_START;
-		}
-#endif
-
 		if ((p->window == INVENTORY && ch->GetInventoryItem(p->pos)) ||
 				(p->window == EQUIPMENT && ch->GetWear(p->pos)))
 		{

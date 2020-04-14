@@ -8,7 +8,6 @@
 #define ENABLE_FULL_NOTICE
 #define ENABLE_NEWSTUFF
 #define ENABLE_PORT_SECURITY
-#define ENABLE_BELT_INVENTORY_EX
 enum eCommonDefines {
 	MAP_ALLOW_LIMIT = 32, // 32 default
 };

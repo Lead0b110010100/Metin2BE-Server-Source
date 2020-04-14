@@ -914,7 +914,6 @@ ACMD(do_item_purge)
 		ch->ChatPacket(CHAT_TYPE_INFO, " all");
 		ch->ChatPacket(CHAT_TYPE_INFO, " inventory or inv");
 		ch->ChatPacket(CHAT_TYPE_INFO, " equipment or equip");
-		ch->ChatPacket(CHAT_TYPE_INFO, " belt");
 		return;
 	}
 
@@ -952,17 +951,6 @@ ACMD(do_item_purge)
 			{
 				ITEM_MANAGER::instance().RemoveItem(item, "PURGE");
 				ch->SyncQuickslot(QUICKSLOT_TYPE_ITEM, INVENTORY_MAX_NUM + i, 255);
-			}
-		}
-	}
-	else if (!strArg.compare(0, 4, "belt"))
-	{
-		for (i = 0; i < BELT_INVENTORY_SLOT_COUNT; ++i)
-		{
-			if ((item = ch->GetInventoryItem(BELT_INVENTORY_SLOT_START + i)))
-			{
-				ITEM_MANAGER::instance().RemoveItem(item, "PURGE");
-				ch->SyncQuickslot(QUICKSLOT_TYPE_ITEM, BELT_INVENTORY_SLOT_START + i, 255);
 			}
 		}
 	}

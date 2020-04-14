@@ -65,7 +65,7 @@ bool CHARACTER::SetQuickslot(BYTE pos, TQuickslot & rSlot)
 	switch (rSlot.type)
 	{
 		case QUICKSLOT_TYPE_ITEM:
-			if (false == srcCell.IsDefaultInventoryPosition() && false == srcCell.IsBeltInventoryPosition())
+			if (false == srcCell.IsDefaultInventoryPosition())
 				return false;
 
 			break;

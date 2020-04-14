@@ -86,11 +86,6 @@ enum EMisc
 
 	SHOP_TAB_NAME_MAX = 32,
 	SHOP_TAB_COUNT_MAX = 3,
-
-	BELT_INVENTORY_SLOT_WIDTH = 4,
-	BELT_INVENTORY_SLOT_HEIGHT= 4,
-
-	BELT_INVENTORY_SLOT_COUNT = BELT_INVENTORY_SLOT_WIDTH * BELT_INVENTORY_SLOT_HEIGHT,
 };
 
 enum EMatrixCard
@@ -133,10 +128,8 @@ enum EWearPositions
 	WEAR_COSTUME_ACCE = WEAR_RING2, // costume_acce == ring2
 #endif
 
-	WEAR_BELT,			// 23	: 신규 벨트슬롯
-
 #ifdef ENABLE_WEAPON_COSTUME_SYSTEM
-	WEAR_COSTUME_WEAPON,
+	WEAR_COSTUME_WEAPON, // 23
 #endif
 
 	WEAR_MAX = 32	//
@@ -476,7 +469,6 @@ enum EWindows
 	EQUIPMENT,
 	SAFEBOX,
 	MALL,
-	BELT_INVENTORY,
 #ifdef __AUCTION__
 	AUCTION,
 #endif
@@ -708,10 +700,7 @@ enum ETeenFlags
 
 enum EMisc2
 {
-	BELT_INVENTORY_SLOT_START = INVENTORY_MAX_NUM + WEAR_MAX_NUM,
-	BELT_INVENTORY_SLOT_END = BELT_INVENTORY_SLOT_START + BELT_INVENTORY_SLOT_COUNT,
-
-	INVENTORY_AND_EQUIP_SLOT_MAX = BELT_INVENTORY_SLOT_END,
+	INVENTORY_AND_EQUIP_SLOT_MAX = INVENTORY_MAX_NUM + WEAR_MAX_NUM,
 };
 
 #pragma pack(push, 1)
@@ -740,7 +729,6 @@ typedef struct SItemPos
 			return false;
 		case INVENTORY:
 		case EQUIPMENT:
-		case BELT_INVENTORY:
 			return cell < INVENTORY_AND_EQUIP_SLOT_MAX;
 		case SAFEBOX:
 		case MALL:
@@ -754,11 +742,6 @@ typedef struct SItemPos
 	bool IsEquipPosition() const
 	{
 		return ((INVENTORY == window_type || EQUIPMENT == window_type) && cell >= INVENTORY_MAX_NUM && cell < INVENTORY_MAX_NUM + WEAR_MAX_NUM);
-	}
-
-	bool IsBeltInventoryPosition() const
-	{
-		return (BELT_INVENTORY_SLOT_START <= cell) && (BELT_INVENTORY_SLOT_END > cell);
 	}
 
 	bool IsDefaultInventoryPosition() const
