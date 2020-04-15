@@ -3722,7 +3722,6 @@ void CHARACTER::PointChange(BYTE type, int amount, bool bAmount, bool bBroadcast
 			MountVnum(val);
 			break;
 
-		case POINT_ENERGY:
 		case POINT_COSTUME_ATTR_BONUS:
 			{
 				int old_val = GetPoint(type);
@@ -3944,7 +3943,6 @@ void CHARACTER::ApplyPoint(BYTE bApplyType, int iVal)
 #ifdef ENABLE_WOLFMAN_CHARACTER
 		case APPLY_RESIST_WOLFMAN :
 #endif
-		case APPLY_ENERGY:					// 82 기력
 		case APPLY_DEF_GRADE:				// 83 방어력. DEF_GRADE_BONUS는 클라에서 두배로 보여지는 의도된 버그(...)가 있다.
 		case APPLY_COSTUME_ATTR_BONUS:		// 84 코스튬 아이템에 붙은 속성치 보너스
 		case APPLY_MAGIC_ATTBONUS_PER:		// 85 마법 공격력 +x%

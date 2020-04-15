@@ -295,13 +295,6 @@ enum EPointTypes
 	// END_PC_BANG_ITEM_ADD
 	POINT_RAMADAN_CANDY_BONUS_EXP,			// 라마단 사탕 경험치 증가용
 
-	POINT_ENERGY = 128,					// 128 기력
-
-	// 기력 ui 용.
-	// 서버에서 쓰지 않기만, 클라이언트에서 기력의 끝 시간을 POINT로 관리하기 때문에 이렇게 한다.
-	// 아 부끄럽다
-	POINT_ENERGY_END_TIME = 129,					// 129 기력 종료 시간
-
 	POINT_COSTUME_ATTR_BONUS = 130,
 	POINT_MAGIC_ATT_BONUS_PER = 131,
 	POINT_MELEE_MAGIC_ATT_BONUS_PER = 132,

@@ -694,7 +694,7 @@ const TApplyInfo aApplyInfo[MAX_APPLY_NUM] =
 	{ POINT_RESIST_ASSASSIN,	},		// 79 자객에게 저항 APPLY_RESIST_ASSASSIN
 	{ POINT_RESIST_SURA,		},		// 80 수라에게 저항 APPLY_RESIST_SURA
 	{ POINT_RESIST_SHAMAN,		},		// 81 무당에게 저항 APPLY_RESIST_SHAMAN
-	{ POINT_ENERGY				},		// 82 기력
+	{ POINT_NONE				},
 	{ POINT_DEF_GRADE			},		// 83 방어력. DEF_GRADE_BONUS는 클라에서 두배로 보여지는 의도된 버그(...)가 있다.
 	{ POINT_COSTUME_ATTR_BONUS	},		// 84 코스튬에 붙은 속성에 대해서만 보너스를 주는 기력
 	{ POINT_MAGIC_ATT_BONUS_PER },			// 85 마법 공격력 +x%
@@ -1105,7 +1105,6 @@ TValueName c_aApplyTypeNames[] =
     { "RESIST_SHAMAN",	APPLY_RESIST_SHAMAN},
     // by mhh game/affect.h 정의되어있음. INFINITE_AFFECT_DURATION = 0x1FFFFFFF
     { "INFINITE_AFFECT_DURATION", 0x1FFFFFFF	},
-	{ "ENERGY", APPLY_ENERGY },		//	기력
 	{ "COSTUME_ATTR_BONUS", APPLY_COSTUME_ATTR_BONUS },		//	기력
 	{ "MAGIC_ATTBONUS_PER",	APPLY_MAGIC_ATTBONUS_PER	},
     { "MELEE_MAGIC_ATTBONUS_PER",	APPLY_MELEE_MAGIC_ATTBONUS_PER	},

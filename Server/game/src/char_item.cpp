@@ -62,7 +62,7 @@ const int ITEM_BROKEN_METIN_VNUM = 28960;
 const char CHARACTER::msc_szLastChangeItemAttrFlag[] = "Item.LastChangeItemAttr";
 // const char CHARACTER::msc_szChangeItemAttrCycleFlag[] = "change_itemattr_cycle";
 // END_OF_CHANGE_ITEM_ATTRIBUTES
-const BYTE g_aBuffOnAttrPoints[] = { POINT_ENERGY, POINT_COSTUME_ATTR_BONUS };
+const BYTE g_aBuffOnAttrPoints[] = { POINT_COSTUME_ATTR_BONUS };
 
 struct FFindStone
 {
@@ -6075,13 +6075,6 @@ void CHARACTER::BuffOnAttr_ValueChange(BYTE bType, BYTE bOldValue, BYTE bNewValu
 		{
 			switch (bType)
 			{
-			case POINT_ENERGY:
-				{
-					static BYTE abSlot[] = { WEAR_BODY, WEAR_HEAD, WEAR_FOOTS, WEAR_WRIST, WEAR_WEAPON, WEAR_NECK, WEAR_EAR, WEAR_SHIELD };
-					static std::vector <BYTE> vec_slots (abSlot, abSlot + _countof(abSlot));
-					pBuff = M2_NEW CBuffOnAttributes(this, bType, &vec_slots);
-				}
-				break;
 			case POINT_COSTUME_ATTR_BONUS:
 				{
 					static BYTE abSlot[] = {
