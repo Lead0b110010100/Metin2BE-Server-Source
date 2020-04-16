@@ -2097,16 +2097,6 @@ bool CHARACTER::Damage(LPCHARACTER pAttacker, int dam, EDamageType type) // retu
 
 		if (pAttacker->IsPC())
 		{
-			int iEmpire = pAttacker->GetEmpire();
-			long lMapIndex = pAttacker->GetMapIndex();
-			int iMapEmpire = SECTREE_MANAGER::instance().GetEmpireFromMapIndex(lMapIndex);
-
-			// 다른 제국 사람인 경우 데미지 10% 감소
-			if (iEmpire && iMapEmpire && iEmpire != iMapEmpire)
-			{
-				dam = dam * 9 / 10;
-			}
-
 			if (!IsPC() && GetMonsterDrainSPPoint())
 			{
 				int iDrain = GetMonsterDrainSPPoint();
