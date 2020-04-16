@@ -4461,7 +4461,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 												bool bCanUse = true;
 												for (int i = 0; i < ITEM_LIMIT_MAX_NUM; ++i)
 												{
-													if (item2->GetLimitType(i) == LIMIT_LEVEL && item2->GetLimitValue(i) > 40)
+													if (item2->GetLimitType(i) == LIMIT_LEVEL && item2->GetLimitValue(i) > 24)
 													{
 														bCanUse = false;
 														break;
