@@ -118,18 +118,18 @@ enum EWearPositions
 	WEAR_COSTUME_BODY,	// 19
 	WEAR_COSTUME_HAIR,	// 20
 
-	WEAR_RING1,			// 21	: 신규 반지슬롯1 (왼쪽)
+#ifdef ENABLE_WEAPON_COSTUME_SYSTEM
+	WEAR_COSTUME_WEAPON, // 21
+#endif
+
+	WEAR_RING1,			// 22	: 신규 반지슬롯1 (왼쪽)
 #ifdef ENABLE_MOUNT_COSTUME_SYSTEM
 	WEAR_COSTUME_MOUNT = WEAR_RING1, // costume_mount == ring1
 #endif
 
-	WEAR_RING2,			// 22	: 신규 반지슬롯2 (오른쪽)
+	WEAR_RING2,			// 23	: 신규 반지슬롯2 (오른쪽)
 #ifdef ENABLE_ACCE_COSTUME_SYSTEM
 	WEAR_COSTUME_ACCE = WEAR_RING2, // costume_acce == ring2
-#endif
-
-#ifdef ENABLE_WEAPON_COSTUME_SYSTEM
-	WEAR_COSTUME_WEAPON, // 23
 #endif
 
 	WEAR_MAX = 32	//
