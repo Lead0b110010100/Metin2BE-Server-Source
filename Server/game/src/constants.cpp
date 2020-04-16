@@ -1000,7 +1000,7 @@ const int aiAccessorySocketEffectivePct[ITEM_ACCESSORY_SOCKET_MAX_NUM + 1] =
 // 家南 瘤加矫埃 24, 12, 6
 const int aiAccessorySocketDegradeTime[ITEM_ACCESSORY_SOCKET_MAX_NUM + 1] =
 {
-	0, 3600 * 24, 3600 * 12, 3600 * 6
+	0, 86400, 86400, 86400
 };
 
 // 家南 厘馒 己傍伏
