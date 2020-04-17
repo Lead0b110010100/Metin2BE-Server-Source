@@ -1341,39 +1341,6 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 			}
 			else
 			{
-				if (!isAgreedPVP && !isUnderGuildWar && !IsKillerMode() && GetAlignment() >= 0 && !isDuel && !isForked)
-				{
-					int iNoPenaltyProb = 0;
-
-					if (pkKiller->GetAlignment() >= 0)	// 1/3 percent down
-						iNoPenaltyProb = 33;
-					else				// 4/5 percent down
-						iNoPenaltyProb = 20;
-
-					if (number(1, 100) < iNoPenaltyProb)
-						pkKiller->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("용신의 보호로 아이템이 떨어지지 않았습니다."));
-					else
-					{
-						if (pkKiller->GetParty())
-						{
-							FPartyAlignmentCompute f(-20000, pkKiller->GetX(), pkKiller->GetY());
-							pkKiller->GetParty()->ForEachOnlineMember(f);
-
-							if (f.m_iCount == 0)
-								pkKiller->UpdateAlignment(-20000);
-							else
-							{
-								sys_log(0, "ALIGNMENT PARTY count %d amount %d", f.m_iCount, f.m_iAmount);
-
-								f.m_iStep = 1;
-								pkKiller->GetParty()->ForEachOnlineMember(f);
-							}
-						}
-						else
-							pkKiller->UpdateAlignment(-20000);
-					}
-				}
-
 				char buf[256];
 				snprintf(buf, sizeof(buf),
 						"%d %d %d %s %d %d %d %s",
