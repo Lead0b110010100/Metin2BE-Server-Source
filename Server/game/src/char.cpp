@@ -4880,8 +4880,7 @@ CHARACTER::PartyJoinErrCode CHARACTER::IsPartyJoinableCondition(const LPCHARACTE
 
 static bool __party_can_join_by_level(LPCHARACTER leader, LPCHARACTER quest)
 {
-	int	level_limit = 30;
-	return (abs(leader->GetLevel() - quest->GetLevel()) <= level_limit);
+	return true;
 }
 
 CHARACTER::PartyJoinErrCode CHARACTER::IsPartyJoinableMutableCondition(const LPCHARACTER pchLeader, const LPCHARACTER pchGuest)
