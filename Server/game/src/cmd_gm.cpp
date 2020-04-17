@@ -36,6 +36,7 @@
 #include "threeway_war.h"
 #include "unique_item.h"
 #include "../../common/CommonDefines.h"
+#include "messenger_manager.h"
 
 extern bool DropEvent_RefineBox_SetValue(const std::string& name, int value);
 
@@ -4682,4 +4683,65 @@ ACMD (do_use_item)
 ACMD (do_clear_affect)
 {
 	ch->ClearAffect(true);
+}
+
+ACMD (do_change_name)
+{
+	char arg1[256], arg2[256];
+	two_arguments(argument, arg1, sizeof(arg1), arg2, sizeof(arg2));
+
+	if (!*arg1 || !*arg2)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, "Wrong Syntax: /change_name <old_name> <new_name>");
+		return;
+	}
+
+	LPCHARACTER tch = CHARACTER_MANAGER::instance().FindPC(arg1);
+
+	if (!tch)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, "Der Spieler wurde nicht gefunden.");
+		return;
+	}
+
+	if (tch->GetNewName().size() != 0)
+		return;
+
+	const char *c_szName = arg2;
+
+	char szQuery[1024];
+	snprintf(szQuery, sizeof(szQuery), "SELECT COUNT(*) FROM player%s WHERE name='%s'", get_table_postfix(), c_szName);
+	std::unique_ptr<SQLMsg> pmsg(DBManager::instance().DirectQuery(szQuery));
+
+	if (pmsg->Get()->uiNumRows > 0)
+	{
+		MYSQL_ROW row = mysql_fetch_row(pmsg->Get()->pSQLResult);
+
+		int count = 0;
+		str_to_number(count, row[0]);
+
+		if (count != 0)
+			return;
+	}
+
+	DWORD pid = tch->GetPlayerID();
+	db_clientdesc->DBPacketHeader(HEADER_GD_FLUSH_CACHE, 0, sizeof(DWORD));
+	db_clientdesc->Packet(&pid, sizeof(DWORD));
+
+	/* change_name_log */
+	LogManager::instance().ChangeNameLog(pid, tch->GetName(), c_szName, tch->GetDesc()->GetHostName());
+
+	/* update player table */
+	snprintf(szQuery, sizeof(szQuery), "UPDATE player.player%s SET name='%s' WHERE id=%u", get_table_postfix(), c_szName, pid);
+	DBManager::instance().DirectQuery(szQuery);
+
+	/* set new name */
+	tch->SetNewName(c_szName);
+
+	/* delete messenger list */
+	MessengerManager::instance().RemoveAllList(tch->GetName());
+
+	/* rewarp player */
+	extern void do_rewarp(LPCHARACTER tch, const char *argument, int cmd, int subcmd);
+	do_rewarp(tch, NULL, 0, 0);
 }
