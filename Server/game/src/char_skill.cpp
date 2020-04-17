@@ -2794,57 +2794,44 @@ void CHARACTER::StopMuyeongEvent()
 	event_cancel(&m_pkMuyeongEvent);
 }
 
+static const char* SkillBookTime(DWORD time)
+{
+	if (time <= 0)
+	{
+		char buf[100];
+		snprintf(buf, sizeof(buf), "%d %s", 0, LC_TEXT("SECOND"));
+		return buf;
+	}
+
+	int second = static_cast<int>(time % 60);
+	int minute = static_cast<int>((time / 60) % 60);
+	int hour = static_cast<int>((time / 60) / 60) % 24;
+
+	std::stringstream text;
+
+	if (hour > 0)
+	{
+		text << std::to_string(hour) + " " + LC_TEXT("HOUR");
+		text << " ";
+	}
+
+	if (minute > 0)
+	{
+		text << std::to_string(minute) + " " + LC_TEXT("MINUTE");
+		text << " ";
+	}
+		
+	if (second > 0)
+	{
+		text << std::to_string(second) + " " + LC_TEXT("SECOND");
+	}
+
+	return text.str().c_str();
+}
+
 void CHARACTER::SkillLearnWaitMoreTimeMessage(DWORD ms)
 {
-	//const char* str = "";
-	//
-	if (ms < 3 * 60)
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("몸 속이 뜨겁군. 하지만 아주 편안해. 이대로 기를 안정시키자."));
-	else if (ms < 5 * 60)
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("그래, 천천히. 좀더 천천히, 그러나 막힘 없이 빠르게!"));
-	else if (ms < 10 * 60) // 10분
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("그래, 이 느낌이야. 체내에 기가 아주 충만해."));
-	else if (ms < 30 * 60) // 30분
-	{
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("다 읽었다! 이제 비급에 적혀있는 대로 전신에 기를 돌리기만 하면,"));
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("그것으로 수련은 끝난 거야!"));
-	}
-	else if (ms < 1 * 3600) // 1시간
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("이제 책의 마지막 장이야! 수련의 끝이 눈에 보이고 있어!"));
-	else if (ms < 2 * 3600) // 2시간
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("얼마 안 남았어! 조금만 더!"));
-	else if (ms < 3 * 3600)
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("좋았어! 조금만 더 읽으면 끝이다!"));
-	else if (ms < 6 * 3600)
-	{
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("책장도 이제 얼마 남지 않았군."));
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("뭔가 몸 안에 힘이 생기는 기분인 걸."));
-	}
-	else if (ms < 12 * 3600)
-	{
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("이제 좀 슬슬 가닥이 잡히는 것 같은데."));
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("좋아, 이 기세로 계속 나간다!"));
-	}
-	else if (ms < 18 * 3600)
-	{
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("아니 어떻게 된 게 종일 읽어도 머리에 안 들어오냐."));
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("공부하기 싫어지네."));
-	}
-	else //if (ms < 2 * 86400)
-	{
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("생각만큼 읽기가 쉽지가 않군. 이해도 어렵고 내용도 난해해."));
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("이래서야 공부가 안된다구."));
-	}
-	/*
-	   str = "30%";
-	   else if (ms < 3 * 86400)
-	   str = "10%";
-	   else if (ms < 4 * 86400)
-	   str = "5%";
-	   else
-	   str = "0%";*/
-
-	//ChatPacket(CHAT_TYPE_TALKING, "%s", str);
+	ChatPacket(CHAT_TYPE_TALKING, "Du musst noch %s warten bis du dieses Buch wieder lesen kannst.", SkillBookTime(ms));
 }
 
 void CHARACTER::DisableCooltime()
