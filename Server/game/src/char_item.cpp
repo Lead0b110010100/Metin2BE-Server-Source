@@ -2291,6 +2291,21 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 							case UNIQUE_ITEM_TREASURE_BOX:
 								break;
 
+							case ITEM_ANTI_EXP_RING:
+							{
+								if (FindAffect(AFFECT_ANTI_EXP))
+								{
+									ChatPacket(CHAT_TYPE_INFO, "Der Anti-Erfahrungsring ist nun inaktiv!");
+									RemoveAffect(AFFECT_ANTI_EXP);
+								}
+								else
+								{
+									ChatPacket(CHAT_TYPE_INFO, "Der Anti-Erfahrungsring ist nun aktiv!");
+									AddAffect(AFFECT_ANTI_EXP, POINT_ANTI_EXP, 0, AFF_NONE, ESTIMATED_SERVER_LIFETIME, 0, false, false);
+								}
+							}
+							break;
+
 							case 30093:
 							case 30094:
 							case 30095:

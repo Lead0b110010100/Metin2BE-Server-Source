@@ -19,7 +19,7 @@
 #include "../../common/CommonDefines.h"
 
 #define IS_NO_SAVE_AFFECT(type) ((type) == AFFECT_WAR_FLAG || (type) == AFFECT_REVIVE_INVISIBLE || ((type) >= AFFECT_PREMIUM_START && (type) <= AFFECT_PREMIUM_END))
-#define IS_NO_CLEAR_ON_DEATH_AFFECT(type) ((type) == AFFECT_BLOCK_CHAT || ((type) >= 500 && (type) < 600))
+#define IS_NO_CLEAR_ON_DEATH_AFFECT(type) ((type) == AFFECT_ANTI_EXP || (type) == AFFECT_BLOCK_CHAT || ((type) >= 500 && (type) < 600))
 
 void SendAffectRemovePacket(LPDESC d, DWORD pid, DWORD type, BYTE point)
 {

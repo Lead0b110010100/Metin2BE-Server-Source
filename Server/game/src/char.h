@@ -323,6 +323,8 @@ enum EPointTypes
 	POINT_RESIST_MAGIC_REDUCTION = 144,
 #endif
 
+	POINT_ANTI_EXP = 157,
+
 	//POINT_MAX_NUM = 129	common/length.h
 };
 

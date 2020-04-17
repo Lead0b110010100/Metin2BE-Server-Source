@@ -3156,6 +3156,9 @@ void CHARACTER::PointChange(BYTE type, int amount, bool bAmount, bool bBroadcast
 
 		case POINT_EXP:
 			{
+				if (FindAffect(AFFECT_ANTI_EXP))
+					return;
+
 				DWORD exp = GetExp();
 				DWORD next_exp = GetNextExp();
 
@@ -3595,6 +3598,7 @@ void CHARACTER::PointChange(BYTE type, int amount, bool bAmount, bool bBroadcast
 #ifdef ENABLE_WOLFMAN_CHARACTER
 		case POINT_RESIST_WOLFMAN :
 #endif
+		case POINT_ANTI_EXP:
 
 			SetPoint(type, GetPoint(type) + amount);
 			val = GetPoint(type);

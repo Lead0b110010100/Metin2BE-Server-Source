@@ -10,6 +10,7 @@
 #define ENABLE_PORT_SECURITY
 enum eCommonDefines {
 	MAP_ALLOW_LIMIT = 32, // 32 default
+	ESTIMATED_SERVER_LIFETIME = (60 * 60 * 24 * 365 * 7),
 };
 // ### General Features ###
 //////////////////////////////////////////////////////////////////////////

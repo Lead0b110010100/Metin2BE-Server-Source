@@ -735,7 +735,7 @@ int CInputMain::Chat(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 	char chatbuf[CHAT_MAX_LEN + 1];
 #ifdef ENABLE_CHAT_COLOR_SYSTEM
-	// static const char* colorbuf[] = {" |h|r[ãÑÇÞÈ]|cFFffa200|h", " |h|r[ÔíäÓæ]|cFFff0000|h", " |h|r[ÔæäÌæ]|cFFffc700|h", " |h|r[Ìíäæ]|cFF000bff|h"}; // Arab
+	// static const char* colorbuf[] = {" |h|r[ãÑÇÞ?|cFFffa200|h", " |h|r[ÔíäÓ?|cFFff0000|h", " |h|r[ÔæäÌ?|cFFffc700|h", " |h|r[Ìíäæ]|cFF000bff|h"}; // Arab
 	static const char* colorbuf[] = {"|cFFffa200|H|h[Staff]|h|r", "|cFFff0000|H|h[Shinsoo]|h|r", "|cFFffc700|H|h[Chunjo]|h|r", "|cFF000bff|H|h[Jinno]|h|r"};
 	int len = snprintf(chatbuf, sizeof(chatbuf), "%s %s : %s", (ch->IsGM()?colorbuf[0]:colorbuf[MINMAX(0, ch->GetEmpire(), 3)]), ch->GetName(), buf);
 #else
@@ -2702,6 +2702,9 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 		case GUILD_SUBHEADER_CG_OFFER:
 			{
+				if (ch->FindAffect(AFFECT_ANTI_EXP))
+					return SubPacketLen;
+
 				DWORD offer = *reinterpret_cast<const DWORD*>(c_pData);
 
 				if (pGuild->GetLevel() >= GUILD_MAX_LEVEL)
