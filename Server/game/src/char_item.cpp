@@ -4645,9 +4645,9 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 										{
 											// Prevent adding item on aquamarin equipment
 											DWORD dwBaseVnum = item2->GetVnum() - (item2->GetVnum() % 10);
-											std::set<DWORD> setAccessorryBlacklist { 14220, 16220, 17220 };
+											std::set<DWORD> setAccessoryBlacklist { 14220, 16220, 17220 };
 
-											if (setAccessorryBlacklist.count(dwBaseVnum))
+											if (setAccessoryBlacklist.count(dwBaseVnum))
 											{
 												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't add an accessory on this equipment."));
 												return false;
