@@ -4643,6 +4643,16 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 										if (item2->IsAccessoryForSocket())
 										{
+											// Prevent adding item on aquamarin equipment
+											DWORD dwBaseVnum = item2->GetVnum() - (item2->GetVnum() % 10);
+											std::set<DWORD> setAccessorryBlacklist { 14220, 16220, 17220 };
+
+											if (setAccessorryBlacklist.count(dwBaseVnum))
+											{
+												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't add an accessory on this equipment."));
+												return false;
+											}
+
 											if (item2->GetAccessorySocketMaxGrade() < ITEM_ACCESSORY_SOCKET_MAX_NUM)
 											{
 #ifdef ENABLE_ADDSTONE_FAILURE
