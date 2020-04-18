@@ -774,6 +774,7 @@ enum enum_RefineScrolls
 	YAGONG_SCROLL  = 4,
 	MEMO_SCROLL	   = 5,
 	BDRAGON_SCROLL	= 6,
+	FAIL_SCROLL	= 7,
 };
 
 bool CHARACTER::DoRefineWithScroll(LPITEM item)
@@ -954,6 +955,11 @@ bool CHARACTER::DoRefineWithScroll(LPITEM item)
 	{
 		success_prob = 80;
 		szRefineType = "BDRAGON_SCROLL";
+	}
+	else if (pkItemScroll->GetValue(0) == FAIL_SCROLL)
+	{
+		success_prob = 0;
+		szRefineType = "FAIL_SCROLL";
 	}
 
 	pkItemScroll->SetCount(pkItemScroll->GetCount() - 1);
