@@ -2320,6 +2320,12 @@ int CHARACTER::ComputeSkill(DWORD dwVnum, LPCHARACTER pkVictim, BYTE bSkillLevel
 								iAmount2);
 
 					iDur2 += GetPoint(POINT_PARTY_BUFFER_BONUS);
+
+					if (IS_SET(pkSk->dwFlag, SKILL_FLAG_TOGGLE) && GetUsedSkillMasterType(pkSk->dwVnum) == SKILL_PERFECT_MASTER)
+					{
+						iDur2 = TOGGLE_SKILL_P_DURATION;
+					}
+
 					pkVictim->AddAffect(pkSk->dwVnum, pkSk->bPointOn2, iAmount2, pkSk->dwAffectFlag2, iDur2, 0, false);
 				}
 				else
@@ -2333,6 +2339,11 @@ int CHARACTER::ComputeSkill(DWORD dwVnum, LPCHARACTER pkVictim, BYTE bSkillLevel
 				if ((pkSk->dwVnum == SKILL_CHUNKEON && GetUsedSkillMasterType(pkSk->dwVnum) < SKILL_GRAND_MASTER))
 					affact_flag = AFF_CHEONGEUN_WITH_FALL;
 				// END_OF_ADD_GRANDMASTER_SKILL
+
+				if (IS_SET(pkSk->dwFlag, SKILL_FLAG_TOGGLE) && GetUsedSkillMasterType(pkSk->dwVnum) == SKILL_PERFECT_MASTER)
+				{
+					iDur = TOGGLE_SKILL_P_DURATION;
+				}
 
 				pkVictim->AddAffect(pkSk->dwVnum,
 						pkSk->bPointOn,
@@ -2351,6 +2362,11 @@ int CHARACTER::ComputeSkill(DWORD dwVnum, LPCHARACTER pkVictim, BYTE bSkillLevel
 							iDur,
 							pkSk->bPointOn,
 							iAmount);
+
+				if (IS_SET(pkSk->dwFlag, SKILL_FLAG_TOGGLE) && GetUsedSkillMasterType(pkSk->dwVnum) == SKILL_PERFECT_MASTER)
+				{
+					iDur = TOGGLE_SKILL_P_DURATION;
+				}
 
 				pkVictim->AddAffect(pkSk->dwVnum,
 						pkSk->bPointOn,
