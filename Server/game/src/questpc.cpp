@@ -238,6 +238,7 @@ namespace quest
 		qi.header = HEADER_GC_QUEST_INFO;
 		qi.size = sizeof(struct packet_quest_info);
 		qi.index = m_RunningQuestState->iIndex;
+		strlcpy(qi.szQuestName, m_stCurQuest.c_str(), sizeof(qi.szQuestName));
 		qi.flag = m_iSendToClient;
 #ifdef ENABLE_QUEST_CATEGORY
 		qi.c_index = CQuestManager::instance().ReadQuestCategoryFile(qi.index);

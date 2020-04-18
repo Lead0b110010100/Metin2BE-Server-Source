@@ -129,6 +129,7 @@ class CInputMain : public CInputProcessor
 
 		void		ScriptAnswer(LPCHARACTER ch, const void * pvData);
 		void		ScriptButton(LPCHARACTER ch, const void * pvData);
+		void ScriptButtonByName(const LPCHARACTER& ch, const void* pvData);
 		void		ScriptSelectItem(LPCHARACTER ch, const void * pvData);
 
 		void		QuestInputString(LPCHARACTER ch, const void * pvData);

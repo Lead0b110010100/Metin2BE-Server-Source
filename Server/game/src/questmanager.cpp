@@ -1183,6 +1183,19 @@ namespace quest
 		return GetCurrentPC()->GetCurrentQuestName();
 	}
 
+	void CQuestManager::QuestButtonByName(const LPCHARACTER& ch, const std::string& stQuestName)
+	{
+		if (!ch)
+			return;
+	
+		const auto idx = GetQuestIndexByName(stQuestName);
+	
+		if (idx)
+			QuestButton(ch->GetPlayerID(), idx);
+		else
+			sys_err("QUEST QuestButtonByName %s, quest not found: %s", ch->GetName(), stQuestName.c_str());
+	}
+
 	LPDUNGEON CQuestManager::GetCurrentDungeon()
 	{
 		LPCHARACTER ch = GetCurrentCharacterPtr();

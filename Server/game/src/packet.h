@@ -44,6 +44,8 @@ enum
 	HEADER_CG_SHOOT				= 54,
 	HEADER_CG_MYSHOP				= 55,
 
+	HEADER_CG_SCRIPT_BUTTON_BY_NAME = 58,
+
 	HEADER_CG_ITEM_USE_TO_ITEM			= 60,
 	HEADER_CG_TARGET			 	= 61,
 
@@ -1476,6 +1478,7 @@ struct packet_quest_info
 	BYTE header;
 	WORD size;
 	WORD index;
+	char szQuestName[QUEST_NAME_MAX_LEN + 1];
 #ifdef ENABLE_QUEST_CATEGORY
 	WORD c_index;
 #endif
@@ -2356,6 +2359,12 @@ typedef struct SPacketGCStateCheck
 	unsigned long index;
 	unsigned char state;
 } TPacketGCStateCheck;
+
+typedef struct command_script_button_by_name
+{
+	BYTE byHeader;
+	char szQuestName[QUEST_NAME_MAX_LEN + 1];
+} TPacketCGScriptButtonByName;
 
 #pragma pack()
 #endif

@@ -41,6 +41,7 @@
 #include "HackShield.h"
 #include "XTrapManager.h"
 #include "../../common/CommonDefines.h"
+#include <unordered_set>
 
 #include "input.h"
 
@@ -1988,6 +1989,21 @@ void CInputMain::ScriptButton(LPCHARACTER ch, const void* c_pData)
 	}
 }
 
+void CInputMain::ScriptButtonByName(const LPCHARACTER& ch, const void* pvData)
+{
+	if (!ch)
+		return;
+	
+	const std::unordered_set<std::string> blocklist {};
+	const auto p = (TPacketCGScriptButtonByName*)pvData;
+	const auto stQuestName = std::string(p->szQuestName);
+	
+	if (!blocklist.count(stQuestName))
+		quest::CQuestManager::Instance().QuestButtonByName(ch, stQuestName);
+	else
+		sys_log(0, "QUEST ScriptButtonByName %s called blocked qname: %s", ch->GetName(), p->szQuestName);
+}
+
 void CInputMain::ScriptAnswer(LPCHARACTER ch, const void* c_pData)
 {
 	TPacketCGScriptAnswer * p = (TPacketCGScriptAnswer *) c_pData;
@@ -3141,6 +3157,10 @@ int CInputMain::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 
 		case HEADER_CG_SCRIPT_BUTTON:
 			ScriptButton(ch, c_pData);
+			break;
+
+		case HEADER_CG_SCRIPT_BUTTON_BY_NAME:
+			ScriptButtonByName(ch, c_pData);
 			break;
 
 			// SCRIPT_SELECT_ITEM

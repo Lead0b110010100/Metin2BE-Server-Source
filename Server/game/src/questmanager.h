@@ -183,6 +183,7 @@ namespace quest
 			void		SetNoSend() { m_bNoSend = true; }
 
 			unsigned int	LoadTimerScript(const string& name);
+			void QuestButtonByName(const LPCHARACTER& ch, const std::string& stQuestName);
 
 			//unsigned int	RegisterQuestName(const string& name);
 
