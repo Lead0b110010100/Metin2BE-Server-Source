@@ -4898,7 +4898,9 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 					if (!p)
 						continue;
 
-					if (item->GetValue(5) == p->alValues[5])
+					std::set<BYTE> setHmStoneBlacklist { 20, 21, 22, 23, 33 };
+
+					if ((setHmStoneBlacklist.count(item->GetValue(5)) && setHmStoneBlacklist.count(p->alValues[5])) || (item->GetValue(5) == p->alValues[5]))
 					{
 						ChatPacket(CHAT_TYPE_INFO, LC_TEXT("같은 종류의 메틴석은 여러개 부착할 수 없습니다."));
 						return false;
