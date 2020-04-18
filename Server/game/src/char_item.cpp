@@ -2280,7 +2280,6 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 							case 70057:
 							case REWARD_BOX_UNIQUE_ITEM_CAPE_OF_COURAGE:
 								AggregateMonster();
-								item->SetCount(item->GetCount()-1);
 								break;
 
 							case UNIQUE_ITEM_WHITE_FLAG:
