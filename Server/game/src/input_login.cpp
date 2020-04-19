@@ -33,6 +33,7 @@
 #include "HackShield.h"
 #include "XTrapManager.h"
 #include "../../common/CommonDefines.h"
+#include "gm.h"
 
 #ifdef ENABLE_WOLFMAN_CHARACTER
 
@@ -824,6 +825,9 @@ void CInputLogin::Entergame(LPDESC d, const char * data)
 			ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("본인의 주성 및 부성으로 돌아가시기 바랍니다."));
 		}
 	}
+
+	bool bInGMList = ch->SetGMState(ch->GetName(), true);
+	ch->RefreshGMStateInformation(bInGMList);
 }
 
 void CInputLogin::Empire(LPDESC d, const char * c_pData)

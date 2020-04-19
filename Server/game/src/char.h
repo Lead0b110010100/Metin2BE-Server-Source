@@ -2093,6 +2093,9 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		const timeval&	GetLastSyncTime() { return m_tvLastSyncTime; }
 		void			SetSyncHackCount(int iCount) { m_iSyncHackCount = iCount;}
 		int				GetSyncHackCount() { return m_iSyncHackCount; }
+
+		void RefreshGMStateInformation(bool bIsGamemaster, bool bClear = false);
+		bool SetGMState(std::string stName, bool bState);
 };
 
 ESex GET_SEX(LPCHARACTER ch);

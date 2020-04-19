@@ -543,6 +543,23 @@ int CInputP2P::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 		case HEADER_GG_CHECK_AWAKENESS:
 			IamAwake(d, c_pData);
 			break;
+
+		case HEADER_GG_REFRESH_GM_STATE:
+		{
+			TPacketGGRefreshGMState *pData = (TPacketGGRefreshGMState *)c_pData;
+			const DESC_MANAGER::DESC_SET &c_ref_set = DESC_MANAGER::instance().GetClientSet();
+	
+			for (itertype(c_ref_set) it = c_ref_set.begin(); it != c_ref_set.end(); ++it)
+			{
+				LPCHARACTER ch = (*it)->GetCharacter();
+	
+				if (!ch)
+					continue;
+	
+				ch->RefreshGMStateInformation(false, pData->bClear);
+			}
+			break;
+		}
 	}
 
 	return (iExtraLen);

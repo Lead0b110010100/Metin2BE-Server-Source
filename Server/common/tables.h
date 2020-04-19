@@ -1356,6 +1356,7 @@ typedef struct TAdminInfo
 	char m_szContactIP[16];	//접근아이피
 	char m_szServerIP[16];  //서버아이피
 	int m_Authority;		//권한
+	DWORD dwLanguages;
 } tAdminInfo;
 //END_ADMIN_MANAGER
 
@@ -1479,6 +1480,18 @@ typedef struct SChannelStatus
 	short nPort;
 	BYTE bStatus;
 } TChannelStatus;
+
+typedef struct TSimpleGMState
+{
+	TSimpleGMState()
+	{
+		memset(szName, 0, sizeof(szName));
+	}
+
+	char szName[CHARACTER_NAME_MAX_LEN + 1];
+	bool bState;
+	DWORD dwLanguages;
+} TSimpleGMState;
 
 #pragma pack()
 #endif

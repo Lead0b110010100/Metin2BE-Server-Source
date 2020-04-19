@@ -57,6 +57,7 @@
 #include "skill_power.h"
 #include "XTrapManager.h"
 #include "buff_on_attributes.h"
+#include "protocol.h"
 
 #ifdef __PET_SYSTEM__
 #include "PetSystem.h"
@@ -1384,6 +1385,11 @@ void CHARACTER::Disconnect(const char * c_pszReason)
 	{
 		GetParty()->UpdateOfflineState(GetPlayerID());
 	}
+
+	bool bInGMList = SetGMState(GetName(), false);
+
+	if (bInGMList)
+		RefreshGMStateInformation(true);
 
 	marriage::CManager::instance().Logout(this);
 
@@ -7416,4 +7422,67 @@ DWORD CHARACTER::GetNextExp() const
 int	CHARACTER::GetSkillPowerByLevel(int level, bool bMob) const
 {
 	return CTableBySkill::instance().GetSkillPowerByLevelFromType(GetJob(), GetSkillGroup(), MINMAX(0, level, SKILL_MAX_LEVEL), bMob);
+}
+
+void CHARACTER::RefreshGMStateInformation(bool bIsGamemaster, bool bClear)
+{
+	LPDESC d = GetDesc();
+
+	if (!d)
+		return;
+
+	if (bIsGamemaster)
+	{
+		const DESC_MANAGER::DESC_SET &c_ref_set = DESC_MANAGER::instance().GetClientSet();
+
+		TPacketGGRefreshGMState p;
+		p.byHeader = HEADER_GG_REFRESH_GM_STATE;
+		p.bClear = bClear;
+
+		for (itertype(c_ref_set) it = c_ref_set.begin(); it != c_ref_set.end(); ++it)
+		{
+			LPCHARACTER ch = (*it)->GetCharacter();
+
+			if (!ch)
+				continue;
+
+			ch->RefreshGMStateInformation(false, bClear);
+		}
+
+		P2P_MANAGER::instance().Send(&p, sizeof(p), d);
+	}
+	else
+	{
+		BYTE byCount = g_map_GM.size();
+
+		TPacketGCRefreshGMState p;
+		p.byHeader = HEADER_GC_REFRESH_GM_STATE;
+		p.byCount = byCount;
+		p.wSize = sizeof(TPacketGCRefreshGMState) + sizeof(TSimpleGMState) * byCount;
+		p.bClear = bClear;
+
+		std::vector<TSimpleGMState> tmpVec;
+		for (auto const& gm : g_map_GM)
+		{
+			TSimpleGMState t;
+			strlcpy(t.szName, gm.first.c_str(), sizeof(t.szName));
+			t.bState = gm.second.bState;
+			t.dwLanguages = gm.second.Info.dwLanguages;
+			tmpVec.push_back(t);
+		}
+
+		d->BufferedPacket(&p, sizeof(TPacketGCRefreshGMState));
+		d->Packet(tmpVec.data(), sizeof(TSimpleGMState) * byCount);
+	}
+}
+
+bool CHARACTER::SetGMState(std::string stName, bool bState)
+{
+	itertype(g_map_GM) it = g_map_GM.find(GetName());
+	bool bIsInList = it != g_map_GM.end();
+
+	if (bIsInList)
+		it->second.bState = bState;
+
+	return bIsInList;
 }

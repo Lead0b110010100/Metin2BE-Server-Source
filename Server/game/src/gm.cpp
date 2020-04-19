@@ -7,6 +7,7 @@
 //ADMIN_MANAGER
 std::set<std::string> g_set_Host;
 std::map<std::string, tGM> g_map_GM;
+std::map<std::string, tGM> g_map_GMCache;
 
 void gm_new_clear()
 {
@@ -37,6 +38,7 @@ void gm_new_insert( const tAdminInfo &rAdminInfo )
 	}
 
 	memcpy ( &t.Info, &rAdminInfo, sizeof ( rAdminInfo ) );
+	t.bState = false;
 
 	g_map_GM[rAdminInfo.m_szName] = t;
 

@@ -3862,7 +3862,7 @@ bool CClientManager::__GetAdminInfo(const char *szIP, std::vector<tAdminInfo> & 
 	//szIP == NULL 일경우  모든서버에 운영자 권한을 갖는다.
 	char szQuery[512];
 	snprintf(szQuery, sizeof(szQuery),
-			"SELECT mID,mAccount,mName,mContactIP,mServerIP,mAuthority FROM gmlist WHERE mServerIP='ALL' or mServerIP='%s'",
+			"SELECT mID,mAccount,mName,mContactIP,mServerIP,mAuthority,languages+0 FROM gmlist WHERE mServerIP='ALL' or mServerIP='%s'",
 		   	szIP ? szIP : "ALL");
 
 	SQLMsg * pMsg = CDBManager::instance().DirectQuery(szQuery, SQL_COMMON);
@@ -3902,10 +3902,12 @@ bool CClientManager::__GetAdminInfo(const char *szIP, std::vector<tAdminInfo> & 
 		else
 			continue;
 
+		Info.dwLanguages = atoi(row[idx++]);
+
 		rAdminVec.push_back(Info);
 
-		sys_log(0, "GM: PID %u Login %s Character %s ContactIP %s ServerIP %s Authority %d[%s]",
-			   	Info.m_ID, Info.m_szAccount, Info.m_szName, Info.m_szContactIP, Info.m_szServerIP, Info.m_Authority, stAuth.c_str());
+		sys_log(0, "GM: PID %u Login %s Character %s ContactIP %s ServerIP %s Authority %d[%s] languages: %d",
+				Info.m_ID, Info.m_szAccount, Info.m_szName, Info.m_szContactIP, Info.m_szServerIP, Info.m_Authority, stAuth.c_str(), Info.dwLanguages);
 	}
 
 	delete pMsg;

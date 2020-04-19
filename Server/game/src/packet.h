@@ -296,6 +296,8 @@ enum
 	HEADER_GC_SPECIFIC_EFFECT				= 208,
 	HEADER_GC_RESPOND_CHANNELSTATUS			= 210,
 
+	HEADER_GC_REFRESH_GM_STATE = 214,
+
 
 	/////////////////////////////////////////////////////////////////////////////
 
@@ -332,6 +334,8 @@ enum
 #ifdef ENABLE_FULL_NOTICE
 	HEADER_GG_BIG_NOTICE			= 30,
 #endif
+
+	HEADER_GG_REFRESH_GM_STATE = 31,
 };
 
 #pragma pack(1)
@@ -2365,6 +2369,20 @@ typedef struct command_script_button_by_name
 	BYTE byHeader;
 	char szQuestName[QUEST_NAME_MAX_LEN + 1];
 } TPacketCGScriptButtonByName;
+
+typedef struct SPacketGCRefreshGMState
+{
+	BYTE byHeader;
+	WORD wSize;
+	BYTE byCount;
+	bool bClear;
+} TPacketGCRefreshGMState;
+
+typedef struct SPacketGGRefreshGMState
+{
+	BYTE byHeader;
+	bool bClear;
+} TPacketGGRefreshGMState;
 
 #pragma pack()
 #endif

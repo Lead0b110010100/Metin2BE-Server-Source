@@ -2114,6 +2114,7 @@ void CInputDB::MyshopPricelistRes(LPDESC d, const TPacketMyshopPricelistHeader* 
 //RELOAD_ADMIN
 void CInputDB::ReloadAdmin(const char * c_pData )
 {
+	g_map_GMCache = g_map_GM;
 	gm_new_clear();
 	int ChunkSize = decode_2bytes(c_pData );
 	c_pData += 2;
@@ -2146,6 +2147,15 @@ void CInputDB::ReloadAdmin(const char * c_pData )
 		}
 	}
 
+	for (const auto &cache : g_map_GMCache)
+	{
+		std::string stName = cache.first;
+
+		if (g_map_GM.count(stName))
+			g_map_GM[stName].bState = cache.second.bState;
+	}
+
+	g_map_GMCache.clear();
 }
 //END_RELOAD_ADMIN
 

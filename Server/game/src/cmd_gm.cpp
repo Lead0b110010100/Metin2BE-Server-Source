@@ -2363,6 +2363,11 @@ ACMD(do_reload)
 				sys_log(0, "Reloading admin infomation.");
 				break;
 				//END_RELOAD_ADMIN
+
+			case 'i':
+				ch->RefreshGMStateInformation(true, true);
+				break;
+
 			case 'c':	// cube
 				// 로컬 프로세스만 갱산한다.
 				Cube_init ();

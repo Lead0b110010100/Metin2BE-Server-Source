@@ -13,9 +13,11 @@ typedef struct sGM
 {
 	tAdminInfo Info;
 	std::set<std::string> *pset_Host;
+	bool bState;
 } tGM;
 
 extern std::set<std::string> g_set_Host;
 extern std::map<std::string, tGM> g_map_GM;
+extern std::map<std::string, tGM> g_map_GMCache;
 #endif
 
