@@ -926,17 +926,7 @@ namespace quest
 		ostringstream s;
 		combine_lua_string(L, s);
 
-		TPacketGGNotice p;
-		p.bHeader = HEADER_GG_NOTICE;
-		p.lSize = strlen(s.str().c_str()) + 1;
-
-		TEMP_BUFFER buf;
-		buf.write(&p, sizeof(p));
-		buf.write(s.str().c_str(), p.lSize);
-
-		P2P_MANAGER::instance().Send(buf.read_peek(), buf.size()); // HEADER_GG_NOTICE
-
-		SendNotice(s.str().c_str());
+		NoticeAll(s.str().c_str());
 		return 1;
 	}
 

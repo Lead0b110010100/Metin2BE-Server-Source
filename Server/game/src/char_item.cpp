@@ -37,7 +37,6 @@
 #include "dev_log.h"
 #include "pcbang.h"
 #include "threeway_war.h"
-
 #include "safebox.h"
 #include "shop.h"
 
@@ -53,6 +52,9 @@
 #ifdef __AUCTION__
 #include "auction_manager.h"
 #endif
+
+#include "p2p.h"
+
 const int ITEM_BROKEN_METIN_VNUM = 28960;
 #define ENABLE_EFFECT_EXTRAPOT
 #define ENABLE_BOOKS_STACKFIX
@@ -740,6 +742,11 @@ bool CHARACTER::DoRefine(LPITEM item, bool bMoneyOnly)
 			sys_log(0, "PayPee %d", cost);
 			PayRefineFee(cost);
 			sys_log(0, "PayPee End %d", cost);
+
+			if (pkNewItem->GetRefineLevel() == 9)
+			{
+				SendRefineTo9Message(pkNewItem);
+			}
 		}
 		else
 		{
@@ -985,6 +992,11 @@ bool CHARACTER::DoRefineWithScroll(LPITEM item)
 			pkNewItem->AttrLog();
 			//PointChange(POINT_GOLD, -prt->cost);
 			PayRefineFee(prt->cost);
+
+			if (pkNewItem->GetRefineLevel() == 9)
+			{
+				SendRefineTo9Message(pkNewItem);
+			}
 		}
 		else
 		{
@@ -7362,4 +7374,29 @@ bool CHARACTER::CanUnequipNow(const LPITEM item, const TItemPos& srcCell, const 
 
 
 	return true;
+}
+
+void NoticeAll(const char *c_szMessage)
+{
+	TPacketGGNotice p;
+	p.bHeader = HEADER_GG_NOTICE;
+	p.lSize = strlen(c_szMessage) + 1;
+
+	TEMP_BUFFER buf;
+	buf.write(&p, sizeof(p));
+	buf.write(c_szMessage, p.lSize);
+
+	P2P_MANAGER::instance().Send(buf.read_peek(), buf.size());
+	SendNotice(c_szMessage);
+}
+
+void CHARACTER::SendRefineTo9Message(const LPITEM &item)
+{
+	if(!item)
+		return;
+
+	char buf[CHAT_MAX_LEN + 1];
+	snprintf(buf, sizeof(buf), "%s hat |cffffc700|Hitem:%x:0:0:0:0|h[%s]|h|r erfolgreich auf +9 geuppt!", GetName(), item->GetVnum(), item->GetName());
+
+	NoticeAll(buf);
 }

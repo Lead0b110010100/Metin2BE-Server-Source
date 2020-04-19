@@ -2096,8 +2096,11 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 
 		void RefreshGMStateInformation(bool bIsGamemaster, bool bClear = false);
 		bool SetGMState(std::string stName, bool bState);
+
+		void SendRefineTo9Message(const LPITEM &item);
 };
 
 ESex GET_SEX(LPCHARACTER ch);
+void NoticeAll(const char *c_szMessage);
 
 #endif
