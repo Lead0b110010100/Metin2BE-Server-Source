@@ -23,12 +23,7 @@ namespace quest
 	ALUA(horse_is_riding)
 	{
 		LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
-
-		if (ch->IsHorseRiding())
-			lua_pushnumber(L, 1);
-		else
-			lua_pushnumber(L, 0);
-
+		lua_pushboolean(L, ch->IsHorseRiding());
 		return 1;
 	}
 
