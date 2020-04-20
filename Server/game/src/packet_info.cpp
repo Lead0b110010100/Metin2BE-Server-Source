@@ -278,6 +278,7 @@ CPacketInfoGG::CPacketInfoGG()
 	Set(HEADER_GG_PCBANG_UPDATE,		sizeof(TPacketPCBangUpdate),		"PCBangUpdate",		false);
 	Set(HEADER_GG_CHECK_AWAKENESS,		sizeof(TPacketGGCheckAwakeness),	"CheckAwakeness",		false);
 	Set(HEADER_GG_REFRESH_GM_STATE, sizeof(TPacketGGRefreshGMState), "RefreshGMState", false);
+	Set(HEADER_GG_GIVE_ITEM, sizeof(TPacketGGGiveItem), "GiveItem", false);
 }
 
 CPacketInfoGG::~CPacketInfoGG()

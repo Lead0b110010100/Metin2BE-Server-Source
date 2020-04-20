@@ -560,8 +560,22 @@ int CInputP2P::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 			}
 			break;
 		}
+
+		case HEADER_GG_GIVE_ITEM:
+			GiveItem(c_pData);
+			break;
 	}
 
 	return (iExtraLen);
+}
+
+void CInputP2P::GiveItem(const char *c_pData)
+{
+	TPacketGGGiveItem *p = (TPacketGGGiveItem *)c_pData;
+
+	LPCHARACTER ch = CHARACTER_MANAGER::instance().FindPC(p->szName);
+
+	if (ch)
+		ch->AutoGiveItem(p->dwVnum, p->dwCount, -1, true, false);
 }
 

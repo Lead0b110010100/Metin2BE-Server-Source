@@ -18,6 +18,8 @@ ACMD(do_slow);
 ACMD(do_stun);
 // END_OF_ADD_COMMAND_SLOW_STUN
 
+ACMD(do_give);
+
 ACMD(do_rename);
 
 ACMD(do_warp);
@@ -624,6 +626,8 @@ struct command_info cmd_info[] =
 	{ "bleeding",			do_bleeding,				0,			POS_DEAD,	GM_IMPLEMENTOR	},
 #endif
 	{ "rename",		do_rename,		0,			POS_DEAD,	GM_IMPLEMENTOR	},
+	{ "give", do_give, 0, POS_DEAD, GM_IMPLEMENTOR },
+
 	{ "\n",		NULL,			0,			POS_DEAD,	GM_IMPLEMENTOR	}  /* 반드시 이 것이 마지막이어야 한다. */
 };
 

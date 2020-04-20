@@ -4750,3 +4750,97 @@ ACMD (do_rename)
 	extern void do_rewarp(LPCHARACTER tch, const char *argument, int cmd, int subcmd);
 	do_rewarp(tch, NULL, 0, 0);
 }
+
+ACMD(do_give)
+{
+	char arg1[256], arg2[256], arg3[256];
+	one_argument(two_arguments(argument, arg1, sizeof(arg1), arg2, sizeof(arg2)), arg3, sizeof(arg3));
+
+	if (!*arg1 || !*arg2 || (*arg3 && !isnhdigit(*arg3)))
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, "Invalid argument, use /give <player> <itemVnum>");
+		return;
+	}
+
+	DWORD dwVnum = 0;
+	str_to_number(dwVnum, arg2);
+
+	DWORD dwCount = 1;
+	if (*arg3)
+	{
+		str_to_number(dwCount, arg3);
+	}
+
+	char szNameBuffer[CHARACTER_NAME_MAX_LEN * 2 + 1];
+	DBManager::instance().EscapeString(szNameBuffer, sizeof(szNameBuffer), arg1, strlen(arg1));
+
+	LPCHARACTER tch = CHARACTER_MANAGER::instance().FindPC(arg1);
+
+	if (tch) // Check: Is the player on your core?
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, "Giving item %d (count %d) to online player %s on your core",
+					dwVnum, dwCount, szNameBuffer);
+		tch->AutoGiveItem(dwVnum, dwCount, -1, true, false);
+	}
+	else
+	{
+		CCI *pkCCI = P2P_MANAGER::instance().Find(arg1);
+
+		if (pkCCI) // Check: Is the player online?
+		{
+			ch->ChatPacket(CHAT_TYPE_INFO, "Giving item %d (count %d) to online player %s on another core",
+						dwVnum, dwCount, szNameBuffer);
+
+			TPacketGGGiveItem pgg;
+
+			pgg.bHeader = HEADER_GG_GIVE_ITEM;
+			strlcpy(pgg.szName, arg1, sizeof(pgg.szName));
+			pgg.dwVnum = dwVnum;
+			pgg.dwCount = dwCount;
+
+			P2P_MANAGER::instance().Send(&pgg, sizeof(TPacketGGGiveItem));
+		}
+		else
+		{
+			TPlayerItem new_item;
+			new_item.id = ITEM_MANAGER::instance().GetNewID();
+			new_item.window = INVENTORY;
+			new_item.pos = 0;
+			new_item.count = dwCount;
+			new_item.vnum = dwVnum;
+	
+			memset(&new_item.alSockets, 0, sizeof(new_item.alSockets));
+			memset(&new_item.aAttr, 0, sizeof(new_item.aAttr));
+	
+			std::auto_ptr<SQLMsg> pMsg(DBManager::instance().DirectQuery("SELECT id FROM player%s WHERE name = '%s'",
+															get_table_postfix(),
+															szNameBuffer));
+	
+			if (pMsg->Get()->uiNumRows)
+			{
+				MYSQL_ROW row = mysql_fetch_row(pMsg->Get()->pSQLResult);
+	
+				if (row && row[0])
+				{
+					str_to_number(new_item.owner, row[0]);
+				}
+				else
+				{
+					ch->ChatPacket(CHAT_TYPE_INFO, "Error finding player %s", szNameBuffer);
+					return;
+				}
+			}
+			else
+			{
+				ch->ChatPacket(CHAT_TYPE_INFO, "Error finding player %s", szNameBuffer);
+				return;
+			}
+	
+			db_clientdesc->DBPacketHeader(HEADER_GD_ITEM_SAVE, 0, sizeof(TPlayerItem));
+			db_clientdesc->Packet(&new_item, sizeof(TPlayerItem));
+	
+			ch->ChatPacket(CHAT_TYPE_INFO, "Giving item %d (count %d) to offline player %s",
+						dwVnum, dwCount, szNameBuffer);
+		}
+	}
+}

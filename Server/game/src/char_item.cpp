@@ -6343,7 +6343,7 @@ void CHARACTER::AutoGiveItem(LPITEM item, bool longOwnerShip)
 	}
 }
 
-LPITEM CHARACTER::AutoGiveItem(DWORD dwItemVnum, BYTE bCount, int iRarePct, bool bMsg)
+LPITEM CHARACTER::AutoGiveItem(DWORD dwItemVnum, BYTE bCount, int iRarePct, bool bMsg, bool bDrop)
 {
 	TItemTable * p = ITEM_MANAGER::instance().GetTable(dwItemVnum);
 
@@ -6443,6 +6443,13 @@ LPITEM CHARACTER::AutoGiveItem(DWORD dwItemVnum, BYTE bCount, int iRarePct, bool
 	}
 	else
 	{
+		if(!bDrop)
+		{
+			M2_DESTROY_ITEM(item);
+			ChatPacket(CHAT_TYPE_INFO, "Your inventory is full, the item was not delivered.");
+			return NULL;
+		}
+
 		item->AddToGround(GetMapIndex(), GetXYZ());
 #ifdef ENABLE_NEWSTUFF
 		item->StartDestroyEvent(g_aiItemDestroyTime[ITEM_DESTROY_TIME_AUTOGIVE]);

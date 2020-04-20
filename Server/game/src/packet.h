@@ -336,6 +336,7 @@ enum
 #endif
 
 	HEADER_GG_REFRESH_GM_STATE = 31,
+	HEADER_GG_GIVE_ITEM = 40,
 };
 
 #pragma pack(1)
@@ -2383,6 +2384,14 @@ typedef struct SPacketGGRefreshGMState
 	BYTE byHeader;
 	bool bClear;
 } TPacketGGRefreshGMState;
+
+typedef struct SPacketGGGiveItem
+{
+	BYTE bHeader;
+	char szName[CHARACTER_NAME_MAX_LEN + 1];
+	DWORD dwVnum;
+	DWORD dwCount;
+} TPacketGGGiveItem;
 
 #pragma pack()
 #endif

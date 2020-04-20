@@ -1160,7 +1160,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		bool			CanUnequipNow(const LPITEM item, const TItemPos& srcCell = NPOS, const TItemPos& destCell = NPOS);
 
 		bool			SwapItem(BYTE bCell, BYTE bDestCell);
-		LPITEM			AutoGiveItem(DWORD dwItemVnum, BYTE bCount=1, int iRarePct = -1, bool bMsg = true);
+		LPITEM			AutoGiveItem(DWORD dwItemVnum, BYTE bCount=1, int iRarePct = -1, bool bMsg = true, bool bDrop = true);
 		void			AutoGiveItem(LPITEM item, bool longOwnerShip = false);
 
 		int				GetEmptyInventory(BYTE size) const;

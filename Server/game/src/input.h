@@ -358,6 +358,7 @@ class CInputP2P : public CInputProcessor
 		void		BlockChat(const char * c_pData);
 		void		PCBangUpdate(const char* c_pData);
 		void		IamAwake(LPDESC d, const char * c_pData);
+		void GiveItem(const char *c_pData);
 
 	protected:
 		CPacketInfoGG 	m_packetInfoGG;
