@@ -737,7 +737,7 @@ int CInputMain::Chat(LPCHARACTER ch, const char * data, size_t uiBytes)
 	char chatbuf[CHAT_MAX_LEN + 1];
 #ifdef ENABLE_CHAT_COLOR_SYSTEM
 	// static const char* colorbuf[] = {" |h|r[ãÑÇÞ?|cFFffa200|h", " |h|r[ÔíäÓ?|cFFff0000|h", " |h|r[ÔæäÌ?|cFFffc700|h", " |h|r[Ìíäæ]|cFF000bff|h"}; // Arab
-	static const char* colorbuf[] = {"|cFFffa200|H|h[Staff]|h|r", "|cFFff0000|H|h[Shinsoo]|h|r", "|cFFffc700|H|h[Chunjo]|h|r", "|cFF000bff|H|h[Jinno]|h|r"};
+	static const char* colorbuf[] = {"|cFFffa200|H|h[Team]|h|r", "|cFFff0000|H|h[Shinsoo]|h|r", "|cFFffc700|H|h[Chunjo]|h|r", "|cFF000bff|H|h[Jinno]|h|r"};
 	int len = snprintf(chatbuf, sizeof(chatbuf), "%s |cFFffc700|Hpn_%s|h%s|h|r : %s", (ch->IsGM()?colorbuf[0]:colorbuf[MINMAX(0, ch->GetEmpire(), 3)]), ch->GetName(), ch->GetName(), buf);
 #else
 	int len = snprintf(chatbuf, sizeof(chatbuf), "%s : %s", ch->GetName(), buf);
