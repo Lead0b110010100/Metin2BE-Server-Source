@@ -18,7 +18,7 @@ ACMD(do_slow);
 ACMD(do_stun);
 // END_OF_ADD_COMMAND_SLOW_STUN
 
-ACMD(do_change_name);
+ACMD(do_rename);
 
 ACMD(do_warp);
 ACMD(do_goto);
@@ -623,7 +623,7 @@ struct command_info cmd_info[] =
 #ifdef ENABLE_WOLFMAN_CHARACTER
 	{ "bleeding",			do_bleeding,				0,			POS_DEAD,	GM_IMPLEMENTOR	},
 #endif
-	{ "change_name",		do_change_name,		0,			POS_DEAD,	GM_IMPLEMENTOR	},
+	{ "rename",		do_rename,		0,			POS_DEAD,	GM_IMPLEMENTOR	},
 	{ "\n",		NULL,			0,			POS_DEAD,	GM_IMPLEMENTOR	}  /* 반드시 이 것이 마지막이어야 한다. */
 };
 

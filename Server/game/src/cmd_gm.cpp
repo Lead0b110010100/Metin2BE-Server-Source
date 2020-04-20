@@ -4690,14 +4690,14 @@ ACMD (do_clear_affect)
 	ch->ClearAffect(true);
 }
 
-ACMD (do_change_name)
+ACMD (do_rename)
 {
 	char arg1[256], arg2[256];
 	two_arguments(argument, arg1, sizeof(arg1), arg2, sizeof(arg2));
 
 	if (!*arg1 || !*arg2)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, "Wrong Syntax: /change_name <old_name> <new_name>");
+		ch->ChatPacket(CHAT_TYPE_INFO, "Wrong Syntax: /rename <old_name> <new_name>");
 		return;
 	}
 
