@@ -7396,7 +7396,7 @@ void CHARACTER::SendRefineTo9Message(const LPITEM &item)
 		return;
 
 	char buf[CHAT_MAX_LEN + 1];
-	snprintf(buf, sizeof(buf), "%s hat |cffffc700|Hitem:%x:0:0:0:0|h[%s]|h|r erfolgreich auf +9 geuppt!", GetName(), item->GetVnum(), item->GetName());
+	snprintf(buf, sizeof(buf), "[Server] %s hat erfolgreich |cffffc700|Hitem:%x:0:0:0:0|h[%s]|h|r geuppt!", GetName(), item->GetVnum(), item->GetName());
 
 	NoticeAll(buf);
 }
