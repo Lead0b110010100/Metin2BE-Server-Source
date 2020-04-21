@@ -805,11 +805,7 @@ bool CHARACTER::DoRefineWithScroll(LPITEM item)
 		}
 	}
 
-	const TRefineTable * prt = CRefineManager::instance().GetRefineRecipe(item->GetRefineSet());
-
-	if (!prt)
-		return false;
-
+	bool bMoneyOnly = false;
 	LPITEM pkItemScroll;
 
 	// 개량서 체크
@@ -829,8 +825,16 @@ bool CHARACTER::DoRefineWithScroll(LPITEM item)
 
 	DWORD result_vnum = item->GetRefinedVnum();
 	DWORD result_fail_vnum = item->GetRefineFromVnum();
+	DWORD real_result_vnum = pkItemScroll->GetValue(0) == FAIL_SCROLL ? result_fail_vnum : result_vnum;
 
-	if (result_vnum == 0)
+	LPITEM new_item = ITEM_MANAGER::instance().CreateItem(real_result_vnum, 1, 0, false);
+
+	if (!new_item)
+		return false;
+
+	const TRefineTable * prt = CRefineManager::instance().GetRefineRecipe(new_item->GetRefineSet());
+
+	if (real_result_vnum == 0 || !prt)
 	{
 		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("더 이상 개량할 수 없습니다."));
 		return false;
@@ -864,42 +868,42 @@ bool CHARACTER::DoRefineWithScroll(LPITEM item)
 		}
 	}
 
-	TItemTable * pProto = ITEM_MANAGER::instance().GetTable(item->GetRefinedVnum());
-
-	if (!pProto)
-	{
-		sys_err("DoRefineWithScroll NOT GET ITEM PROTO %d", item->GetRefinedVnum());
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("이 아이템은 개량할 수 없습니다."));
-		return false;
-	}
-
 	if (GetGold() < prt->cost)
 	{
 		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("개량을 하기 위한 돈이 부족합니다."));
 		return false;
 	}
 
-	for (int i = 0; i < prt->material_count; ++i)
-	{
-		if (CountSpecifyItem(prt->materials[i].vnum) < prt->materials[i].count)
-		{
-			if (test_server)
-			{
-				ChatPacket(CHAT_TYPE_INFO, "Find %d, count %d, require %d", prt->materials[i].vnum, CountSpecifyItem(prt->materials[i].vnum), prt->materials[i].count);
-			}
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("개량을 하기 위한 재료가 부족합니다."));
-			return false;
-		}
-	}
-
-	for (int i = 0; i < prt->material_count; ++i)
-		RemoveSpecifyItem(prt->materials[i].vnum, prt->materials[i].count);
-
 	int prob = number(1, 100);
 	int success_prob = prt->prob;
 	bool bDestroyWhenFail = false;
-
 	const char* szRefineType = "SCROLL";
+
+	if (pkItemScroll->GetValue(0) == FAIL_SCROLL)
+	{
+		success_prob = 0;
+		szRefineType = "FAIL_SCROLL";
+		bMoneyOnly = true;
+	}
+
+	if (!bMoneyOnly)
+	{
+		for (int i = 0; i < prt->material_count; ++i)
+		{
+			if (CountSpecifyItem(prt->materials[i].vnum) < prt->materials[i].count)
+			{
+				if (test_server)
+				{
+					ChatPacket(CHAT_TYPE_INFO, "Find %d, count %d, require %d", prt->materials[i].vnum, CountSpecifyItem(prt->materials[i].vnum), prt->materials[i].count);
+				}
+				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("개량을 하기 위한 재료가 부족합니다."));
+				return false;
+			}
+		}
+	
+		for (int i = 0; i < prt->material_count; ++i)
+			RemoveSpecifyItem(prt->materials[i].vnum, prt->materials[i].count);
+	}
 
 	if (pkItemScroll->GetValue(0) == HYUNIRON_CHN ||
 		pkItemScroll->GetValue(0) == YONGSIN_SCROLL ||
@@ -962,11 +966,6 @@ bool CHARACTER::DoRefineWithScroll(LPITEM item)
 	{
 		success_prob = 80;
 		szRefineType = "BDRAGON_SCROLL";
-	}
-	else if (pkItemScroll->GetValue(0) == FAIL_SCROLL)
-	{
-		success_prob = 0;
-		szRefineType = "FAIL_SCROLL";
 	}
 
 	pkItemScroll->SetCount(pkItemScroll->GetCount() - 1);
@@ -1069,7 +1068,7 @@ bool CHARACTER::RefineInformation(BYTE bCell, BYTE bType, int iAdditionalCell)
 	p.header = HEADER_GC_REFINE_INFORMATION;
 	p.pos = bCell;
 	p.src_vnum = item->GetVnum();
-	p.result_vnum = item->GetRefinedVnum();
+	p.result_vnum = bType == REFINE_TYPE_FAIL_SCROLL ? item->GetRefineFromVnum() : item->GetRefinedVnum();
 	p.type = bType;
 
 	if (p.result_vnum == 0)
@@ -1089,6 +1088,7 @@ bool CHARACTER::RefineInformation(BYTE bCell, BYTE bType, int iAdditionalCell)
 		else
 		{
 			LPITEM itemScroll = GetInventoryItem(iAdditionalCell);
+
 			if (!itemScroll || item->GetVnum() == itemScroll->GetVnum())
 			{
 				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("같은 개량서를 합칠 수는 없습니다."));
@@ -1098,13 +1098,17 @@ bool CHARACTER::RefineInformation(BYTE bCell, BYTE bType, int iAdditionalCell)
 		}
 	}
 
-	CRefineManager & rm = CRefineManager::instance();
+	LPITEM new_item = ITEM_MANAGER::instance().CreateItem(p.result_vnum, 1, 0, false);
 
-	const TRefineTable* prt = rm.GetRefineRecipe(item->GetRefineSet());
+	if (!new_item)
+		return false;
+
+	CRefineManager & rm = CRefineManager::instance();
+	const TRefineTable* prt = rm.GetRefineRecipe(new_item->GetRefineSet());
 
 	if (!prt)
 	{
-		sys_err("RefineInformation NOT GET REFINE SET %d", item->GetRefineSet());
+		sys_err("RefineInformation NOT GET REFINE SET %d", new_item->GetRefineSet());
 		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("이 아이템은 개량할 수 없습니다."));
 		return false;
 	}
@@ -1115,7 +1119,7 @@ bool CHARACTER::RefineInformation(BYTE bCell, BYTE bType, int iAdditionalCell)
 	if (GetQuestFlag("main_quest_lv7.refine_chance") > 0)
 	{
 		// 일본은 제외
-		if (!item->CheckItemUseLevel(20) || item->GetType() != ITEM_WEAPON)
+		if (!new_item->CheckItemUseLevel(20) || new_item->GetType() != ITEM_WEAPON)
 		{
 			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("무료 개량 기회는 20 이하의 무기만 가능합니다"));
 			return false;
@@ -1127,7 +1131,7 @@ bool CHARACTER::RefineInformation(BYTE bCell, BYTE bType, int iAdditionalCell)
 
 	//END_MAIN_QUEST_LV7
 	p.prob = prt->prob;
-	if (bType == REFINE_TYPE_MONEY_ONLY)
+	if (bType == REFINE_TYPE_MONEY_ONLY || bType == REFINE_TYPE_FAIL_SCROLL)
 	{
 		p.material_count = 0;
 		memset(p.materials, 0, sizeof(p.materials));
@@ -1164,6 +1168,10 @@ bool CHARACTER::RefineItem(LPITEM pkItem, LPITEM pkTarget)
 		{
 			if (pkTarget->GetRefineSet() != 702) return false;
 			RefineInformation(pkTarget->GetCell(), REFINE_TYPE_BDRAGON, pkItem->GetCell());
+		}
+		else if (pkItem->GetValue(0) == FAIL_SCROLL)
+		{
+			RefineInformation(pkTarget->GetCell(), REFINE_TYPE_FAIL_SCROLL, pkItem->GetCell());
 		}
 		else
 		{

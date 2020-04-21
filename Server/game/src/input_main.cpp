@@ -2980,7 +2980,7 @@ void CInputMain::Refine(LPCHARACTER ch, const char* c_pData)
 		sys_log (0, "refine_type_noraml");
 		ch->DoRefine(item);
 	}
-	else if (p->type == REFINE_TYPE_SCROLL || p->type == REFINE_TYPE_HYUNIRON || p->type == REFINE_TYPE_MUSIN || p->type == REFINE_TYPE_BDRAGON)
+	else if (p->type == REFINE_TYPE_SCROLL || p->type == REFINE_TYPE_FAIL_SCROLL || p->type == REFINE_TYPE_HYUNIRON || p->type == REFINE_TYPE_MUSIN || p->type == REFINE_TYPE_BDRAGON)
 	{
 		sys_log (0, "refine_type_scroll, ...");
 		ch->DoRefineWithScroll(item);

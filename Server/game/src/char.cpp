@@ -4097,6 +4097,8 @@ void CHARACTER::ChatPacket(BYTE type, const char * format, ...)
 
 	if (type == CHAT_TYPE_COMMAND && test_server)
 		sys_log(0, "SEND_COMMAND %s %s", GetName(), chatbuf);
+
+	sys_err("%s", (const char *)chatbuf);
 }
 
 // MINING
