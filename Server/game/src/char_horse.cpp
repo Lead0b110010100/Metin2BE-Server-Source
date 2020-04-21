@@ -268,6 +268,9 @@ void CHARACTER::HorseSummon(bool bSummon, bool bFromFar, DWORD dwVnum, const cha
 
 DWORD CHARACTER::GetMyHorseVnum() const
 {
+	if (GetHorseLevel() == HORSE_MAX_LEVEL)
+		return 20119;
+
 	int delta = 0;
 
 	if (GetGuild())
