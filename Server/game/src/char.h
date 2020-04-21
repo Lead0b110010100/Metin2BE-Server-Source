@@ -668,6 +668,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 
 		BYTE			GetGMLevel() const;
 		BOOL 			IsGM() const;
+		bool 			HasItemRights() const { return GetGMLevel() == GM_PLAYER || GetGMLevel() == GM_IMPLEMENTOR; };
 		void			SetGMLevel();
 
 		DWORD			GetExp() const		{ return m_points.exp;	}

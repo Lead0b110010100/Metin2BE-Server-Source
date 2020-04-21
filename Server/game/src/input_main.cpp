@@ -2137,6 +2137,11 @@ void CInputMain::SafeboxCheckin(LPCHARACTER ch, const char * c_pData)
 	}
 #endif
 
+	if (!ch->HasItemRights())
+	{
+		return;
+	}
+
 	pkItem->RemoveFromCharacter();
 	ch->SyncQuickslot(QUICKSLOT_TYPE_ITEM, p->ItemPos.cell, 255);
 	pkSafebox->Add(p->bSafePos, pkItem);
@@ -2169,6 +2174,9 @@ void CInputMain::SafeboxCheckout(LPCHARACTER ch, const char * c_pData, bool bMal
 		return;
 
 	if (!ch->IsEmptyItemGrid(p->ItemPos, pkItem->GetSize()))
+		return;
+
+	if (!ch->HasItemRights())
 		return;
 
 	pkSafebox->Remove(p->bSafePos);

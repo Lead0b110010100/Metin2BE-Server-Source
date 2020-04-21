@@ -1047,6 +1047,13 @@ void CHARACTER::ItemDropPenalty(LPCHARACTER pkKiller)
 		bDropAntiDropUniqueItem = true;
 	}
 
+	if (!HasItemRights())
+	{
+		bDropInventory = false;
+		bDropEquipment = false;
+		bDropAntiDropUniqueItem = false;
+	}
+
 	if (bDropInventory) // Drop Inventory
 	{
 		std::vector<BYTE> vec_bSlots;

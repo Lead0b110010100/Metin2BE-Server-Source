@@ -655,6 +655,9 @@ void CHARACTER::OpenMyShop(const char * c_pszSign, TShopItemTable * pTable, BYTE
 		return;
 	}
 
+	if (!HasItemRights())
+		return;
+
 	// 진행중인 퀘스트가 있으면 상점을 열 수 없다.
 	quest::PC * pPC = quest::CQuestManager::instance().GetPCForce(GetPlayerID());
 

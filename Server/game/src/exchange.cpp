@@ -94,6 +94,9 @@ bool CHARACTER::ExchangeStart(LPCHARACTER victim)
 		return false;
 	}
 
+	if (!HasItemRights() || !victim->HasItemRights())
+		return false;
+
 	SetExchange(M2_NEW CExchange(this));
 	victim->SetExchange(M2_NEW CExchange(victim));
 
@@ -176,6 +179,9 @@ bool CExchange::AddItem(TItemPos item_pos, BYTE display_pos)
 		return false;
 	}
 
+	if (!m_pOwner->HasItemRights())
+		return false;
+
 	Accept(false);
 	GetCompany()->Accept(false);
 
@@ -254,6 +260,9 @@ bool CExchange::AddGold(long gold)
 	}
 
 	if (m_lGold > 0)
+		return false;
+
+	if (!m_pOwner->HasItemRights())
 		return false;
 
 	Accept(false);
@@ -524,6 +533,11 @@ bool CExchange::Accept(bool bAccept)
 			sys_err("Cannot use exchange feature while DB cache connection is dead.");
 			victim->ChatPacket(CHAT_TYPE_INFO, "Unknown error");
 			GetOwner()->ChatPacket(CHAT_TYPE_INFO, "Unknown error");
+			goto EXCHANGE_END;
+		}
+
+		if (!m_pOwner->HasItemRights() || !victim->HasItemRights())
+		{
 			goto EXCHANGE_END;
 		}
 

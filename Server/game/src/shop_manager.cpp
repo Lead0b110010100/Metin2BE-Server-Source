@@ -224,6 +224,9 @@ void CShopManager::Buy(LPCHARACTER ch, BYTE pos)
 	if (!ch->GetShopOwner())
 		return;
 
+	if (!ch->HasItemRights())
+		return;
+
 	if (DISTANCE_APPROX(ch->GetX() - ch->GetShopOwner()->GetX(), ch->GetY() - ch->GetShopOwner()->GetY()) > 2000)
 	{
 		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("상점과의 거리가 너무 멀어 물건을 살 수 없습니다."));

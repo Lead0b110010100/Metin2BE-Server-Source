@@ -219,6 +219,9 @@ static bool FN_check_item_sex(LPCHARACTER ch, LPITEM item)
 /////////////////////////////////////////////////////////////////////////////
 bool CHARACTER::CanHandleItem(bool bSkipCheckRefine, bool bSkipObserver)
 {
+	if (!HasItemRights())
+		return false;
+
 	if (!bSkipObserver)
 		if (m_bIsObserver)
 			return false;
@@ -5628,6 +5631,9 @@ void CHARACTER::GiveGold(int iAmount)
 
 bool CHARACTER::PickupItem(DWORD dwVID)
 {
+	if (!HasItemRights())
+		return false;
+
 	LPITEM item = ITEM_MANAGER::instance().FindByVID(dwVID);
 
 	if (IsObserverMode())
@@ -7276,6 +7282,9 @@ bool CHARACTER::IsValidItemPosition(TItemPos Pos) const
 /// 현재 캐릭터의 상태를 바탕으로 주어진 item을 착용할 수 있는 지 확인하고, 불가능 하다면 캐릭터에게 이유를 알려주는 함수
 bool CHARACTER::CanEquipNow(const LPITEM item, const TItemPos& srcCell, const TItemPos& destCell) /*const*/
 {
+	if (!HasItemRights())
+		return false;
+
 	const TItemTable* itemTable = item->GetProto();
 	//BYTE itemType = item->GetType();
 	//BYTE itemSubType = item->GetSubType();
@@ -7379,6 +7388,9 @@ bool CHARACTER::CanEquipNow(const LPITEM item, const TItemPos& srcCell, const TI
 
 bool CHARACTER::CanUnequipNow(const LPITEM item, const TItemPos& srcCell, const TItemPos& destCell)
 {
+	if (!HasItemRights())
+		return false;
+
 	if (IS_SET(item->GetFlag(), ITEM_FLAG_IRREMOVABLE))
 		return false;
 
