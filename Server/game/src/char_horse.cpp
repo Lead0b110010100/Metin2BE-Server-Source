@@ -370,7 +370,7 @@ bool CHARACTER::CanUseHorseSkill()
 {
 	if(IsRiding())
 	{
-		if (GetHorseGrade() == 3)
+		if (GetHorseGrade() >= 2)
 			return true;
 		else
 			return false;
