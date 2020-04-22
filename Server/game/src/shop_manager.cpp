@@ -340,15 +340,6 @@ void CShopManager::Sell(LPCHARACTER ch, BYTE bCell, BYTE bCount)
 
 	dwPrice /= 5;
 
-	//세금 계산
-	DWORD dwTax = 0;
-	int iVal = 3;
-
-	{
-		dwTax = dwPrice * iVal/100;
-		dwPrice -= dwTax;
-	}
-
 	if (test_server)
 		sys_log(0, "Sell Item price id %d %s itemid %d", ch->GetPlayerID(), ch->GetName(), item->GetID());
 
@@ -364,9 +355,6 @@ void CShopManager::Sell(LPCHARACTER ch, BYTE bCell, BYTE bCount)
 	// 20050802.myevan.상점 판매 로그에 아이템 ID 추가
 	sys_log(0, "SHOP: SELL: %s item name: %s(x%d):%u price: %u", ch->GetName(), item->GetName(), bCount, item->GetID(), dwPrice);
 
-	if (iVal > 0)
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("판매금액의 %d %% 가 세금으로 나가게됩니다"), iVal);
-
 	DBManager::instance().SendMoneyLog(MONEY_LOG_SHOP, item->GetVnum(), dwPrice);
 
 	if (bCount == item->GetCount())
@@ -375,7 +363,7 @@ void CShopManager::Sell(LPCHARACTER ch, BYTE bCell, BYTE bCount)
 		item->SetCount(item->GetCount() - bCount);
 
 	//군주 시스템 : 세금 징수
-	CMonarch::instance().SendtoDBAddMoney(dwTax, ch->GetEmpire(), ch);
+	CMonarch::instance().SendtoDBAddMoney(0, ch->GetEmpire(), ch);
 
 	ch->PointChange(POINT_GOLD, dwPrice, false);
 }

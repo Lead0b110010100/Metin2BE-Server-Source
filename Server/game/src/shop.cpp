@@ -288,32 +288,10 @@ int CShop::Buy(LPCHARACTER ch, BYTE pos)
 
 	ch->PointChange(POINT_GOLD, -dwPrice, false);
 
-	//세금 계산
-	DWORD dwTax = 0;
-	int iVal = 0;
-
-	{
-		iVal = quest::CQuestManager::instance().GetEventFlag("personal_shop");
-
-		if (0 < iVal)
-		{
-			if (iVal > 100)
-				iVal = 100;
-
-			dwTax = dwPrice * iVal / 100;
-			dwPrice = dwPrice - dwTax;
-		}
-		else
-		{
-			iVal = 0;
-			dwTax = 0;
-		}
-	}
-
 	// 상점에서 살떄 세금 5%
 	if (!m_pkPC)
 	{
-		CMonarch::instance().SendtoDBAddMoney(dwTax, ch->GetEmpire(), ch);
+		CMonarch::instance().SendtoDBAddMoney(0, ch->GetEmpire(), ch);
 	}
 
 	// 군주 시스템 : 세금 징수
@@ -353,11 +331,7 @@ int CShop::Buy(LPCHARACTER ch, BYTE pos)
 		BroadcastUpdateItem(pos);
 
 		m_pkPC->PointChange(POINT_GOLD, dwPrice, false);
-
-		if (iVal > 0)
-			m_pkPC->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("판매금액의 %d %% 가 세금으로 나가게됩니다"), iVal);
-
-		CMonarch::instance().SendtoDBAddMoney(dwTax, m_pkPC->GetEmpire(), m_pkPC);
+		CMonarch::instance().SendtoDBAddMoney(0, m_pkPC->GetEmpire(), m_pkPC);
 	}
 	else
 	{
