@@ -828,16 +828,17 @@ bool CHARACTER::DoRefineWithScroll(LPITEM item)
 
 	DWORD result_vnum = item->GetRefinedVnum();
 	DWORD result_fail_vnum = item->GetRefineFromVnum();
-	DWORD real_result_vnum = pkItemScroll->GetValue(0) == FAIL_SCROLL ? result_fail_vnum : result_vnum;
 
-	LPITEM new_item = ITEM_MANAGER::instance().CreateItem(real_result_vnum, 1, 0, false);
+	DWORD dwVnum = pkItemScroll->GetValue(0) == FAIL_SCROLL ? item->GetRefineFromVnum() : item->GetVnum();
+
+	LPITEM new_item = ITEM_MANAGER::instance().CreateItem(dwVnum, 1, 0, false);
 
 	if (!new_item)
 		return false;
 
 	const TRefineTable * prt = CRefineManager::instance().GetRefineRecipe(new_item->GetRefineSet());
 
-	if (real_result_vnum == 0 || !prt)
+	if (!prt)
 	{
 		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("더 이상 개량할 수 없습니다."));
 		return false;
@@ -1046,6 +1047,7 @@ bool CHARACTER::DoRefineWithScroll(LPITEM item)
 		PayRefineFee(prt->cost);
 	}
 
+	M2_DESTROY_ITEM(new_item);
 	return true;
 }
 
@@ -1102,7 +1104,8 @@ bool CHARACTER::RefineInformation(BYTE bCell, BYTE bType, int iAdditionalCell)
 		}
 	}
 
-	LPITEM new_item = ITEM_MANAGER::instance().CreateItem(p.result_vnum, 1, 0, false);
+	DWORD dwVnum = bType == REFINE_TYPE_FAIL_SCROLL ? item->GetRefineFromVnum() : item->GetVnum();
+	LPITEM new_item = ITEM_MANAGER::instance().CreateItem(dwVnum, 1, 0, false);
 
 	if (!new_item)
 		return false;
@@ -1150,6 +1153,7 @@ bool CHARACTER::RefineInformation(BYTE bCell, BYTE bType, int iAdditionalCell)
 	GetDesc()->Packet(&p, sizeof(TPacketGCRefineInformation));
 
 	SetRefineMode(iAdditionalCell);
+	M2_DESTROY_ITEM(new_item);
 	return true;
 }
 
