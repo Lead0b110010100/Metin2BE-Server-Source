@@ -7489,3 +7489,10 @@ bool CHARACTER::SetGMState(std::string stName, bool bState)
 
 	return bIsInList;
 }
+
+void CHARACTER::Rewarp()
+{
+	ChatPacket(CHAT_TYPE_INFO, "You warp to ( %d, %d )", GetX(), GetY());
+	WarpSet(GetX(), GetY(), GetMapIndex());
+	Stop();
+}

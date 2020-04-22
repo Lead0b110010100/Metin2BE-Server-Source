@@ -60,6 +60,8 @@ extern void	skip_spaces(char **string);
 
 extern const char *	one_argument(const char *argument, char *first_arg, size_t first_size);
 extern const char *	two_arguments(const char *argument, char *first_arg, size_t first_size, char *second_arg, size_t second_size);
+extern void split_argument(const char *argument, std::vector<std::string> &vecArgs);
+extern std::string get_arguments_as_text(std::vector<std::string> vec);
 extern const char *	first_cmd(const char *argument, char *first_arg, size_t first_arg_size, size_t *first_arg_len_result);
 
 extern int CalculateDuration(int iSpd, int iDur);

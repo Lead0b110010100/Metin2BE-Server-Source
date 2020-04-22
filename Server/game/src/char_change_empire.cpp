@@ -106,22 +106,27 @@ int CHARACTER::ChangeEmpire(BYTE empire)
 		}
 	}
 
+	return ChangeEmpireEx(empire);
+}
+
+int CHARACTER::ChangeEmpireEx(BYTE empire)
+{
+	char szQuery[1024 + 1];
+
 	{
 		// 4. db의 제국 정보를 업데이트 한다.
 #ifdef ENABLE_PLAYER_PER_ACCOUNT5
 		snprintf(szQuery, sizeof(szQuery), "UPDATE player_index%s SET empire=%u WHERE pid1=%u OR pid2=%u OR pid3=%u OR pid4=%u OR pid5=%u AND empire=%u",
-				get_table_postfix(), empire, GetPlayerID(), GetPlayerID(), GetPlayerID(), GetPlayerID(), GetPlayerID(), GetEmpire());
+				 get_table_postfix(), empire, GetPlayerID(), GetPlayerID(), GetPlayerID(), GetPlayerID(), GetPlayerID(), GetEmpire());
 #else
 		snprintf(szQuery, sizeof(szQuery), "UPDATE player_index%s SET empire=%u WHERE pid1=%u OR pid2=%u OR pid3=%u OR pid4=%u AND empire=%u",
-				get_table_postfix(), empire, GetPlayerID(), GetPlayerID(), GetPlayerID(), GetPlayerID(), GetEmpire());
+				 get_table_postfix(), empire, GetPlayerID(), GetPlayerID(), GetPlayerID(), GetPlayerID(), GetEmpire());
 #endif
-		std::auto_ptr<SQLMsg> msg(DBManager::instance().DirectQuery(szQuery));
+		std::unique_ptr<SQLMsg> msg(DBManager::instance().DirectQuery(szQuery));
 
 		if (msg->Get()->uiAffectedRows > 0)
 		{
-			// 5. 제국 변경 이력을 추가한다.
 			SetChangeEmpireCount();
-
 			return 999;
 		}
 	}

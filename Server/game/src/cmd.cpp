@@ -19,7 +19,7 @@ ACMD(do_stun);
 // END_OF_ADD_COMMAND_SLOW_STUN
 
 ACMD(do_give);
-
+ACMD(do_rewarp);
 ACMD(do_rename);
 
 ACMD(do_warp);
@@ -625,6 +625,7 @@ struct command_info cmd_info[] =
 #ifdef ENABLE_WOLFMAN_CHARACTER
 	{ "bleeding",			do_bleeding,				0,			POS_DEAD,	GM_IMPLEMENTOR	},
 #endif
+	{ "rewarp", do_rewarp, 0, POS_DEAD, GM_LOW_WIZARD },
 	{ "rename",		do_rename,		0,			POS_DEAD,	GM_IMPLEMENTOR	},
 	{ "give", do_give, 0, POS_DEAD, GM_IMPLEMENTOR },
 
@@ -713,6 +714,20 @@ void interpret_command(LPCHARACTER ch, const char * argument, size_t len)
 
 	size_t cmdlen;
 	line = first_cmd(new_line, cmd, sizeof(cmd), &cmdlen);
+
+	// replace ~ with character name if found
+	std::vector<std::string> vecArgs;
+	split_argument(line, vecArgs);
+
+	for(DWORD i = 0; i < vecArgs.size(); ++i)
+	{
+		if(vecArgs[i] == "~")
+		{
+			vecArgs[i] = ch->GetName();
+		}
+	}
+
+	line = get_arguments_as_text(vecArgs).c_str();
 
 	for (icmd = 1; *cmd_info[icmd].command != '\n'; ++icmd)
 	{

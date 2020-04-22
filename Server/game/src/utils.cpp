@@ -1,5 +1,9 @@
 #include "stdafx.h"
 
+#include "boost/algorithm/string.hpp"
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/split.hpp>
+
 static int global_time_gap = 0;
 
 time_t get_global_time()
@@ -129,6 +133,32 @@ const char *one_argument(const char *argument, char *first_arg, size_t first_siz
 const char *two_arguments(const char *argument, char *first_arg, size_t first_size, char *second_arg, size_t second_size)
 {
 	return (one_argument(one_argument(argument, first_arg, first_size), second_arg, second_size));
+}
+
+void split_argument(const char *argument, std::vector<std::string> &vecArgs)
+{
+	std::string arg = argument;
+	boost::split(vecArgs, arg, boost::is_any_of(" "), boost::token_compress_on);
+}
+
+std::string get_arguments_as_text(std::vector<std::string> vecArgs)
+{
+	DWORD vecSize = vecArgs.size();
+
+	std::string tmpVec;
+	for (DWORD i = 1; i != vecSize; ++i)
+	{
+		if (i != vecSize - 1)
+		{
+			tmpVec += vecArgs[i] + " ";
+		}
+		else
+		{
+			tmpVec += vecArgs[i];
+		}
+	}
+
+	return tmpVec;
 }
 
 const char *first_cmd(const char *argument, char *first_arg, size_t first_arg_size, size_t *first_arg_len_result)

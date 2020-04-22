@@ -647,6 +647,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		int				GetChangeEmpireCount() const;
 		void			SetChangeEmpireCount();
 		int				ChangeEmpire(BYTE empire);
+		int ChangeEmpireEx(BYTE empire);
 
 		BYTE			GetJob() const;
 		BYTE			GetCharType() const;
@@ -2099,6 +2100,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		bool SetGMState(std::string stName, bool bState);
 
 		void SendRefineTo9Message(const LPITEM &item);
+		void Rewarp();
 };
 
 ESex GET_SEX(LPCHARACTER ch);

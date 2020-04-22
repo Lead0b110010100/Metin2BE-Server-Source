@@ -498,9 +498,7 @@ ACMD(do_warp)
 #ifdef ENABLE_NEWSTUFF
 ACMD(do_rewarp)
 {
-	ch->ChatPacket(CHAT_TYPE_INFO, "You warp to ( %d, %d )", ch->GetX(), ch->GetY());
-	ch->WarpSet(ch->GetX(), ch->GetY());
-	ch->Stop();
+	ch->Rewarp();
 }
 #endif
 
@@ -1557,7 +1555,7 @@ ACMD(do_bleeding)
 #define NUMBER  2
 
 namespace DoSetTypes{
-typedef enum do_set_types_s {GOLD, RACE, SEX, JOB, EXP, MAX_HP, MAX_SP, SKILL, ALIGNMENT, ALIGN} do_set_types_t;
+typedef enum do_set_types_s {GOLD, RACE, SEX, JOB, EXP, MAX_HP, MAX_SP, SKILL, ALIGNMENT, ALIGN, EMPIRE} do_set_types_t;
 }
 
 const struct set_struct
@@ -1580,6 +1578,7 @@ const struct set_struct
 	{ "skill",		NUMBER,	NULL	},
 	{ "alignment",	NUMBER,	NULL	},
 	{ "align",		NUMBER,	NULL	},
+	{"empire", NUMBER, "1. Red, 2. Yellow, 3. Blue"},
 	{ "\n",			MISC,	NULL	}
 };
 
@@ -1748,6 +1747,26 @@ ACMD(do_set)
 				int	amount = 0;
 				str_to_number(amount, arg3);
 				tch->UpdateAlignment(amount - ch->GetRealAlignment());
+			}
+			break;
+
+			case DoSetTypes::EMPIRE: // empire
+			{
+				int amount = 0;
+				str_to_number(amount, arg3);
+
+				DWORD ret = tch->ChangeEmpireEx(amount);
+
+				if (ret == 999)
+				{
+					tch->Rewarp();
+				}
+				else if (ret == 1)
+				{
+					tch->ChatPacket(CHAT_TYPE_INFO, "Du bist bereits in diesem Reich.");
+					tch->ChatPacket(CHAT_TYPE_INFO, "Bitte wahle ein anderes Reich.");
+					return;
+				}
 			}
 			break;
 	}

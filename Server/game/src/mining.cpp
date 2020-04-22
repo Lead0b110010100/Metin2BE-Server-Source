@@ -196,7 +196,7 @@ namespace mining
 	void Pick_IncCurExp(CItem& pick)
 	{
 		int cur = Pick_GetCurExp(pick);
-		pick.SetSocket(0, cur + 1);
+		pick.SetSocket(0, cur + number(1, 10));
 	}
 
 #ifdef ENABLE_PICKAXE_RENEWAL
