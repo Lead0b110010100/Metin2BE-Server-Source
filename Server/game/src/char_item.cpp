@@ -3182,22 +3182,6 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 							case 71107: // 천도복숭아
 								{
 									int val = item->GetValue(0);
-									int interval = item->GetValue(1);
-									quest::PC* pPC = quest::CQuestManager::instance().GetPC(GetPlayerID());
-									int last_use_time = pPC->GetFlag("mythical_peach.last_use_time");
-
-									if (get_global_time() - last_use_time < interval * 60 * 60)
-									{
-										if (test_server == false)
-										{
-											ChatPacket(CHAT_TYPE_INFO, LC_TEXT("아직 사용할 수 없습니다."));
-											return false;
-										}
-										else
-										{
-											ChatPacket(CHAT_TYPE_INFO, LC_TEXT("테스트 서버 시간제한 통과"));
-										}
-									}
 
 									if (GetAlignment() == 200000)
 									{
@@ -3215,7 +3199,6 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 									UpdateAlignment(val*10);
 
 									item->SetCount(item->GetCount()-1);
-									pPC->SetFlag("mythical_peach.last_use_time", get_global_time());
 
 									ChatPacket(CHAT_TYPE_TALKING, LC_TEXT("마음이 맑아지는군. 가슴을 짓누르던 무언가가 좀 가벼워진 느낌이야."));
 									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("선악치가 %d 증가하였습니다."), val);
