@@ -1423,29 +1423,21 @@ namespace quest
 	ALUA(pc_get_horse_hp)
 	{
 		LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
-		if (ch->GetHorseLevel())
-			lua_pushnumber(L, ch->GetHorseHealth());
-		else
-			lua_pushnumber(L, 0);
-
+		lua_pushnumber(L, ch->GetHorseHealth());
 		return 1;
 	}
 
 	ALUA(pc_get_horse_stamina)
 	{
 		LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
-		if (ch->GetHorseLevel())
-			lua_pushnumber(L, ch->GetHorseStamina());
-		else
-			lua_pushnumber(L, 0);
-
+		lua_pushnumber(L, ch->GetHorseStamina());
 		return 1;
 	}
 
 	ALUA(pc_is_horse_alive)
 	{
 		LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
-		lua_pushboolean(L, ch->GetHorseLevel() > 0 && ch->GetHorseHealth()>0);
+		lua_pushboolean(L, ch->GetHorseHealth()>0);
 		return 1;
 	}
 

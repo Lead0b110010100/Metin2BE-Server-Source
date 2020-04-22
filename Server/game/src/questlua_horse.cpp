@@ -125,12 +125,7 @@ namespace quest
 	ALUA(horse_get_health)
 	{
 		LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
-
-		if (ch->GetHorseLevel())
-			lua_pushnumber(L, ch->GetHorseHealth());
-		else
-			lua_pushnumber(L, 0);
-
+		lua_pushnumber(L, ch->GetHorseHealth());
 		return 1;
 	}
 
@@ -140,11 +135,7 @@ namespace quest
 
 		int pct = MINMAX(0, ch->GetHorseHealth() * 100 / ch->GetHorseMaxHealth(), 100);
 		sys_log(1, "horse.get_health_pct %d", pct);
-
-		if (ch->GetHorseLevel())
-			lua_pushnumber(L, pct);
-		else
-			lua_pushnumber(L, 0);
+		lua_pushnumber(L, pct);
 
 		return 1;
 	}
@@ -166,11 +157,7 @@ namespace quest
 		LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
 		int pct = MINMAX(0, ch->GetHorseStamina() * 100 / ch->GetHorseMaxStamina(), 100);
 		sys_log(1, "horse.get_stamina_pct %d", pct);
-
-		if (ch->GetHorseLevel())
-			lua_pushnumber(L, pct);
-		else
-			lua_pushnumber(L, 0);
+		lua_pushnumber(L, pct);
 
 		return 1;
 	}
@@ -192,7 +179,8 @@ namespace quest
 	ALUA(horse_revive)
 	{
 		LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
-		if (ch->GetHorseLevel() > 0 && ch->GetHorseHealth() <= 0)
+
+		if (ch->GetHorseHealth() <= 0)
 		{
 			ch->ReviveHorse();
 		}
@@ -202,8 +190,8 @@ namespace quest
 	ALUA(horse_feed)
 	{
 		LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
-		//DWORD dwHorseFood = ch->GetHorseLevel() + ITEM_HORSE_FOOD_1 - 1;
-		if (ch->GetHorseLevel() > 0 && ch->GetHorseHealth() > 0)
+
+		if (ch->GetHorseHealth() > 0)
 		{
 			ch->FeedHorse();
 		}
@@ -221,32 +209,25 @@ namespace quest
 
 		LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
 
-		if ( ch->GetHorseLevel() > 0 )
+		const char* pHorseName = lua_tostring(L, -1);
+
+		if ( pHorseName == NULL || check_name(pHorseName) == 0 )
 		{
-			const char* pHorseName = lua_tostring(L, -1);
-
-			if ( pHorseName == NULL || check_name(pHorseName) == 0 )
-			{
-				lua_pushnumber(L, 1);
-			}
-			else
-			{
-				int nHorseNameDuration = test_server == true ? 60*5 : 60*60*24*30;
-
-				ch->SetQuestFlag("horse_name.valid_till", get_global_time() + nHorseNameDuration);
-				ch->AddAffect(AFFECT_HORSE_NAME, 0, 0, 0, PASSES_PER_SEC(nHorseNameDuration), 0, true);
-
-				CHorseNameManager::instance().UpdateHorseName(ch->GetPlayerID(), lua_tostring(L, -1), true);
-
-				ch->HorseSummon(false, true);
-				ch->HorseSummon(true, true);
-
-				lua_pushnumber(L, 2);
-			}
+			lua_pushnumber(L, 1);
 		}
 		else
 		{
-			lua_pushnumber(L, 0);
+			int nHorseNameDuration = test_server == true ? 60*5 : 60*60*24*30;
+
+			ch->SetQuestFlag("horse_name.valid_till", get_global_time() + nHorseNameDuration);
+			ch->AddAffect(AFFECT_HORSE_NAME, 0, 0, 0, PASSES_PER_SEC(nHorseNameDuration), 0, true);
+
+			CHorseNameManager::instance().UpdateHorseName(ch->GetPlayerID(), lua_tostring(L, -1), true);
+
+			ch->HorseSummon(false, true);
+			ch->HorseSummon(true, true);
+
+			lua_pushnumber(L, 2);
 		}
 
 		return 1;

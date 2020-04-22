@@ -86,9 +86,6 @@ void CHorseRider::Destroy()
 
 void CHorseRider::EnterHorse()
 {
-	if (GetHorseLevel() <= 0)
-		return;
-
 	if (GetHorseHealth() <= 0)
 		return;
 
@@ -106,9 +103,6 @@ void CHorseRider::EnterHorse()
 
 bool CHorseRider::ReviveHorse()
 {
-	if (GetHorseLevel() <= 0)
-		return false;
-
 	if (GetHorseHealth()>0)
 		return false;
 
@@ -138,11 +132,9 @@ short CHorseRider::GetHorseMaxStamina()
 
 void CHorseRider::FeedHorse()
 {
-	// 말을 가지고 살아있을때만
-	if (GetHorseLevel() > 0 && GetHorseHealth() > 0)
+	if (GetHorseHealth() > 0)
 	{
 		UpdateHorseHealth(+1);
-		// 20050324. ipkn 말 먹였을때도 체력 감소 딜레이를 늘린다.
 		ResetHorseHealthDropTime();
 	}
 }
@@ -155,9 +147,6 @@ void CHorseRider::SetHorseData(const THorseInfo& crInfo)
 // Stamina
 void CHorseRider::UpdateHorseDataByLogoff(DWORD dwLogoffTime)
 {
-	if (GetHorseLevel() <= 0)
-		return;
-
 	if (dwLogoffTime >= 12 * 60)
 		UpdateHorseStamina(dwLogoffTime / 12 / 60, false); // 로그오프 12분당 1씩 회복
 }
@@ -180,9 +169,6 @@ void CHorseRider::UpdateHorseStamina(int iStamina, bool bSend)
 bool CHorseRider::StartRiding()
 {
 	if (m_Horse.bRiding)
-		return false;
-
-	if (GetHorseLevel() <= 0)
 		return false;
 
 	if (GetHorseHealth() <= 0)
@@ -286,9 +272,6 @@ EVENTFUNC(horse_stamina_regen_event)
 
 void CHorseRider::StartStaminaConsumeEvent()
 {
-	if (GetHorseLevel() <= 0)
-		return;
-
 	if (GetHorseHealth() <= 0)
 		return;
 
@@ -307,9 +290,6 @@ void CHorseRider::StartStaminaConsumeEvent()
 
 void CHorseRider::StartStaminaRegenEvent()
 {
-	if (GetHorseLevel() <= 0)
-		return;
-
 	if (GetHorseHealth() <= 0)
 		return;
 

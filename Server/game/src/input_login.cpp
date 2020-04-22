@@ -626,10 +626,7 @@ void CInputLogin::Entergame(LPDESC d, const char * data)
 	sys_log(0, "ENTERGAME: %s %dx%dx%d %s map_index %d",
 			ch->GetName(), ch->GetX(), ch->GetY(), ch->GetZ(), d->GetHostName(), ch->GetMapIndex());
 
-	if (ch->GetHorseLevel() > 0)
-	{
-		ch->EnterHorse();
-	}
+	ch->EnterHorse();
 
 	// 플레이시간 레코딩 시작
 	ch->ResetPlayTime();
@@ -807,13 +804,10 @@ void CInputLogin::Entergame(LPDESC d, const char * data)
 		sys_log(0, "TEEN_SEND: (%u, %s)", d->GetAccountTable().id, ch->GetName());
 	}
 
-	if (ch->GetHorseLevel() > 0)
-	{
-		DWORD pid = ch->GetPlayerID();
+	DWORD pid = ch->GetPlayerID();
 
-		if (pid != 0 && CHorseNameManager::instance().GetHorseName(pid) == NULL)
-			db_clientdesc->DBPacket(HEADER_GD_REQ_HORSE_NAME, 0, &pid, sizeof(DWORD));
-	}
+	if (pid != 0 && CHorseNameManager::instance().GetHorseName(pid) == NULL)
+		db_clientdesc->DBPacket(HEADER_GD_REQ_HORSE_NAME, 0, &pid, sizeof(DWORD));
 
 	// 중립맵에 들어갔을때 안내하기
 	if (g_noticeBattleZone)

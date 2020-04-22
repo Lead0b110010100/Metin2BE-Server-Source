@@ -1907,9 +1907,7 @@ void CHARACTER::SetPlayerProto(const TPlayerTable * t)
 	m_stMobile = t->szMobile;
 
 	SetHorseData(t->horse);
-
-	if (GetHorseLevel() > 0)
-		UpdateHorseDataByLogoff(t->logoff_interval);
+	UpdateHorseDataByLogoff(t->logoff_interval);
 
 	thecore_memcpy(m_aiPremiumTimes, t->aiPremiumTimes, sizeof(t->aiPremiumTimes));
 

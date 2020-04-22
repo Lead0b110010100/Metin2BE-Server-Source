@@ -55,9 +55,7 @@ bool CHARACTER::StartRiding()
 
 	if (false == CHorseRider::StartRiding())
 	{
-		if (GetHorseLevel() <= 0)
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("말을 소유하고 있지 않습니다."));
-		else if (GetHorseHealth() <= 0)
+		if (GetHorseHealth() <= 0)
 			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("말이 죽어있는 상태 입니다."));
 		else if (GetHorseStamina() <= 0)
 			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("말의 스테미너가 부족하여 말을 탈 수 없습니다."));
