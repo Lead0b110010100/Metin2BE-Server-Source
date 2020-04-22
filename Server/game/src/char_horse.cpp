@@ -152,9 +152,6 @@ void CHARACTER::HorseSummon(bool bSummon, bool bFromFar, DWORD dwVnum, const cha
 		if( m_chHorse != NULL )
 			return;
 
-		if (GetHorseLevel() <= 0)
-			return;
-
 		// 무언가를 타고 있다면 실패
 		if (IsRiding())
 			return;
