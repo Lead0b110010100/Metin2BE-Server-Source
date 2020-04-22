@@ -3,6 +3,8 @@
 
 #include "../../common/tables.h"
 
+extern std::set<DWORD> setAccessoryBlacklist;
+
 enum EMonsterChatState
 {
 	MONSTER_CHAT_WAIT,

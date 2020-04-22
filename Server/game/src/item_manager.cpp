@@ -1658,6 +1658,12 @@ void ITEM_MANAGER::CopyAllAttrTo(LPITEM pkOldItem, LPITEM pkNewItem)
 	// ACCESSORY_REFINE
 	if (pkOldItem->IsAccessoryForSocket())
 	{
+		// If equip is aquamarin, don't copy accessory for sockets
+		DWORD dwBaseVnum = pkNewItem->GetVnum() - (pkNewItem->GetVnum() % 10);
+
+		if (setAccessoryBlacklist.count(dwBaseVnum))
+			return;
+
 		for (int i = 0; i < ITEM_SOCKET_MAX_NUM; ++i)
 		{
 			pkNewItem->SetSocket(i, pkOldItem->GetSocket(i));

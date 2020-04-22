@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "char.h"
 #include "../../common/CommonDefines.h"
+
+std::set<DWORD> setAccessoryBlacklist { 14220, 16220, 17220 };
+
 TJobInitialPoints JobInitialPoints[JOB_MAX_NUM] =
 /*
    {

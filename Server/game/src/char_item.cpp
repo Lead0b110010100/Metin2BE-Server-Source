@@ -984,6 +984,7 @@ bool CHARACTER::DoRefineWithScroll(LPITEM item)
 			LogManager::instance().ItemLog(this, pkNewItem, "REFINE SUCCESS", pkNewItem->GetName());
 
 			BYTE bCell = item->GetCell();
+			DWORD dwVnum = item->GetVnum();
 
 			NotifyRefineSuccess(this, item, szRefineType);
 			DBManager::instance().SendMoneyLog(MONEY_LOG_REFINE, item->GetVnum(), -prt->cost);
@@ -4668,7 +4669,6 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 										{
 											// Prevent adding item on aquamarin equipment
 											DWORD dwBaseVnum = item2->GetVnum() - (item2->GetVnum() % 10);
-											std::set<DWORD> setAccessoryBlacklist { 14220, 16220, 17220 };
 
 											if (setAccessoryBlacklist.count(dwBaseVnum))
 											{
