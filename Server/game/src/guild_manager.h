@@ -73,7 +73,6 @@ class CGuildManager : public singleton<CGuildManager>
 		template <typename Func> void for_each_war(Func & f);
 
 		int		GetDisbandDelay();
-		int		GetWithdrawDelay();
 
 		void		ChangeMaster(DWORD dwGID);
 

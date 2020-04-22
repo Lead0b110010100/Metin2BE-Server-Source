@@ -380,7 +380,6 @@ class CGuild
 		/// 길드 가입을 할 수 없을 경우의 에러코드.
 		enum GuildJoinErrCode {
 			GERR_NONE			= 0,	///< 처리성공
-			GERR_WITHDRAWPENALTY,		///< 탈퇴후 가입가능한 시간이 지나지 않음
 			GERR_COMMISSIONPENALTY,		///< 해산후 가입가능한 시간이 지나지 않음
 			GERR_ALREADYJOIN,			///< 길드가입 대상 캐릭터가 이미 길드에 가입해 있음
 			GERR_GUILDISFULL,			///< 길드인원 제한 초과

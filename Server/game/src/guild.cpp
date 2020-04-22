@@ -1951,11 +1951,6 @@ void CGuild::Invite( LPCHARACTER pchInviter, LPCHARACTER pchInvitee )
 	switch ( errcode )
 	{
 		case GERR_NONE: break;
-		case GERR_WITHDRAWPENALTY:
-						pchInviter->ChatPacket( CHAT_TYPE_INFO,
-								LC_TEXT("<길드> 탈퇴한 후 %d일이 지나지 않은 사람은 길드에 초대할 수 없습니다."),
-								quest::CQuestManager::instance().GetEventFlag( "guild_withdraw_delay" ) );
-						return;
 		case GERR_COMMISSIONPENALTY:
 						pchInviter->ChatPacket( CHAT_TYPE_INFO,
 								LC_TEXT("<길드> 길드를 해산한 지 %d일이 지나지 않은 사람은 길드에 초대할 수 없습니다."),
@@ -2016,11 +2011,6 @@ void CGuild::InviteAccept( LPCHARACTER pchInvitee )
 	switch ( errcode )
 	{
 		case GERR_NONE: break;
-		case GERR_WITHDRAWPENALTY:
-						pchInvitee->ChatPacket( CHAT_TYPE_INFO,
-								LC_TEXT("<길드> 탈퇴한 후 %d일이 지나지 않은 사람은 길드에 초대할 수 없습니다."),
-								quest::CQuestManager::instance().GetEventFlag( "guild_withdraw_delay" ) );
-						return;
 		case GERR_COMMISSIONPENALTY:
 						pchInvitee->ChatPacket( CHAT_TYPE_INFO,
 								LC_TEXT("<길드> 길드를 해산한 지 %d일이 지나지 않은 사람은 길드에 초대할 수 없습니다."),
@@ -2052,10 +2042,7 @@ void CGuild::InviteDeny( DWORD dwPID )
 
 CGuild::GuildJoinErrCode CGuild::VerifyGuildJoinableCondition( const LPCHARACTER pchInvitee )
 {
-	if ( get_global_time() - pchInvitee->GetQuestFlag( "guild_manage.new_withdraw_time" )
-			< CGuildManager::instance().GetWithdrawDelay() )
-		return GERR_WITHDRAWPENALTY;
-	else if ( get_global_time() - pchInvitee->GetQuestFlag( "guild_manage.new_disband_time" )
+	if ( get_global_time() - pchInvitee->GetQuestFlag( "guild_manage.new_disband_time" )
 			< CGuildManager::instance().GetDisbandDelay() )
 		return GERR_COMMISSIONPENALTY;
 	else if ( pchInvitee->GetGuild() )

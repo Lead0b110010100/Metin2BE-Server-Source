@@ -65,11 +65,6 @@ int CGuildManager::GetDisbandDelay()
 	return quest::CQuestManager::instance().GetEventFlag("guild_disband_delay") * (test_server ? 60 : 86400);
 }
 
-int CGuildManager::GetWithdrawDelay()
-{
-	return quest::CQuestManager::instance().GetEventFlag("guild_withdraw_delay") * (test_server ? 60 : 86400);
-}
-
 DWORD CGuildManager::CreateGuild(TGuildCreateParameter& gcp)
 {
 	if (!gcp.master)
