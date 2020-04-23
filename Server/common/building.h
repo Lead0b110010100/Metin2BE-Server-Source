@@ -16,7 +16,7 @@ namespace building
 		long	width, height;
 		DWORD	dwGuildID;
 		BYTE	bGuildLevelLimit;
-		DWORD	dwPrice;
+		GoldType	dwPrice;
 	} TLand;
 
 	typedef struct SObjectMaterial
@@ -28,7 +28,7 @@ namespace building
 	typedef struct SObjectProto
 	{
 		DWORD	dwVnum;
-		DWORD	dwPrice;
+		GoldType	dwPrice;
 
 		TObjectMaterial kMaterials[OBJECT_MATERIAL_MAX_NUM];
 

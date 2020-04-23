@@ -1026,7 +1026,7 @@ static void __CheckPlayerSlot(const std::string& service_name)
 #ifndef ENABLE_PLAYER_PER_ACCOUNT5
 	if (PLAYER_PER_ACCOUNT != 4)
 	{
-		printf("<ERROR> PLAYER_PER_ACCOUNT = %d\n", PLAYER_PER_ACCOUNT);
+		printf("<ERROR> PLAYER_PER_ACCOUNT = %lld\n", PLAYER_PER_ACCOUNT);
 		exit(0);
 	}
 #endif

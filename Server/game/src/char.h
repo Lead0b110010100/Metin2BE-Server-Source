@@ -395,14 +395,14 @@ struct DynamicCharacterPtr {
 /* 저장하는 데이터 */
 typedef struct character_point
 {
-	long			points[POINT_MAX_NUM];
+	GoldType			points[POINT_MAX_NUM];
 
 	BYTE			job;
 	BYTE			voice;
 
 	BYTE			level;
 	DWORD			exp;
-	long			gold;
+	GoldType			gold;
 
 	int				hp;
 	int				sp;
@@ -418,7 +418,7 @@ typedef struct character_point
 /* 저장되지 않는 캐릭터 데이터 */
 typedef struct character_point_instant
 {
-	long			points[POINT_MAX_NUM];
+	GoldType			points[POINT_MAX_NUM];
 
 	float			fRot;
 
@@ -716,8 +716,8 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		void			SetRealPoint(BYTE idx, int val);
 		int				GetRealPoint(BYTE idx) const;
 
-		void			SetPoint(BYTE idx, int val);
-		int				GetPoint(BYTE idx) const;
+		void			SetPoint(BYTE idx, GoldType val);
+		GoldType				GetPoint(BYTE idx) const;
 		int				GetLimitPoint(BYTE idx) const;
 		int				GetPolymorphPoint(BYTE idx) const;
 
@@ -762,7 +762,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 
 		void			ComputePoints();
 		void			ComputeBattlePoints();
-		void			PointChange(BYTE type, int amount, bool bAmount = false, bool bBroadcast = false);
+		void			PointChange(BYTE type, GoldType amount, bool bAmount = false, bool bBroadcast = false);
 		void			PointsPacket();
 		void			ApplyPoint(BYTE bApplyType, int iVal);
 		void			CheckMaximumPoints();	// HP, SP 등의 현재 값이 최대값 보다 높은지 검사하고 높다면 낮춘다.
@@ -1120,8 +1120,8 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		// ADD_REFINE_BUILDING
 		bool			IsRefineThroughGuild() const;
 		CGuild *		GetRefineGuild() const;
-		int				ComputeRefineFee(int iCost, int iMultiply = 5) const;
-		void			PayRefineFee(int iTotalMoney);
+		GoldType				ComputeRefineFee(GoldType iCost, int iMultiply = 5) const;
+		void			PayRefineFee(GoldType iTotalMoney);
 		void			SetRefineNPC(LPCHARACTER ch);
 		// END_OF_ADD_REFINE_BUILDING
 
@@ -1192,7 +1192,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		 * @param [in]	dwItemVnum 아이템 vnum
 		 * @param [in]	dwItemPrice 아이템 가격
 		 */
-		void			SendMyShopPriceListCmd(DWORD dwItemVnum, DWORD dwItemPrice);
+		void			SendMyShopPriceListCmd(DWORD dwItemVnum, GoldType dwItemPrice);
 
 		bool			m_bNoOpenedShop;	///< 이번 접속 후 개인상점을 연 적이 있는지의 여부(열었던 적이 없다면 true)
 
@@ -1204,11 +1204,11 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 	public:
 		////////////////////////////////////////////////////////////////////////////////////////
 		// Money related
-		INT				GetGold() const		{ return m_points.gold;	}
-		void			SetGold(INT gold)	{ m_points.gold = gold;	}
-		bool			DropGold(INT gold);
+		GoldType				GetGold() const		{ return m_points.gold;	}
+		void			SetGold(GoldType gold)	{ m_points.gold = gold;	}
+		bool			DropGold(GoldType gold);
 		INT				GetAllowedGold() const;
-		void			GiveGold(INT iAmount);	// 파티가 있으면 파티 분배, 로그 등의 처리
+		void			GiveGold(GoldType iAmount);	// 파티가 있으면 파티 분배, 로그 등의 처리
 		// End of Money
 
 		////////////////////////////////////////////////////////////////////////////////////////
@@ -1698,8 +1698,8 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		void				SetQuestBy(DWORD dwQuestVnum)	{ m_dwQuestByVnum = dwQuestVnum; }
 		DWORD				GetQuestBy() const			{ return m_dwQuestByVnum; }
 
-		int					GetQuestFlag(const std::string& flag) const;
-		void				SetQuestFlag(const std::string& flag, int value);
+		GoldType					GetQuestFlag(const std::string& flag) const;
+		void				SetQuestFlag(const std::string& flag, GoldType value);
 
 		void				ConfirmWithMsg(const char* szMsg, int iTimeout, DWORD dwRequestPID);
 

@@ -650,7 +650,7 @@ bool CHARACTER::DoRefine(LPITEM item, bool bMoneyOnly)
 	DWORD result_vnum = item->GetRefinedVnum();
 
 	// REFINE_COST
-	int cost = ComputeRefineFee(prt->cost);
+	GoldType cost = ComputeRefineFee(prt->cost);
 
 	int RefineChance = GetQuestFlag("main_quest_lv7.refine_chance");
 
@@ -739,12 +739,12 @@ bool CHARACTER::DoRefine(LPITEM item, bool bMoneyOnly)
 			pkNewItem->AddToCharacter(this, TItemPos(INVENTORY, bCell));
 			ITEM_MANAGER::instance().FlushDelayedSave(pkNewItem);
 
-			sys_log(0, "Refine Success %d", cost);
+			sys_log(0, "Refine Success %lld", cost);
 			pkNewItem->AttrLog();
 			//PointChange(POINT_GOLD, -cost);
-			sys_log(0, "PayPee %d", cost);
+			sys_log(0, "PayPee %lld", cost);
 			PayRefineFee(cost);
-			sys_log(0, "PayPee End %d", cost);
+			sys_log(0, "PayPee End %lld", cost);
 
 			if (pkNewItem->GetRefineLevel() == 9)
 			{
@@ -1380,10 +1380,10 @@ void CHARACTER::__OpenPrivateShop()
 }
 
 // MYSHOP_PRICE_LIST
-void CHARACTER::SendMyShopPriceListCmd(DWORD dwItemVnum, DWORD dwItemPrice)
+void CHARACTER::SendMyShopPriceListCmd(DWORD dwItemVnum, GoldType dwItemPrice)
 {
 	char szLine[256];
-	snprintf(szLine, sizeof(szLine), "MyShopPriceList %u %u", dwItemVnum, dwItemPrice);
+	snprintf(szLine, sizeof(szLine), "MyShopPriceList %u %lld", dwItemVnum, dwItemPrice);
 	ChatPacket(CHAT_TYPE_COMMAND, szLine);
 	sys_log(0, szLine);
 }
@@ -5331,7 +5331,7 @@ bool CHARACTER::DropItem(TItemPos Cell, BYTE bCount)
 	return true;
 }
 
-bool CHARACTER::DropGold(int gold)
+bool CHARACTER::DropGold(GoldType gold)
 {
 	if (gold <= 0 || gold > GetGold())
 		return false;
@@ -5547,9 +5547,9 @@ namespace NPartyPickupDistribute
 		int		total;
 		LPCHARACTER	c;
 		int		x, y;
-		int		iMoney;
+		GoldType		iMoney;
 
-		FMoneyDistributor(LPCHARACTER center, int iMoney)
+		FMoneyDistributor(LPCHARACTER center, GoldType iMoney)
 			: total(0), c(center), x(center->GetX()), y(center->GetY()), iMoney(iMoney)
 		{
 		}
@@ -5570,27 +5570,27 @@ namespace NPartyPickupDistribute
 	};
 }
 
-void CHARACTER::GiveGold(int iAmount)
+void CHARACTER::GiveGold(GoldType iAmount)
 {
 	if (iAmount <= 0)
 		return;
 
-	sys_log(0, "GIVE_GOLD: %s %d", GetName(), iAmount);
+	sys_log(0, "GIVE_GOLD: %s %lld", GetName(), iAmount);
 
 	if (GetParty())
 	{
 		LPPARTY pParty = GetParty();
 
 		// 파티가 있는 경우 나누어 가진다.
-		DWORD dwTotal = iAmount;
-		DWORD dwMyAmount = dwTotal;
+		GoldType dwTotal = iAmount;
+		GoldType dwMyAmount = dwTotal;
 
 		NPartyPickupDistribute::FCountNearMember funcCountNearMember(this);
 		pParty->ForEachOnlineMember(funcCountNearMember);
 
 		if (funcCountNearMember.total > 1)
 		{
-			DWORD dwShare = dwTotal / funcCountNearMember.total;
+			GoldType dwShare = dwTotal / funcCountNearMember.total;
 			dwMyAmount -= dwShare * (funcCountNearMember.total - 1);
 
 			NPartyPickupDistribute::FMoneyDistributor funcMoneyDist(this, dwShare);

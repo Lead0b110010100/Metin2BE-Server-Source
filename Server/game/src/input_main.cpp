@@ -1256,13 +1256,13 @@ void CInputMain::Exchange(LPCHARACTER ch, const char * data)
 		case EXCHANGE_SUBHEADER_CG_ELK_ADD:	// arg1 == amount of gold
 			if (ch->GetExchange())
 			{
-				const int64_t nTotalGold = static_cast<int64_t>(ch->GetExchange()->GetCompany()->GetOwner()->GetGold()) + static_cast<int64_t>(pinfo->arg1);
+				const GoldType nTotalGold = static_cast<GoldType>(ch->GetExchange()->GetCompany()->GetOwner()->GetGold()) + static_cast<GoldType>(pinfo->arg1);
 
 				if (GOLD_MAX <= nTotalGold)
 				{
 					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("상대방의 총금액이 20억 냥을 초과하여 거래를 할수가 없습니다.."));
 
-					sys_err("[OVERFLOW_GOLD] ELK_ADD (%u) id %u name %s ",
+					sys_err("[OVERFLOW_GOLD] ELK_ADD (%lld) id %u name %s ",
 							ch->GetExchange()->GetCompany()->GetOwner()->GetGold(),
 							ch->GetExchange()->GetCompany()->GetOwner()->GetPlayerID(),
 						   	ch->GetExchange()->GetCompany()->GetOwner()->GetName());

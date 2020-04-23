@@ -1627,7 +1627,7 @@ ACMD(do_set)
 	{
 		case DoSetTypes::GOLD:	// gold
 			{
-				int gold = 0;
+				GoldType gold = 0;
 				str_to_number(gold, arg3);
 				DBManager::instance().SendMoneyLog(MONEY_LOG_MISC, 3, gold);
 				tch->PointChange(POINT_GOLD, gold, true);
@@ -1773,9 +1773,18 @@ ACMD(do_set)
 
 	if (set_fields[i].type == NUMBER)
 	{
-		int	amount = 0;
-		str_to_number(amount, arg3);
-		ch->ChatPacket(CHAT_TYPE_INFO, "%s's %s set to [%d]", tch->GetName(), set_fields[i].cmd, amount);
+		if (i == DoSetTypes::GOLD)
+		{
+			GoldType amount = 0;
+			str_to_number(amount, arg3);
+			ch->ChatPacket(CHAT_TYPE_INFO, "%s's %s set to [%lld]", tch->GetName(), set_fields[i].cmd, amount);
+		}
+		else
+		{
+			int amount = 0;
+			str_to_number(amount, arg3);
+			ch->ChatPacket(CHAT_TYPE_INFO, "%s's %s set to [%d]", tch->GetName(), set_fields[i].cmd, amount);
+		}
 	}
 }
 
@@ -3271,7 +3280,7 @@ ACMD(do_build)
 					// 건설 재료 소모하기 (테섭에서는 GM도 소모)
 				{
 					// 건설 비용 소모
-					ch->PointChange(POINT_GOLD, -t->dwPrice);
+					ch->PointChange(POINT_GOLD, -static_cast<GoldType>(t->dwPrice));
 
 					// 아이템 자재 사용하기
 					{

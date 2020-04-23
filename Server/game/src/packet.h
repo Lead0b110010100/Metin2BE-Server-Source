@@ -797,7 +797,7 @@ typedef struct command_exchange
 {
 	BYTE	header;
 	BYTE	sub_header;
-	DWORD	arg1;
+	GoldType	arg1;
 	BYTE	arg2;
 	TItemPos	Pos;
 } TPacketCGExchange;
@@ -1099,7 +1099,7 @@ typedef struct packet_main_character4_bgm_vol
 typedef struct packet_points
 {
 	BYTE	header;
-	INT		points[POINT_MAX_NUM];
+	GoldType		points[POINT_MAX_NUM];
 } TPacketGCPoints;
 
 typedef struct packet_skill_level
@@ -1113,8 +1113,8 @@ typedef struct packet_point_change
 	int		header;
 	DWORD	dwVID;
 	BYTE	type;
-	long	amount;
-	long	value;
+	GoldType	amount;
+	GoldType	value;
 } TPacketGCPointChange;
 
 typedef struct packet_stun
@@ -1251,7 +1251,7 @@ enum EPacketShopSubHeaders
 struct packet_shop_item
 {
 	DWORD       vnum;
-	DWORD       price;
+	GoldType       price;
 	BYTE        count;
 	BYTE		display_pos;
 	long	alSockets[ITEM_SOCKET_MAX_NUM];
@@ -1284,7 +1284,7 @@ typedef struct packet_shop_update_item
 
 typedef struct packet_shop_update_price
 {
-	int				iPrice;
+	GoldType				iPrice;
 } TPacketGCShopUpdatePrice;
 
 typedef struct packet_shop	// 가변 패킷
@@ -1299,7 +1299,7 @@ struct packet_exchange
 	BYTE	header;
 	BYTE	sub_header;
 	BYTE	is_me;
-	DWORD	arg1;	// vnum
+	GoldType	arg1;	// vnum
 	TItemPos	arg2;	// cell
 	DWORD	arg3;	// count
 #ifdef WJ_ENABLE_TRADABLE_ICON
@@ -1999,7 +1999,7 @@ typedef struct SPacketGCRefineInformaion
 	DWORD	src_vnum;
 	DWORD	result_vnum;
 	BYTE	material_count;
-	int		cost; // 소요 비용
+	GoldType		cost; // 소요 비용
 	int		prob; // 확률
 	TRefineMaterial materials[REFINE_MATERIAL_MAX_NUM];
 } TPacketGCRefineInformation;

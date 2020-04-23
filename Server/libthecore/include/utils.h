@@ -1,6 +1,8 @@
 #ifndef __INC_LIBTHECORE_UTILS_H__
 #define __INC_LIBTHECORE_UTILS_H__
 
+#include "../../common/CommonDefines.h"
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -45,9 +47,9 @@ extern "C"
     // 현재 시간 curr_tm으로 부터 days가 지난 날을 리턴
     extern struct tm *		tm_calc(const struct tm *curr_tm, int days);
 
-    extern int MAX(int a, int b); // 둘중에 큰 값을 리턴
-    extern int MIN(int a, int b); // 둘중에 작은 값을 리턴
-    extern int MINMAX(int min, int value, int max); // 최소 최대 값을 함께 비교해서 리턴
+    extern GoldType MAX(GoldType a, GoldType b);                        // 둘중에 큰 값을 리턴
+    extern GoldType MIN(GoldType a, GoldType b);                        // 둘중에 작은 값을 리턴
+    extern GoldType MINMAX(GoldType min, GoldType value, GoldType max); // 최소 최대 값을 함께 비교해서 리턴
 
     extern int		number_ex(int from, int to, const char *file, int line); // from으로 부터 to까지의 랜덤 값 리턴
 #define number(from, to) number_ex(from, to, __FILE__, __LINE__)

@@ -15,7 +15,7 @@ class CShop
 		typedef struct shop_item
 		{
 			DWORD	vnum;		// 아이템 번호
-			long	price;		// 가격
+			GoldType	price;		// 가격
 			BYTE	count;		// 아이템 개수
 
 			LPITEM	pkItem;
@@ -45,7 +45,7 @@ class CShop
 		void	RemoveGuest(LPCHARACTER ch);
 
 		// 물건 구입
-		virtual int	Buy(LPCHARACTER ch, BYTE pos);
+		virtual GoldType	Buy(LPCHARACTER ch, BYTE pos);
 
 		// 게스트에게 패킷을 보냄
 		void	BroadcastUpdateItem(BYTE pos);

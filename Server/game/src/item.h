@@ -38,8 +38,8 @@ class CItem : public CEntity
 		void			SetProto(const TItemTable * table);
 		TItemTable const *	GetProto()	{ return m_pProto; }
 
-		int		GetGold();
-		int		GetShopBuyPrice();
+		GoldType		GetGold();
+		GoldType		GetShopBuyPrice();
 		const char *	GetName()		{ return m_pProto ? m_pProto->szLocaleName : NULL; }
 		const char *	GetBaseName()		{ return m_pProto ? m_pProto->szName : NULL; }
 		BYTE		GetSize()		{ return m_pProto ? m_pProto->bSize : 0;	}

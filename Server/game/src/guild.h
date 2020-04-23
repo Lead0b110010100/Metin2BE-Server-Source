@@ -66,7 +66,7 @@ typedef struct packet_guild_sub_info
 	DWORD exp;
 	BYTE level;
 	char name[GUILD_NAME_MAX_LEN+1];
-	DWORD gold;
+	GoldType gold;
 	BYTE has_land;
 } TPacketGCGuildInfo;
 
@@ -119,7 +119,7 @@ typedef struct SGuildData
 	int		draw;
 	int		loss;
 
-	int		gold;
+	GoldType		gold;
 } TGuildData;
 
 struct TGuildCreateParameter
@@ -262,13 +262,13 @@ class CGuild
 		void		AdvanceLevel(int iLevel);
 
 		// Guild Money
-		void		RequestDepositMoney(LPCHARACTER ch, int iGold);
-		void		RequestWithdrawMoney(LPCHARACTER ch, int iGold);
+		void		RequestDepositMoney(LPCHARACTER ch, GoldType iGold);
+		void		RequestWithdrawMoney(LPCHARACTER ch, GoldType iGold);
 
-		void		RecvMoneyChange(int iGold);
-		void		RecvWithdrawMoneyGive(int iChangeGold); // bGive==1 이면 길드장에게 주는 걸 시도하고 성공실패를 디비에게 보낸다
+		void		RecvMoneyChange(GoldType iGold);
+		void		RecvWithdrawMoneyGive(GoldType iChangeGold); // bGive==1 이면 길드장에게 주는 걸 시도하고 성공실패를 디비에게 보낸다
 
-		int		GetGuildMoney() const	{ return m_data.gold; }
+		GoldType		GetGuildMoney() const	{ return m_data.gold; }
 
 		// War general
 		void		GuildWarPacket(DWORD guild_id, BYTE bWarType, BYTE bWarState);

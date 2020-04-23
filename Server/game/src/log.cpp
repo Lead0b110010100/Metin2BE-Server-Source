@@ -82,16 +82,16 @@ void LogManager::ItemLog(LPCHARACTER ch, int itemID, int itemVnum, const char * 
 	ItemLog(ch->GetPlayerID(), ch->GetX(), ch->GetY(), itemID, c_pszText, c_pszHint, ch->GetDesc() ? ch->GetDesc()->GetHostName() : "", itemVnum);
 }
 
-void LogManager::CharLog(DWORD dwPID, DWORD x, DWORD y, DWORD dwValue, const char * c_pszText, const char * c_pszHint, const char * c_pszIP)
+void LogManager::CharLog(DWORD dwPID, DWORD x, DWORD y, GoldType dwValue, const char * c_pszText, const char * c_pszHint, const char * c_pszIP)
 {
 	LOG_LEVEL_CHECK_N_RET(LOG_LEVEL_MIN);
 	m_sql.EscapeString(__escape_hint, sizeof(__escape_hint), c_pszHint, strlen(c_pszHint));
 
-	Query("INSERT DELAYED INTO log%s (type, time, who, x, y, what, how, hint, ip) VALUES('CHARACTER', NOW(), %u, %u, %u, %u, '%s', '%s', '%s')",
+	Query("INSERT DELAYED INTO log%s (type, time, who, x, y, what, how, hint, ip) VALUES('CHARACTER', NOW(), %u, %u, %u, %lld, '%s', '%s', '%s')",
 			get_table_postfix(), dwPID, x, y, dwValue, c_pszText, __escape_hint, c_pszIP);
 }
 
-void LogManager::CharLog(LPCHARACTER ch, DWORD dw, const char * c_pszText, const char * c_pszHint)
+void LogManager::CharLog(LPCHARACTER ch, GoldType dw, const char * c_pszText, const char * c_pszHint)
 {
 	LOG_LEVEL_CHECK_N_RET(LOG_LEVEL_MIN);
 	if (ch)
@@ -107,16 +107,16 @@ void LogManager::LoginLog(bool isLogin, DWORD dwAccountID, DWORD dwPID, BYTE bLe
 			get_table_postfix(), isLogin ? "'LOGIN'" : "'LOGOUT'", g_bChannel, dwAccountID, dwPID, bLevel, bJob, dwPlayTime);
 }
 
-void LogManager::MoneyLog(BYTE type, DWORD vnum, int gold)
+void LogManager::MoneyLog(BYTE type, DWORD vnum, GoldType gold)
 {
 	LOG_LEVEL_CHECK_N_RET(LOG_LEVEL_MAX);
 	if (type == MONEY_LOG_RESERVED || type >= MONEY_LOG_TYPE_MAX_NUM)
 	{
-		sys_err("TYPE ERROR: type %d vnum %u gold %d", type, vnum, gold);
+		sys_err("TYPE ERROR: type %d vnum %u gold %lld", type, vnum, gold);
 		return;
 	}
 
-	Query("INSERT DELAYED INTO money_log%s VALUES (NOW(), %d, %d, %d)", get_table_postfix(), type, vnum, gold);
+	Query("INSERT DELAYED INTO money_log%s VALUES (NOW(), %d, %d, %lld)", get_table_postfix(), type, vnum, gold);
 }
 
 void LogManager::HackLog(const char * c_pszHackName, const char * c_pszLogin, const char * c_pszName, const char * c_pszIP)

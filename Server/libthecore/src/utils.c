@@ -326,19 +326,19 @@ struct tm * tm_calc(const struct tm * curr_tm, int days)
     return (&new_tm);
 }
 
-int MIN(int a, int b)
+GoldType MIN(GoldType a, GoldType b)
 {
     return a < b ? a : b;
 }
 
-int MAX(int a, int b)
+GoldType MAX(GoldType a, GoldType b)
 {
     return a > b ? a : b;
 }
 
-int MINMAX(int min, int value, int max)
+GoldType MINMAX(GoldType min, GoldType value, GoldType max)
 {
-    register int tv;
+    register GoldType tv;
 
     tv = (min > value ? min : value);
     return (max < tv) ? max : tv;

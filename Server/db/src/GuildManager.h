@@ -114,7 +114,7 @@ typedef struct SGuild
 	int	win;
 	int	draw;
 	int	loss;
-	int	gold;
+	GoldType	gold;
 	int	level;
 } TGuild;
 
@@ -191,12 +191,12 @@ class CGuildManager : public singleton<CGuildManager>
 
 	void	UseSkill(DWORD dwGuild, DWORD dwSkillVnum, DWORD dwCooltime);
 
-	INT		GetGuildGold(DWORD dwGuild);
-	void	DepositMoney(DWORD dwGuild, INT lGold);
-	void	WithdrawMoney(CPeer* peer, DWORD dwGuild, INT lGold);
-	void	WithdrawMoneyReply(DWORD dwGuild, BYTE bGiveSuccess, INT lGold);
+	GoldType		GetGuildGold(DWORD dwGuild);
+	void	DepositMoney(DWORD dwGuild, GoldType lGold);
+	void	WithdrawMoney(CPeer* peer, DWORD dwGuild, GoldType lGold);
+	void	WithdrawMoneyReply(DWORD dwGuild, BYTE bGiveSuccess, GoldType lGold);
 
-	void	MoneyChange(DWORD dwGuild, DWORD dwGold);
+	void	MoneyChange(DWORD dwGuild, GoldType dwGold);
 
 	void	QueryRanking();
 	void	ResultRanking(MYSQL_RES * pRes);

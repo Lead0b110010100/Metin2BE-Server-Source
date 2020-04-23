@@ -17,6 +17,8 @@ enum eCommonDefines {
 
 #define WJ_ENABLE_TRADABLE_ICON
 
+typedef long long GoldType;
+
 //////////////////////////////////////////////////////////////////////////
 // ### CommonDefines Systems ###
 // #define ENABLE_WOLFMAN_CHARACTER

@@ -539,7 +539,9 @@ bool Cube_make (LPCHARACTER ch)
 		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("제조 재료가 부족합니다"));
 		return false;
 	}
-	int cube_gold = cube_proto->gold;
+
+	GoldType cube_gold = cube_proto->gold;
+
 	if (cube_gold < 0 || ch->GetGold() < cube_gold)
 	{
 		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("돈이 부족하거나 아이템이 제자리에 없습니다."));	// 이 텍스트는 이미 널리 쓰이는거라 추가번역 필요 없음

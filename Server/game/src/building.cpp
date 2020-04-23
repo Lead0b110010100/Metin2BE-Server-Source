@@ -654,7 +654,7 @@ bool CManager::LoadObjectProto(const TObjectProto * pProto, int size) // from DB
 		TObjectProto & r = m_vec_kObjectProto[i];
 
 		// BUILDING_NPC
-		sys_log(0, "ObjectProto %u price %u upgrade %u upg_limit %u life %d NPC %u",
+		sys_log(0, "ObjectProto %u price %lld upgrade %u upg_limit %u life %d NPC %u",
 				r.dwVnum, r.dwPrice, r.dwUpgradeVnum, r.dwUpgradeLimitTime, r.lLife, r.dwNPCVnum);
 		// END_OF_BUILDING_NPC
 

@@ -765,9 +765,9 @@ void CGuildManager::UseSkill(DWORD GID, DWORD dwSkillVnum, DWORD dwCooltime)
 	// END_OF_GUILD_SKILL_COOLTIME_BUG_FIX
 }
 
-void CGuildManager::MoneyChange(DWORD dwGuild, DWORD dwGold)
+void CGuildManager::MoneyChange(DWORD dwGuild, GoldType dwGold)
 {
-	sys_log(0, "GuildManager::MoneyChange %d %d", dwGuild, dwGold);
+	sys_log(0, "GuildManager::MoneyChange %d %lld", dwGuild, dwGold);
 
 	TPacketDGGuildMoneyChange p;
 	p.dwGuild = dwGuild;
@@ -775,11 +775,11 @@ void CGuildManager::MoneyChange(DWORD dwGuild, DWORD dwGold)
 	CClientManager::instance().ForwardPacket(HEADER_DG_GUILD_MONEY_CHANGE, &p, sizeof(p));
 
 	char buf[1024];
-	snprintf(buf, sizeof(buf), "UPDATE guild%s SET gold=%u WHERE id = %u", GetTablePostfix(), dwGold, dwGuild);
+	snprintf(buf, sizeof(buf), "UPDATE guild%s SET gold=%lld WHERE id = %u", GetTablePostfix(), dwGold, dwGuild);
 	CDBManager::instance().AsyncQuery(buf);
 }
 
-void CGuildManager::DepositMoney(DWORD dwGuild, INT iGold)
+void CGuildManager::DepositMoney(DWORD dwGuild, GoldType iGold)
 {
 	if (iGold <= 0)
 		return;
@@ -793,12 +793,12 @@ void CGuildManager::DepositMoney(DWORD dwGuild, INT iGold)
 	}
 
 	it->second.gold += iGold;
-	sys_log(0, "GUILD: %u Deposit %u Total %d", dwGuild, iGold, it->second.gold);
+	sys_log(0, "GUILD: %u Deposit %lld Total %lld", dwGuild, iGold, it->second.gold);
 
 	MoneyChange(dwGuild, it->second.gold);
 }
 
-void CGuildManager::WithdrawMoney(CPeer* peer, DWORD dwGuild, INT iGold)
+void CGuildManager::WithdrawMoney(CPeer* peer, DWORD dwGuild, GoldType iGold)
 {
 	itertype(m_map_kGuild) it = m_map_kGuild.find(dwGuild);
 
@@ -812,7 +812,7 @@ void CGuildManager::WithdrawMoney(CPeer* peer, DWORD dwGuild, INT iGold)
 	if (it->second.gold >= iGold)
 	{
 		it->second.gold -= iGold;
-		sys_log(0, "GUILD: %u Withdraw %d Total %d", dwGuild, iGold, it->second.gold);
+		sys_log(0, "GUILD: %u Withdraw %lld Total %lld", dwGuild, iGold, it->second.gold);
 
 		TPacketDGGuildMoneyWithdraw p;
 		p.dwGuild = dwGuild;
@@ -823,14 +823,14 @@ void CGuildManager::WithdrawMoney(CPeer* peer, DWORD dwGuild, INT iGold)
 	}
 }
 
-void CGuildManager::WithdrawMoneyReply(DWORD dwGuild, BYTE bGiveSuccess, INT iGold)
+void CGuildManager::WithdrawMoneyReply(DWORD dwGuild, BYTE bGiveSuccess, GoldType iGold)
 {
 	itertype(m_map_kGuild) it = m_map_kGuild.find(dwGuild);
 
 	if (it == m_map_kGuild.end())
 		return;
 
-	sys_log(0, "GuildManager::WithdrawMoneyReply : guild %u success %d gold %d", dwGuild, bGiveSuccess, iGold);
+	sys_log(0, "GuildManager::WithdrawMoneyReply : guild %u success %d gold %lld", dwGuild, bGiveSuccess, iGold);
 
 	if (!bGiveSuccess)
 		it->second.gold += iGold;

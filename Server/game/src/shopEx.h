@@ -26,7 +26,7 @@ public:
 	virtual bool	AddGuest(LPCHARACTER ch,DWORD owner_vid, bool bOtherEmpire);
 	virtual void	SetPCShop(LPCHARACTER ch) { return; }
 	virtual bool	IsPCShop() { return false; }
-	virtual int		Buy(LPCHARACTER ch, BYTE pos);
+	virtual GoldType		Buy(LPCHARACTER ch, BYTE pos);
 	virtual bool	IsSellingItem(DWORD itemID) { return false; }
 
 	size_t			GetTabCount() { return m_vec_shopTabs.size(); }

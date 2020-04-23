@@ -668,14 +668,14 @@ void CHARACTER::OpenMyShop(const char * c_pszSign, TShopItemTable * pTable, BYTE
 	if (bItemCount == 0)
 		return;
 
-	int64_t nTotalMoney = 0;
+	GoldType nTotalMoney = 0;
 
 	for (int n = 0; n < bItemCount; ++n)
 	{
-		nTotalMoney += static_cast<int64_t>((pTable+n)->price);
+		nTotalMoney += static_cast<GoldType>((pTable + n)->price);
 	}
 
-	nTotalMoney += static_cast<int64_t>(GetGold());
+	nTotalMoney += static_cast<GoldType>(GetGold());
 
 	if (GOLD_MAX <= nTotalMoney)
 	{
@@ -2980,7 +2980,7 @@ int CHARACTER::GetPolymorphPoint(BYTE type) const
 	return GetPoint(type);
 }
 
-int CHARACTER::GetPoint(BYTE type) const
+GoldType CHARACTER::GetPoint(BYTE type) const
 {
 	if (type >= POINT_MAX_NUM)
 	{
@@ -2988,8 +2988,8 @@ int CHARACTER::GetPoint(BYTE type) const
 		return 0;
 	}
 
-	int val = m_pointsInstant.points[type];
-	int max_val = INT_MAX;
+	GoldType val = m_pointsInstant.points[type];
+	GoldType max_val = INT_MAX;
 
 	switch (type)
 	{
@@ -3000,7 +3000,7 @@ int CHARACTER::GetPoint(BYTE type) const
 	}
 
 	if (val > max_val)
-		sys_err("POINT_ERROR: %s type %d val %d (max: %d)", GetName(), val, max_val);
+		sys_err("POINT_ERROR: %s type %d val %lld (max: %lld)", GetName(), val, max_val);
 
 	return (val);
 }
@@ -3063,7 +3063,7 @@ int CHARACTER::GetLimitPoint(BYTE type) const
 	return (val);
 }
 
-void CHARACTER::SetPoint(BYTE type, int val)
+void CHARACTER::SetPoint(BYTE type, GoldType val)
 {
 	if (type >= POINT_MAX_NUM)
 	{
@@ -3099,9 +3099,9 @@ void CHARACTER::CheckMaximumPoints()
 		PointChange(POINT_SP, GetMaxSP() - GetSP());
 }
 
-void CHARACTER::PointChange(BYTE type, int amount, bool bAmount, bool bBroadcast)
+void CHARACTER::PointChange(BYTE type, GoldType amount, bool bAmount, bool bBroadcast)
 {
-	int val = 0;
+	GoldType val = 0;
 
 	//sys_log(0, "PointChange %d %d | %d -> %d cHP %d mHP %d", type, amount, GetPoint(type), GetPoint(type)+amount, GetHP(), GetMaxHP());
 
@@ -3435,11 +3435,11 @@ void CHARACTER::PointChange(BYTE type, int amount, bool bAmount, bool bBroadcast
 
 		case POINT_GOLD:
 			{
-				const int64_t nTotalMoney = static_cast<int64_t>(GetGold()) + static_cast<int64_t>(amount);
+				const GoldType nTotalMoney = static_cast<GoldType>(GetGold()) + static_cast<GoldType>(amount);
 
 				if (GOLD_MAX <= nTotalMoney)
 				{
-					sys_err("[OVERFLOW_GOLD] OriGold %d AddedGold %d id %u Name %s ", GetGold(), amount, GetPlayerID(), GetName());
+					sys_err("[OVERFLOW_GOLD] OriGold %lld AddedGold %lld id %u Name %s ", GetGold(), amount, GetPlayerID(), GetName());
 					LogManager::instance().CharLog(this, GetGold() + amount, "OVERFLOW_GOLD", "");
 					return;
 				}
@@ -6373,17 +6373,25 @@ void CHARACTER::SetPolymorph(DWORD dwRaceNum, bool bMaintainStat)
 	ComputeBattlePoints();
 }
 
-int CHARACTER::GetQuestFlag(const std::string& flag) const
+GoldType CHARACTER::GetQuestFlag(const std::string& flag) const
 {
 	quest::CQuestManager& q = quest::CQuestManager::instance();
 	quest::PC* pPC = q.GetPC(GetPlayerID());
+
+	if (!pPC)
+		return 0;
+
 	return pPC->GetFlag(flag);
 }
 
-void CHARACTER::SetQuestFlag(const std::string& flag, int value)
+void CHARACTER::SetQuestFlag(const std::string& flag, GoldType value)
 {
 	quest::CQuestManager& q = quest::CQuestManager::instance();
 	quest::PC* pPC = q.GetPC(GetPlayerID());
+
+	if (!pPC)
+		return;
+
 	pPC->SetFlag(flag, value);
 }
 
@@ -6810,7 +6818,7 @@ bool CHARACTER::IsRefineThroughGuild() const
 	return GetRefineGuild() != NULL;
 }
 
-int CHARACTER::ComputeRefineFee(int iCost, int iMultiply) const
+GoldType CHARACTER::ComputeRefineFee(GoldType iCost, int iMultiply) const
 {
 	CGuild* pGuild = GetRefineGuild();
 	if (pGuild)
@@ -6829,24 +6837,9 @@ int CHARACTER::ComputeRefineFee(int iCost, int iMultiply) const
 		return iCost;
 }
 
-void CHARACTER::PayRefineFee(int iTotalMoney)
+void CHARACTER::PayRefineFee(GoldType iTotalMoney)
 {
-	int iFee = iTotalMoney / 10;
-	CGuild* pGuild = GetRefineGuild();
-
-	int iRemain = iTotalMoney;
-
-	if (pGuild)
-	{
-		// 자기 길드이면 iTotalMoney에 이미 10%가 제외되어있다
-		if (pGuild != GetGuild())
-		{
-			pGuild->RequestDepositMoney(this, iFee);
-			iRemain -= iFee;
-		}
-	}
-
-	PointChange(POINT_GOLD, -iRemain);
+	PointChange(POINT_GOLD, -iTotalMoney);
 }
 // END_OF_ADD_REFINE_BUILDING
 

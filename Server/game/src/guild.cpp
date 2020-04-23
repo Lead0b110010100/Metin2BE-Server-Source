@@ -1785,7 +1785,7 @@ void CGuild::AdvanceLevel(int iLevel)
 	m_data.level = MIN(GUILD_MAX_LEVEL, iLevel);
 }
 
-void CGuild::RequestDepositMoney(LPCHARACTER ch, int iGold)
+void CGuild::RequestDepositMoney(LPCHARACTER ch, GoldType iGold)
 {
 	if (false==ch->CanDeposit())
 	{
@@ -1809,10 +1809,10 @@ void CGuild::RequestDepositMoney(LPCHARACTER ch, int iGold)
 	LogManager::instance().CharLog(ch, iGold, "GUILD_DEPOSIT", buf);
 
 	ch->UpdateDepositPulse();
-	sys_log(0, "GUILD: DEPOSIT %s:%u player %s[%u] gold %d", GetName(), GetID(), ch->GetName(), ch->GetPlayerID(), iGold);
+	sys_log(0, "GUILD: DEPOSIT %s:%u player %s[%u] gold %lld", GetName(), GetID(), ch->GetName(), ch->GetPlayerID(), iGold);
 }
 
-void CGuild::RequestWithdrawMoney(LPCHARACTER ch, int iGold)
+void CGuild::RequestWithdrawMoney(LPCHARACTER ch, GoldType iGold)
 {
 	if (false==ch->CanDeposit())
 	{
@@ -1840,13 +1840,13 @@ void CGuild::RequestWithdrawMoney(LPCHARACTER ch, int iGold)
 	ch->UpdateDepositPulse();
 }
 
-void CGuild::RecvMoneyChange(int iGold)
+void CGuild::RecvMoneyChange(GoldType iGold)
 {
 	m_data.gold = iGold;
 
 	TPacketGCGuild p;
 	p.header = HEADER_GC_GUILD;
-	p.size = sizeof(p) + sizeof(int);
+	p.size = sizeof(p) + sizeof(GoldType);
 	p.subheader = GUILD_SUBHEADER_GC_MONEY_CHANGE;
 
 	for (itertype(m_memberOnline) it = m_memberOnline.begin(); it != m_memberOnline.end(); ++it)
@@ -1854,18 +1854,18 @@ void CGuild::RecvMoneyChange(int iGold)
 		LPCHARACTER ch = *it;
 		LPDESC d = ch->GetDesc();
 		d->BufferedPacket(&p, sizeof(p));
-		d->Packet(&iGold, sizeof(int));
+		d->Packet(&iGold, sizeof(GoldType));
 	}
 }
 
-void CGuild::RecvWithdrawMoneyGive(int iChangeGold)
+void CGuild::RecvWithdrawMoneyGive(GoldType iChangeGold)
 {
 	LPCHARACTER ch = GetMasterCharacter();
 
 	if (ch)
 	{
 		ch->PointChange(POINT_GOLD, iChangeGold);
-		sys_log(0, "GUILD: WITHDRAW %s:%u player %s[%u] gold %d", GetName(), GetID(), ch->GetName(), ch->GetPlayerID(), iChangeGold);
+		sys_log(0, "GUILD: WITHDRAW %s:%u player %s[%u] gold %lld", GetName(), GetID(), ch->GetName(), ch->GetPlayerID(), iChangeGold);
 	}
 
 	TPacketGDGuildMoneyWithdrawGiveReply p;

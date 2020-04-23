@@ -439,7 +439,7 @@ typedef struct SPlayerTable
 	short	st, ht, dx, iq;
 
 	DWORD	exp;
-	INT		gold;
+	GoldType		gold;
 
 	BYTE	dir;
 	INT		x, y, z;
@@ -605,7 +605,7 @@ typedef struct SShopItemTable
 	BYTE		count;
 
     TItemPos	pos;			// PC 상점에만 이용
-	DWORD		price;	// PC, shop_table_ex.txt 상점에만 이용
+	GoldType		price;	// PC, shop_table_ex.txt 상점에만 이용
 	BYTE		display_pos; // PC, shop_table_ex.txt 상점에만 이용, 보일 위치.
 } TShopItemTable;
 
@@ -657,8 +657,8 @@ typedef struct SItemTable : public SEntityTable
 	DWORD	dwWearFlags;
 	DWORD	dwImmuneFlag;
 
-	DWORD       dwGold;
-	DWORD       dwShopBuyPrice;
+	GoldType       dwGold;
+	GoldType       dwShopBuyPrice;
 
 	TItemLimit	aLimits[ITEM_LIMIT_MAX_NUM];
 	TItemApply	aApplies[ITEM_APPLY_MAX_NUM];
@@ -992,7 +992,7 @@ typedef struct SRefineTable
 	//DWORD result_vnum;
 	DWORD id;
 	BYTE material_count;
-	int cost; // 소요 비용
+	GoldType cost; // 소요 비용
 	int prob; // 확률
 	TRefineMaterial materials[REFINE_MATERIAL_MAX_NUM];
 } TRefineTable;
@@ -1144,31 +1144,31 @@ typedef struct SPacketMoneyLog
 {
 	BYTE type;
 	DWORD vnum;
-	INT gold;
+	GoldType gold;
 } TPacketMoneyLog;
 
 typedef struct SPacketGDGuildMoney
 {
 	DWORD dwGuild;
-	INT iGold;
+	GoldType iGold;
 } TPacketGDGuildMoney;
 
 typedef struct SPacketDGGuildMoneyChange
 {
 	DWORD dwGuild;
-	INT iTotalGold;
+	GoldType iTotalGold;
 } TPacketDGGuildMoneyChange;
 
 typedef struct SPacketDGGuildMoneyWithdraw
 {
 	DWORD dwGuild;
-	INT iChangeGold;
+	GoldType iChangeGold;
 } TPacketDGGuildMoneyWithdraw;
 
 typedef struct SPacketGDGuildMoneyWithdrawGiveReply
 {
 	DWORD dwGuild;
-	INT iChangeGold;
+	GoldType iChangeGold;
 	BYTE bGiveSuccess;
 } TPacketGDGuildMoneyWithdrawGiveReply;
 
@@ -1320,7 +1320,7 @@ typedef struct SPacketMyshopPricelistHeader
 typedef struct SItemPriceInfo
 {
 	DWORD	dwVnum;		///< 아이템 vnum
-	DWORD	dwPrice;	///< 가격
+	GoldType	dwPrice;	///< 가격
 } TItemPriceInfo;
 
 /// 개인상점 아이템 가격정보 리스트 테이블

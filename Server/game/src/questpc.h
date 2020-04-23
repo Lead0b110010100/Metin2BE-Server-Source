@@ -95,8 +95,8 @@ namespace quest
 			vector<TQuestStateChangeInfo> m_QuestStateChange;
 
 		public:
-			void		SetFlag(const string & name, int value, bool bSkipSave = false);
-			int			GetFlag(const string & name);
+			void		SetFlag(const string & name, GoldType value, bool bSkipSave = false);
+			GoldType			GetFlag(const string & name);
 			bool		DeleteFlag(const string & name);
 
 			const string &	GetCurrentQuestName() const;
@@ -146,7 +146,7 @@ namespace quest
 		private:
 			void		SetSendFlag(int idx);
 			void		ClearSendFlag() { m_iSendToClient = 0; }
-			void		SaveFlag(const string & name, int value);
+			void		SaveFlag(const string & name, GoldType value);
 
 			void		ClearCurrentQuestBeginFlag();
 			void		SetCurrentQuestBeginFlag();

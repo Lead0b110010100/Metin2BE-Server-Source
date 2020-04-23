@@ -49,12 +49,12 @@ namespace quest
 		return CQuestManager::instance().GetQuestIndexByName(GetCurrentQuestName());
 	}
 
-	void PC::SetFlag(const string& name, int value, bool bSkipSave)
+	void PC::SetFlag(const string& name, GoldType value, bool bSkipSave)
 	{
 		if ( test_server )
-			sys_log(0, "QUEST Setting flag %s %d", name.c_str(),value);
+			sys_log(0, "QUEST Setting flag %s %lld", name.c_str(),value);
 		else
-			sys_log(1, "QUEST Setting flag %s %d", name.c_str(),value);
+			sys_log(1, "QUEST Setting flag %s %lld", name.c_str(),value);
 
 		if (value == 0)
 		{
@@ -89,19 +89,19 @@ namespace quest
 		return false;
 	}
 
-	int PC::GetFlag(const string & name)
+	GoldType PC::GetFlag(const string & name)
 	{
 		TFlagMap::iterator it = m_FlagMap.find(name);
 
 		if (it != m_FlagMap.end())
 		{
-			sys_log(1, "QUEST getting flag %s %d", name.c_str(),it->second);
+			sys_log(1, "QUEST getting flag %s %lld", name.c_str(),it->second);
 			return it->second;
 		}
 		return 0;
 	}
 
-	void PC::SaveFlag(const string & name, int value)
+	void PC::SaveFlag(const string & name, GoldType value)
 	{
 		TFlagMap::iterator it = m_FlagSaveMap.find(name);
 

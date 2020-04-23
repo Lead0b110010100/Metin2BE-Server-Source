@@ -262,7 +262,7 @@ void CItemPriceListTableCache::OnFlush()
 	for (int idx = 0; idx < m_data.byCount; ++idx)
 	{
 		snprintf(szQuery, sizeof(szQuery),
-				"REPLACE myshop_pricelist%s(owner_id, item_vnum, price) VALUES(%u, %u, %u)", // @fixme204 (INSERT INTO -> REPLACE)
+				"REPLACE myshop_pricelist%s(owner_id, item_vnum, price) VALUES(%u, %u, %lld)", // @fixme204 (INSERT INTO -> REPLACE)
 				GetTablePostfix(), m_data.dwOwnerID, m_data.aPriceInfo[idx].dwVnum, m_data.aPriceInfo[idx].dwPrice);
 		CDBManager::instance().ReturnQuery(szQuery, QID_ITEMPRICE_SAVE, 0, NULL);
 	}

@@ -30,7 +30,7 @@ namespace quest
 
 	ALUA(building_get_land_info)
 	{
-		int price = 1000000000;
+		GoldType price = 1000000000;
 		int owner = 1000000000;
 		int level_limit = 1000000000;
 

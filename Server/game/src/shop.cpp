@@ -188,7 +188,7 @@ void CShop::SetShopItems(TShopItemTable * pTable, BYTE bItemCount)
 	}
 }
 
-int CShop::Buy(LPCHARACTER ch, BYTE pos)
+GoldType CShop::Buy(LPCHARACTER ch, BYTE pos)
 {
 	if (pos >= m_itemVector.size())
 	{
@@ -234,7 +234,7 @@ int CShop::Buy(LPCHARACTER ch, BYTE pos)
 		}
 	}
 
-	DWORD dwPrice = r_item.price;
+	GoldType dwPrice = r_item.price;
 
 	//if (it->second)	// if other empire, price is triple
 	//	dwPrice *= 3;
@@ -310,7 +310,7 @@ int CShop::Buy(LPCHARACTER ch, BYTE pos)
 
 			if (item->GetVnum() >= 80003 && item->GetVnum() <= 80007)
 			{
-				snprintf(buf, sizeof(buf), "%s FROM: %u TO: %u PRICE: %u", item->GetName(), ch->GetPlayerID(), m_pkPC->GetPlayerID(), dwPrice);
+				snprintf(buf, sizeof(buf), "%s FROM: %u TO: %u PRICE: %lld", item->GetName(), ch->GetPlayerID(), m_pkPC->GetPlayerID(), dwPrice);
 				LogManager::instance().GoldBarLog(ch->GetPlayerID(), item->GetID(), SHOP_BUY, buf);
 				LogManager::instance().GoldBarLog(m_pkPC->GetPlayerID(), item->GetID(), SHOP_SELL, buf);
 			}
@@ -320,10 +320,10 @@ int CShop::Buy(LPCHARACTER ch, BYTE pos)
 			ITEM_MANAGER::instance().FlushDelayedSave(item);
 
 
-			snprintf(buf, sizeof(buf), "%s %u(%s) %u %u", item->GetName(), m_pkPC->GetPlayerID(), m_pkPC->GetName(), dwPrice, item->GetCount());
+			snprintf(buf, sizeof(buf), "%s %u(%s) %lld %u", item->GetName(), m_pkPC->GetPlayerID(), m_pkPC->GetName(), dwPrice, item->GetCount());
 			LogManager::instance().ItemLog(ch, item, "SHOP_BUY", buf);
 
-			snprintf(buf, sizeof(buf), "%s %u(%s) %u %u", item->GetName(), ch->GetPlayerID(), ch->GetName(), dwPrice, item->GetCount());
+			snprintf(buf, sizeof(buf), "%s %u(%s) %lld %u", item->GetName(), ch->GetPlayerID(), ch->GetName(), dwPrice, item->GetCount());
 			LogManager::instance().ItemLog(m_pkPC, item, "SHOP_SELL", buf);
 		}
 
@@ -348,7 +348,7 @@ int CShop::Buy(LPCHARACTER ch, BYTE pos)
 	}
 
 	if (item)
-		sys_log(0, "SHOP: BUY: name %s %s(x %d):%u price %u", ch->GetName(), item->GetName(), item->GetCount(), item->GetID(), dwPrice);
+		sys_log(0, "SHOP: BUY: name %s %s(x %d):%u price %lld", ch->GetName(), item->GetName(), item->GetCount(), item->GetID(), dwPrice);
 
     ch->Save();
 

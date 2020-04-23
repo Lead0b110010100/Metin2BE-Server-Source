@@ -321,7 +321,7 @@ void CShopManager::Sell(LPCHARACTER ch, BYTE bCell, BYTE bCount)
 	if (IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_SELL))
 		return;
 
-	DWORD dwPrice;
+	GoldType dwPrice;
 
 	if (bCount == 0 || bCount > item->GetCount())
 		bCount = item->GetCount();
@@ -343,17 +343,17 @@ void CShopManager::Sell(LPCHARACTER ch, BYTE bCell, BYTE bCount)
 	if (test_server)
 		sys_log(0, "Sell Item price id %d %s itemid %d", ch->GetPlayerID(), ch->GetName(), item->GetID());
 
-	const int64_t nTotalMoney = static_cast<int64_t>(ch->GetGold()) + static_cast<int64_t>(dwPrice);
+	const GoldType nTotalMoney = static_cast<GoldType>(ch->GetGold()) + static_cast<GoldType>(dwPrice);
 
 	if (GOLD_MAX <= nTotalMoney)
 	{
-		sys_err("[OVERFLOW_GOLD] id %u name %s gold %u", ch->GetPlayerID(), ch->GetName(), ch->GetGold());
+		sys_err("[OVERFLOW_GOLD] id %u name %s gold %lld", ch->GetPlayerID(), ch->GetName(), ch->GetGold());
 		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("20억냥이 초과하여 물품을 팔수 없습니다."));
 		return;
 	}
 
 	// 20050802.myevan.상점 판매 로그에 아이템 ID 추가
-	sys_log(0, "SHOP: SELL: %s item name: %s(x%d):%u price: %u", ch->GetName(), item->GetName(), bCount, item->GetID(), dwPrice);
+	sys_log(0, "SHOP: SELL: %s item name: %s(x%d):%u price: %lld", ch->GetName(), item->GetName(), bCount, item->GetID(), dwPrice);
 
 	DBManager::instance().SendMoneyLog(MONEY_LOG_SHOP, item->GetVnum(), dwPrice);
 

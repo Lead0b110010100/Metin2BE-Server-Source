@@ -117,7 +117,7 @@ bool CShopEx::AddGuest(LPCHARACTER ch,DWORD owner_vid, bool bOtherEmpire)
 	return true;
 }
 
-int CShopEx::Buy(LPCHARACTER ch, BYTE pos)
+GoldType CShopEx::Buy(LPCHARACTER ch, BYTE pos)
 {
 	BYTE tabIdx = pos / SHOP_HOST_ITEM_MAX_NUM;
 	BYTE slotPos = pos % SHOP_HOST_ITEM_MAX_NUM;
@@ -143,7 +143,7 @@ int CShopEx::Buy(LPCHARACTER ch, BYTE pos)
 		return SHOP_SUBHEADER_GC_NOT_ENOUGH_MONEY;
 	}
 
-	DWORD dwPrice = r_item.price;
+	GoldType dwPrice = r_item.price;
 
 	switch (shopTab.coinType)
 	{
@@ -151,9 +151,9 @@ int CShopEx::Buy(LPCHARACTER ch, BYTE pos)
 		if (it->second)	// if other empire, price is triple
 			dwPrice *= 3;
 
-		if (ch->GetGold() < (int) dwPrice)
+		if (ch->GetGold() < (GoldType) dwPrice)
 		{
-			sys_log(1, "ShopEx::Buy : Not enough money : %s has %d, price %d", ch->GetName(), ch->GetGold(), dwPrice);
+			sys_log(1, "ShopEx::Buy : Not enough money : %s has %lld, price %lld", ch->GetName(), ch->GetGold(), dwPrice);
 			return SHOP_SUBHEADER_GC_NOT_ENOUGH_MONEY;
 		}
 		break;
@@ -162,7 +162,7 @@ int CShopEx::Buy(LPCHARACTER ch, BYTE pos)
 			DWORD count = ch->CountSpecifyTypeItem(ITEM_SECONDARY_COIN);
 			if (count < dwPrice)
 			{
-				sys_log(1, "ShopEx::Buy : Not enough myeongdojun : %s has %d, price %d", ch->GetName(), count, dwPrice);
+				sys_log(1, "ShopEx::Buy : Not enough myeongdojun : %s has %d, price %lld", ch->GetName(), count, dwPrice);
 				return SHOP_SUBHEADER_GC_NOT_ENOUGH_MONEY_EX;
 			}
 		}

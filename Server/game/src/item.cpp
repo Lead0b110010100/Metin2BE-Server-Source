@@ -990,7 +990,7 @@ void CItem::SetSocket(int i, long v, bool bLog)
 	}
 }
 
-int CItem::GetGold()
+GoldType CItem::GetGold()
 {
 	if (IS_SET(GetFlag(), ITEM_FLAG_COUNT_PER_1GOLD))
 	{
@@ -1003,7 +1003,7 @@ int CItem::GetGold()
 		return GetProto()->dwGold;
 }
 
-int CItem::GetShopBuyPrice()
+GoldType CItem::GetShopBuyPrice()
 {
 	return GetProto()->dwShopBuyPrice;
 }

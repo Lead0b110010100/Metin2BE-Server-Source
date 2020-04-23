@@ -18,7 +18,7 @@ class CExchange
 		bool		Accept(bool bIsAccept = true);
 		void		Cancel();
 
-		bool		AddGold(long lGold);
+		bool		AddGold(GoldType lGold);
 		bool		AddItem(TItemPos item_pos, BYTE display_pos);
 		bool		RemoveItem(BYTE pos);
 
@@ -44,7 +44,7 @@ class CExchange
 		BYTE		m_abItemDisplayPos[EXCHANGE_ITEM_MAX_NUM];
 
 		bool 		m_bAccept;
-		long		m_lGold;
+		GoldType		m_lGold;
 
 		CGrid *		m_pGrid;
 
