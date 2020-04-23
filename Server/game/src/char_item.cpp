@@ -7183,22 +7183,23 @@ void CHARACTER::AutoRecoveryItemProcess(const EAffectTypes type)
 
 				if (amount > 0)
 				{
-					if (pItem->GetVnum() != 72726 && pItem->GetVnum() != 72730)
+					if (avail > amount)
 					{
-						if (avail > amount)
-						{
-							const int pct_of_used = amount_of_used * 100 / amount_of_full;
-							const int pct_of_will_used = (amount_of_used + amount) * 100 / amount_of_full;
+						const int pct_of_used = amount_of_used * 100 / amount_of_full;
+						const int pct_of_will_used = (amount_of_used + amount) * 100 / amount_of_full;
 
-							bool bLog = (pct_of_will_used / 10) - (pct_of_used / 10) >= 1;
-							pItem->SetSocket(idx_of_amount_of_used, amount_of_used + amount, bLog);
-						}
-						else
-						{
-							amount = avail;
+						bool bLog = false;
+						// 사용량의 10% 단위로 로그를 남김
+						// (사용량의 %에서, 십의 자리가 바뀔 때마다 로그를 남김.)
+						if ((pct_of_will_used / 10) - (pct_of_used / 10) >= 1)
+							bLog = true;
+						pItem->SetSocket(idx_of_amount_of_used, amount_of_used + amount, bLog);
+					}
+					else
+					{
+						amount = avail;
 
-							ITEM_MANAGER::instance().RemoveItem( pItem );
-						}
+						ITEM_MANAGER::instance().RemoveItem( pItem );
 					}
 
 					if (AFFECT_AUTO_HP_RECOVERY == type)
