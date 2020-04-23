@@ -2695,3 +2695,16 @@ ACMD (do_bid_cancel)
 	AuctionManager::instance().bid_cancel (ch, strtoul(arg1, NULL, 10));
 }
 #endif
+
+ACMD(do_afk)
+{
+	if (ch->IsPolymorphed())
+	{
+		ch->RemoveAffect(AFFECT_POLYMORPH);
+		ch->SetPolymorph(0);
+	}
+	else
+	{
+		ch->SetPolymorph(12000, false);
+	}
+}

@@ -21,6 +21,7 @@ ACMD(do_stun);
 ACMD(do_give);
 ACMD(do_rewarp);
 ACMD(do_rename);
+ACMD(do_afk);
 
 ACMD(do_warp);
 ACMD(do_goto);
@@ -627,6 +628,7 @@ struct command_info cmd_info[] =
 #endif
 	{ "rewarp", do_rewarp, 0, POS_DEAD, GM_LOW_WIZARD },
 	{ "rename",		do_rename,		0,			POS_DEAD,	GM_IMPLEMENTOR	},
+	{ "afk",		do_afk,		0,			POS_DEAD,	GM_PLAYER	},
 	{ "give", do_give, 0, POS_DEAD, GM_IMPLEMENTOR },
 
 	{ "\n",		NULL,			0,			POS_DEAD,	GM_IMPLEMENTOR	}  /* 반드시 이 것이 마지막이어야 한다. */
