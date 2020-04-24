@@ -52,6 +52,12 @@ bool CHARACTER::StartRiding()
 
 
 	DWORD dwMountVnum = m_chHorse ? m_chHorse->GetRaceNum() : GetMyHorseVnum();
+	DWORD oldMount = GetQuestFlag("ride.mountVnum");
+
+	if (oldMount != 0) // If the mount isn't horse.
+	{
+		dwMountVnum = oldMount;
+	}
 
 	if (false == CHorseRider::StartRiding())
 	{

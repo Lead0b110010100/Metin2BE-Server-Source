@@ -1373,6 +1373,25 @@ void CHARACTER::Disconnect(const char * c_pszReason)
 
 	sys_log(0, "DISCONNECT: %s (%s)", GetName(), c_pszReason ? c_pszReason : "unset" );
 
+	if (IsRiding())
+	{
+		quest::CQuestManager &q = quest::CQuestManager::instance();
+		quest::PC *pPC = q.GetPC(GetPlayerID());
+
+		if (GetMyHorseVnum() != m_dwMountVnum)
+			SetQuestFlag("ride.mountVnum", m_dwMountVnum);
+		else
+			SetQuestFlag("ride.mountVnum", 0);
+
+		if (!pPC)
+		{
+			sys_err("Nullpointer in CHARACTER::pPC %lu", GetPlayerID());
+			return;
+		}
+
+		pPC->Save();
+	}
+
 	if (GetShop())
 	{
 		GetShop()->RemoveGuest(this);

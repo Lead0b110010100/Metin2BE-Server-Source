@@ -69,6 +69,8 @@ namespace quest
 
 		const char* name = lua_isstring(L, 3) ? lua_tostring(L, 3) : 0;
 		ch->HorseSummon(true, bFromFar, horseVnum, name);
+
+		ch->SetQuestFlag("ride.mountVnum", horseVnum);
 		return 0;
 	}
 
