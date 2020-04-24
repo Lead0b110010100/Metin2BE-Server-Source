@@ -191,6 +191,8 @@ void CHARACTER::HorseSummon(bool bSummon, bool bFromFar, DWORD dwVnum, const cha
 			return;
 		}
 
+		m_chHorse->SetHorseAI();
+
 		if (GetHorseHealth() <= 0)
 		{
 			// 죽은거처럼 있게 하는 처리
@@ -399,3 +401,9 @@ void CHARACTER::SetHorseLevel(int iLevel)
 	SetSkillLevel(SKILL_HORSE, GetHorseLevel());
 }
 
+void CHARACTER::SetHorseAI()
+{
+	m_stateIdle.Set(this, &CHARACTER::BeginStateEmpty, &CHARACTER::StateHorse, &CHARACTER::EndStateEmpty);
+	m_stateMove.Set(this, &CHARACTER::BeginStateEmpty, &CHARACTER::StateMove, &CHARACTER::EndStateEmpty);
+	m_stateBattle.Set(this, &CHARACTER::BeginStateEmpty, &CHARACTER::StateHorse, &CHARACTER::EndStateEmpty);
+}

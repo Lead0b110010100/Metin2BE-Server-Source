@@ -226,8 +226,8 @@ namespace quest
 
 			CHorseNameManager::instance().UpdateHorseName(ch->GetPlayerID(), lua_tostring(L, -1), true);
 
-			ch->HorseSummon(false, true);
-			ch->HorseSummon(true, true);
+			ch->HorseSummon(false, false);
+			ch->HorseSummon(true, true, ch->GetQuestFlag("ride.mountVnum"));
 
 			lua_pushnumber(L, 2);
 		}

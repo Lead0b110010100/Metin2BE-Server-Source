@@ -1617,6 +1617,8 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		LPCHARACTER			GetRider() const; // rider on horse
 		void				SetRider(LPCHARACTER ch);
 
+		void SetHorseAI();
+
 		bool				IsRiding() const;
 
 #ifdef __PET_SYSTEM__
