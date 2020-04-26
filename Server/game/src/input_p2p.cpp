@@ -11,6 +11,7 @@
 #include "party.h"
 #include "messenger_manager.h"
 #include "empire_text_convert.h"
+#include "buffer_manager.h"
 #include "unique_item.h"
 #include "xmas_event.h"
 #include "affect.h"
@@ -216,14 +217,14 @@ int CInputP2P::Guild(LPDESC d, const char* c_pData, size_t uiBytes)
 
 struct FuncShout
 {
-	const char * m_str;
+	const char *m_str;
 	BYTE m_bEmpire;
 
-	FuncShout(const char * str, BYTE bEmpire) : m_str(str), m_bEmpire(bEmpire)
+	FuncShout(const char *str, BYTE bEmpire) : m_str(str), m_bEmpire(bEmpire)
 	{
 	}
 
-	void operator () (LPDESC d)
+	void operator()(LPDESC d)
 	{
 #ifdef ENABLE_NEWSTUFF
 		if (!d->GetCharacter() || (!g_bGlobalShoutEnable && d->GetCharacter()->GetGMLevel() == GM_PLAYER && d->GetEmpire() != m_bEmpire))
@@ -232,7 +233,23 @@ struct FuncShout
 		if (!d->GetCharacter() || (d->GetCharacter()->GetGMLevel() == GM_PLAYER && d->GetEmpire() != m_bEmpire))
 			return;
 #endif
-		d->GetCharacter()->ChatPacket(CHAT_TYPE_SHOUT, "%s", m_str);
+
+		char chatbuf[CHAT_MAX_LEN + 1];
+		int len = snprintf(chatbuf, sizeof(chatbuf), "%s", m_str);
+
+		struct packet_chat pack_chat;
+
+		pack_chat.header = HEADER_GC_CHAT;
+		pack_chat.size = sizeof(struct packet_chat) + len;
+		pack_chat.type = CHAT_TYPE_SHOUT;
+		pack_chat.id = 0;
+		pack_chat.bEmpire = m_bEmpire;
+
+		TEMP_BUFFER buf;
+		buf.write(&pack_chat, sizeof(struct packet_chat));
+		buf.write(chatbuf, len);
+
+		d->Packet(buf.read_peek(), buf.size());
 	}
 };
 
