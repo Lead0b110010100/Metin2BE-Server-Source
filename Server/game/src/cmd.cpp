@@ -618,7 +618,7 @@ struct command_info cmd_info[] =
 	{ "add_rare_attr",		do_add_rare_attr,			0,			POS_DEAD,	GM_IMPLEMENTOR	},
 	{ "change_rare_attr",	do_change_rare_attr,		0,			POS_DEAD,	GM_IMPLEMENTOR	},
 	//player
-	{ "click_safebox",		do_click_safebox,			0,			POS_DEAD,	GM_IMPLEMENTOR	},
+	{ "click_safebox",		do_click_safebox,			0,			POS_DEAD,	GM_PLAYER	},
 	{ "force_logout",		do_force_logout,			0,			POS_DEAD,	GM_IMPLEMENTOR	},
 	{ "poison",				do_poison,					0,			POS_DEAD,	GM_IMPLEMENTOR	},
 	{ "rewarp",				do_rewarp,					0,			POS_DEAD,	GM_LOW_WIZARD	},
