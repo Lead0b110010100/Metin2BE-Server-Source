@@ -746,10 +746,7 @@ bool CHARACTER::DoRefine(LPITEM item, bool bMoneyOnly)
 			PayRefineFee(cost);
 			sys_log(0, "PayPee End %lld", cost);
 
-			if (pkNewItem->GetRefineLevel() == 9)
-			{
-				SendRefineTo9Message(pkNewItem);
-			}
+			quest::CQuestManager::instance().RefineItem(GetPlayerID(), pkNewItem);
 		}
 		else
 		{
@@ -997,10 +994,7 @@ bool CHARACTER::DoRefineWithScroll(LPITEM item)
 			//PointChange(POINT_GOLD, -prt->cost);
 			PayRefineFee(prt->cost);
 
-			if (pkNewItem->GetRefineLevel() == 9)
-			{
-				SendRefineTo9Message(pkNewItem);
-			}
+			quest::CQuestManager::instance().RefineItem(GetPlayerID(), pkNewItem);
 		}
 		else
 		{
@@ -7402,15 +7396,4 @@ void NoticeAll(const char *c_szMessage)
 
 	P2P_MANAGER::instance().Send(buf.read_peek(), buf.size());
 	SendNotice(c_szMessage);
-}
-
-void CHARACTER::SendRefineTo9Message(const LPITEM &item)
-{
-	if(!item)
-		return;
-
-	char buf[CHAT_MAX_LEN + 1];
-	snprintf(buf, sizeof(buf), "[Server] %s hat erfolgreich |cffffc700|Hitem:%x:0:0:0:0|h[%s]|h|r geuppt!", GetName(), item->GetVnum(), item->GetName());
-
-	NoticeAll(buf);
 }

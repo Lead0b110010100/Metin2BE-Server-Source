@@ -95,6 +95,7 @@ namespace quest
 			void		SetCurrentEventIndex(int index) { m_iRunningEventIndex = index; }
 
 			bool		UseItem(unsigned int pc, LPITEM item, bool bReceiveAll);
+			bool		RefineItem(unsigned int pc, LPITEM item);
 			bool		PickupItem(unsigned int pc, LPITEM item);
 			bool		SIGUse(unsigned int pc, DWORD sig_vnum, LPITEM item, bool bReceiveAll);
 			bool		TakeItem(unsigned int pc, unsigned int npc, LPITEM item);

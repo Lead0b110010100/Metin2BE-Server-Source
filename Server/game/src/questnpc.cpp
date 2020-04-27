@@ -970,7 +970,15 @@ namespace quest
 		else
 			return HandleEvent(pc, QUEST_ITEM_PICK_EVENT);
 	}
-	//독일 선물 기능 테스트
+
+	bool NPC::OnRefineItem(PC& pc, LPITEM item)
+	{
+		if (item)
+			return HandleEvent(pc, QUEST_REFINE_EVENT);
+		else
+			return HandleReceiveAllEvent(pc, QUEST_REFINE_EVENT);
+	}
+
 	bool NPC::OnItemInformer(PC& pc, unsigned int vnum)
 	{
 		return HandleEvent(pc, QUEST_ITEM_INFORMER_EVENT);

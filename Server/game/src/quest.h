@@ -63,6 +63,7 @@ namespace quest
 #ifdef ENABLE_QUEST_DIE_EVENT
 		QUEST_DIE_EVENT,
 #endif
+		QUEST_REFINE_EVENT,
 		QUEST_EVENT_COUNT
 	};
 

@@ -2101,7 +2101,6 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		void RefreshGMStateInformation(bool bIsGamemaster, bool bClear = false);
 		bool SetGMState(std::string stName, bool bState);
 
-		void SendRefineTo9Message(const LPITEM &item);
 		void Rewarp();
 };
 
