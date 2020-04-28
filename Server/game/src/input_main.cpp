@@ -740,7 +740,7 @@ int CInputMain::Chat(LPCHARACTER ch, const char * data, size_t uiBytes)
 	static const char* colorbuf[] = {"|cFFffa200|H|h[Team]|h|r", "|cFFff0000|H|h[Shinsoo]|h|r", "|cFFffc700|H|h[Chunjo]|h|r", "|cFF000bff|H|h[Jinno]|h|r"};
 	int len = snprintf(chatbuf, sizeof(chatbuf), "%s |cFFffc700|Hpn_%s|h%s|h|r : %s", (ch->IsGM()?colorbuf[0]:colorbuf[MINMAX(0, ch->GetEmpire(), 3)]), ch->GetName(), ch->GetName(), buf);
 #else
-	int len = snprintf(chatbuf, sizeof(chatbuf), "%s : %s", ch->GetName(), buf);
+	int len = snprintf(chatbuf, sizeof(chatbuf), "|cFFffc700|Hpn_%s|h%s|h|r : %s", ch->GetName(), ch->GetName(), buf);
 #endif
 	if (CHAT_TYPE_SHOUT == pinfo->type)
 	{
