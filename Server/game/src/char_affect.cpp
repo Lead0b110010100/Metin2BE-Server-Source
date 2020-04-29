@@ -795,6 +795,20 @@ bool CHARACTER::IsGoodAffect(BYTE bAffectType) const
 	return false;
 }
 
+bool CHARACTER::IsNotRemovableAffect(BYTE byAffectType) const
+{
+	switch (byAffectType)
+	{
+		case SKILL_KWAESOK:
+		case SKILL_GICHEON:
+		case SKILL_GWIGEOM:
+		case SKILL_GEOMKYUNG:
+			return true;
+	}
+
+	return false;
+}
+
 void CHARACTER::RemoveBadAffect()
 {
 	sys_log(0, "RemoveBadAffect %s", GetName());

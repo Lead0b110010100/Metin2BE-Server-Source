@@ -949,6 +949,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		bool			IsLoadedAffect() const	{ return m_bIsLoadedAffect; }
 
 		bool			IsGoodAffect(BYTE bAffectType) const;
+		bool 			IsNotRemovableAffect(BYTE byAffectType) const;
 
 		void			RemoveGoodAffect();
 		void			RemoveBadAffect();

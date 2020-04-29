@@ -2049,7 +2049,7 @@ int CHARACTER::ComputeSkill(DWORD dwVnum, LPCHARACTER pkVictim, BYTE bSkillLevel
 		}
 	}
 
-	if (pkVictim->IsAffectFlag(AFF_PABEOP) && pkVictim->IsGoodAffect(dwVnum))
+	if (pkVictim->IsAffectFlag(AFF_PABEOP) && pkVictim->IsGoodAffect(dwVnum) && !pkVictim->IsNotRemovableAffect(dwVnum))
 	{
 		return BATTLE_NONE;
 	}
