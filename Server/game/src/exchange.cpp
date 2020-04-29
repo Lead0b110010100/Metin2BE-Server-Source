@@ -313,6 +313,7 @@ bool CExchange::CheckSpace()
 #ifdef ENABLE_EXTEND_INVEN_SYSTEM
 	static CGrid s_grid3(INVENTORY_PAGE_COLUMN, INVENTORY_PAGE_ROW); // inven page 3
 	static CGrid s_grid4(INVENTORY_PAGE_COLUMN, INVENTORY_PAGE_ROW); // inven page 4
+	static CGrid s_grid5(INVENTORY_PAGE_COLUMN, INVENTORY_PAGE_ROW); // inven page 5
 #endif
 
 	s_grid1.Clear();
@@ -320,6 +321,7 @@ bool CExchange::CheckSpace()
 #ifdef ENABLE_EXTEND_INVEN_SYSTEM
 	s_grid3.Clear();
 	s_grid4.Clear();
+	s_grid5.Clear();
 #endif
 
 	LPCHARACTER	victim = GetCompany()->GetOwner();
@@ -356,6 +358,13 @@ bool CExchange::CheckSpace()
 
 		s_grid4.Put(i - INVENTORY_PAGE_SIZE*3, 1, item->GetSize());
 	}
+	for (i = INVENTORY_PAGE_SIZE*4; i < INVENTORY_PAGE_SIZE*5; ++i)
+	{
+		if (!(item = victim->GetInventoryItem(i)))
+			continue;
+
+		s_grid5.Put(i - INVENTORY_PAGE_SIZE*4, 1, item->GetSize());
+	}
 #endif
 
 	for (i = 0; i < EXCHANGE_ITEM_MAX_NUM; ++i)
@@ -380,6 +389,10 @@ bool CExchange::CheckSpace()
 		else if ((iPos = s_grid4.FindBlank(1, item->GetSize())) >= 0)
 		{
 			s_grid4.Put(iPos, 1, item->GetSize());
+		}
+		else if ((iPos = s_grid5.FindBlank(1, item->GetSize())) >= 0)
+		{
+			s_grid5.Put(iPos, 1, item->GetSize());
 		}
 #endif
 		else

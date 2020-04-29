@@ -31,7 +31,7 @@ typedef long long GoldType;
 #define USE_WOLFMAN_BOOKS
 #endif
 
-#define ENABLE_PLAYER_PER_ACCOUNT5
+// #define ENABLE_PLAYER_PER_ACCOUNT5
 #define ENABLE_DICE_SYSTEM
 #define ENABLE_EXTEND_INVEN_SYSTEM
 

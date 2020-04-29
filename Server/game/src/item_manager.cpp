@@ -170,7 +170,9 @@ LPITEM ITEM_MANAGER::CreateItem(DWORD vnum, DWORD count, DWORD id, bool bTryMagi
 	{
 		item = m_map_pkItemByID[id];
 		LPCHARACTER owner = item->GetOwner();
-		sys_err("ITEM_ID_DUP: %u %s owner %p", id, item->GetName(), get_pointer(owner));
+
+		if (owner)
+			sys_err("ITEM_ID_DUP: %u %s owner %p", id, item->GetName(), get_pointer(owner));
 		return NULL;
 	}
 

@@ -745,7 +745,7 @@ typedef struct SPlayerCountPacket
 	DWORD	dwCount;
 } TPlayerCountPacket;
 
-#define SAFEBOX_MAX_NUM			135
+#define SAFEBOX_MAX_NUM			225
 #define SAFEBOX_PASSWORD_MAX_LEN	6
 
 typedef struct SSafeboxTable
