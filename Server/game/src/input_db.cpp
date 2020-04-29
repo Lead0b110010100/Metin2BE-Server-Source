@@ -1184,7 +1184,7 @@ void CInputDB::SafeboxLoad(LPDESC d, const char * c_pData)
 	// ADD_PREMIUM
 	if (d->GetCharacter()->GetPremiumRemainSeconds(PREMIUM_SAFEBOX) > 0 ||
 			d->GetCharacter()->IsEquipUniqueGroup(UNIQUE_GROUP_LARGE_SAFEBOX))
-		bSize = 3;
+		bSize = 5;
 	// END_OF_ADD_PREMIUM
 
 	//if (d->GetCharacter()->IsEquipUniqueItem(UNIQUE_ITEM_SAFEBOX_EXPAND))
