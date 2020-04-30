@@ -739,19 +739,15 @@ void CHARACTER::RemoveGoodAffect()
 	RemoveAffect(AFFECT_CHINA_FIREWORK);
 
 	RemoveAffect(SKILL_JEONGWI);
-	RemoveAffect(SKILL_GEOMKYUNG);
 	RemoveAffect(SKILL_CHUNKEON);
 	RemoveAffect(SKILL_EUNHYUNG);
 	RemoveAffect(SKILL_GYEONGGONG);
-	RemoveAffect(SKILL_GWIGEOM);
 	RemoveAffect(SKILL_TERROR);
 	RemoveAffect(SKILL_JUMAGAP);
 	RemoveAffect(SKILL_MANASHILED);
 	RemoveAffect(SKILL_HOSIN);
 	RemoveAffect(SKILL_REFLECT);
-	RemoveAffect(SKILL_KWAESOK);
 	RemoveAffect(SKILL_JEUNGRYEOK);
-	RemoveAffect(SKILL_GICHEON);
 #ifdef ENABLE_WOLFMAN_CHARACTER
 	// 수인족(WOLFMEN) 버프 추가
 	RemoveAffect(SKILL_JEOKRANG);
@@ -772,19 +768,15 @@ bool CHARACTER::IsGoodAffect(BYTE bAffectType) const
 		case (AFFECT_CHINA_FIREWORK):
 
 		case (SKILL_JEONGWI):
-		case (SKILL_GEOMKYUNG):
 		case (SKILL_CHUNKEON):
 		case (SKILL_EUNHYUNG):
 		case (SKILL_GYEONGGONG):
-		case (SKILL_GWIGEOM):
 		case (SKILL_TERROR):
 		case (SKILL_JUMAGAP):
 		case (SKILL_MANASHILED):
 		case (SKILL_HOSIN):
 		case (SKILL_REFLECT):
-		case (SKILL_KWAESOK):
 		case (SKILL_JEUNGRYEOK):
-		case (SKILL_GICHEON):
 #ifdef ENABLE_WOLFMAN_CHARACTER
 		// 수인족(WOLFMEN) 버프 추가
 		case (SKILL_JEOKRANG):
