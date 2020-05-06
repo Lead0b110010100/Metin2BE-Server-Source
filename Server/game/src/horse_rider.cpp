@@ -327,6 +327,9 @@ void CHorseRider::UpdateHorseHealth(int iHealth, bool bSend)
 {
 	int level = GetHorseLevel();
 
+	if (setHorsesThatCantDie.count(GetMyHorseVnum()))
+		return;
+
 	m_Horse.sHealth = MINMAX(0, m_Horse.sHealth + iHealth, c_aHorseStat[level].iMaxHealth);
 
 	if (level && m_Horse.sHealth == 0)

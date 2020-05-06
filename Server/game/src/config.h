@@ -7,6 +7,8 @@ enum
 	ADDRESS_MAX_LEN = 15
 };
 
+extern std::set<DWORD> setHorsesThatCantDie;
+
 enum ItemDestroyTime {ITEM_DESTROY_TIME_AUTOGIVE, ITEM_DESTROY_TIME_DROPGOLD, ITEM_DESTROY_TIME_DROPITEM, ITEM_DESTROY_TIME_MAX};
 
 void config_init(const std::string& st_localeServiceName); // default "" is CONFIG

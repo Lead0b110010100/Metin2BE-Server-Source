@@ -22,6 +22,8 @@
 
 using std::string;
 
+std::set<DWORD> setHorsesThatCantDie { 50506 };
+
 BYTE	g_bChannel = 0;
 WORD	mother_port = 50080;
 int		passes_per_sec = 25;
