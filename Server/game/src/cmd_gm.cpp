@@ -3271,13 +3271,10 @@ ACMD(do_build)
 
 				if (!isSuccess)
 				{
-					if (test_server)
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("건물을 지을 수 없는 위치입니다."));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("건물을 지을 수 없는 위치입니다."));
 					return;
 				}
-
-				if (test_server || GMLevel == GM_PLAYER)
-					// 건설 재료 소모하기 (테섭에서는 GM도 소모)
+				else
 				{
 					// 건설 비용 소모
 					ch->PointChange(POINT_GOLD, -static_cast<GoldType>(t->dwPrice));

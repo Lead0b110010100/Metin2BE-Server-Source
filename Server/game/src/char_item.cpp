@@ -717,7 +717,6 @@ bool CHARACTER::DoRefine(LPITEM item, bool bMoneyOnly)
 		prob -= 10;
 
 	// END_OF_REFINE_COST
-
 	if (prob <= prt->prob)
 	{
 		// 성공! 모든 아이템이 사라지고, 같은 속성의 다른 아이템 획득
@@ -906,68 +905,77 @@ bool CHARACTER::DoRefineWithScroll(LPITEM item)
 			RemoveSpecifyItem(prt->materials[i].vnum, prt->materials[i].count);
 	}
 
-	if (pkItemScroll->GetValue(0) == HYUNIRON_CHN ||
-		pkItemScroll->GetValue(0) == YONGSIN_SCROLL ||
-		pkItemScroll->GetValue(0) == YAGONG_SCROLL) // 현철, 용신의 축복서, 야공의 비전서  처리
-	{
-		const char hyuniron_prob[9] = { 100, 75, 65, 55, 45, 40, 35, 25, 20 };
-		const char yagong_prob[9] = { 100, 100, 90, 80, 70, 60, 50, 30, 20 };
+	/* 
+	CHUKBOK_SCROLL = 0,		Segens Schriftrolle
+	HYUNIRON_CHN   = 1,		Magisches Metall
+	YONGSIN_SCROLL = 2,		Schriftrolle des Drachen
+	MUSIN_SCROLL   = 3,		Schriftrolle des Krieges
+	YAGONG_SCROLL  = 4,		Schmiede-Handbuch
+	MEMO_SCROLL	   = 5,		Refine Zeigen
+	BDRAGON_SCROLL	= 6,	----------------
+	FAIL_SCROLL	= 7,		Pechsschriftrolle
+	*/
 
-		if (pkItemScroll->GetValue(0) == YONGSIN_SCROLL)
+
+	if (pkItemScroll->GetValue(0) == CHUKBOK_SCROLL)
 		{
-			success_prob = hyuniron_prob[MINMAX(0, item->GetRefineLevel(), 8)];
+			success_prob = prt->prob;
+			
+			szRefineType = "CHUKBOK_SCROLL";
 		}
-		else if (pkItemScroll->GetValue(0) == YAGONG_SCROLL)
+	else if (pkItemScroll->GetValue(0) == HYUNIRON_CHN)
 		{
-			success_prob = yagong_prob[MINMAX(0, item->GetRefineLevel(), 8)];
+			bDestroyWhenFail = true;
+			
+			success_prob = prt->prob + 15;
+			
+			szRefineType = "HYUNIRON";
 		}
-		else if (pkItemScroll->GetValue(0) == HYUNIRON_CHN) {} // @fixme121
-		else
+	else if (pkItemScroll->GetValue(0) == YONGSIN_SCROLL)
+		{
+			success_prob = prt->prob + 10;
+			
+			szRefineType = "GOD_SCROLL";
+		}
+	else if (pkItemScroll->GetValue(0) == MUSIN_SCROLL)
+		{
+			success_prob = 100;
+
+			szRefineType = "MUSIN_SCROLL";
+		}
+	else if (pkItemScroll->GetValue(0) == YAGONG_SCROLL)
+		{
+			success_prob = prt->prob + 15;
+			
+			szRefineType = "YAGONG_SCROLL";
+		}
+	else if (pkItemScroll->GetValue(0) == MEMO_SCROLL)
+		{
+			success_prob = 100;
+			
+			szRefineType = "MEMO_SCROLL";
+		}
+	else if (pkItemScroll->GetValue(0) == BDRAGON_SCROLL)
+		{
+			success_prob = 80;
+			
+			szRefineType = "BDRAGON_SCROLL";
+		}
+	else
 		{
 			sys_err("REFINE : Unknown refine scroll item. Value0: %d", pkItemScroll->GetValue(0));
 		}
-
-		if (test_server)
-		{
-			ChatPacket(CHAT_TYPE_INFO, "[Only Test] Success_Prob %d, RefineLevel %d ", success_prob, item->GetRefineLevel());
-		}
-		if (pkItemScroll->GetValue(0) == HYUNIRON_CHN) // 현철은 아이템이 부서져야 한다.
-			bDestroyWhenFail = true;
-
-		// DETAIL_REFINE_LOG
-		if (pkItemScroll->GetValue(0) == HYUNIRON_CHN)
-		{
-			szRefineType = "HYUNIRON";
-		}
-		else if (pkItemScroll->GetValue(0) == YONGSIN_SCROLL)
-		{
-			szRefineType = "GOD_SCROLL";
-		}
-		else if (pkItemScroll->GetValue(0) == YAGONG_SCROLL)
-		{
-			szRefineType = "YAGONG_SCROLL";
-		}
-		// END_OF_DETAIL_REFINE_LOG
-	}
-
-	// DETAIL_REFINE_LOG
-	if (pkItemScroll->GetValue(0) == MUSIN_SCROLL) // 무신의 축복서는 100% 성공 (+4까지만)
+	
+	// MUSIN_SCROLL
+	if (pkItemScroll->GetValue(0) == MUSIN_SCROLL)
 	{
-		success_prob = 100;
-
-		szRefineType = "MUSIN_SCROLL";
+		if (item->GetRefineLevel() >= 4)
+		{
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("이 개량서로 더 이상 개량할 수 없습니다."));
+			return false;
+		}
 	}
-	// END_OF_DETAIL_REFINE_LOG
-	else if (pkItemScroll->GetValue(0) == MEMO_SCROLL)
-	{
-		success_prob = 100;
-		szRefineType = "MEMO_SCROLL";
-	}
-	else if (pkItemScroll->GetValue(0) == BDRAGON_SCROLL)
-	{
-		success_prob = 80;
-		szRefineType = "BDRAGON_SCROLL";
-	}
+	// END_OF_MUSIN_SCROLL
 
 	pkItemScroll->SetCount(pkItemScroll->GetCount() - 1);
 
@@ -1044,6 +1052,7 @@ bool CHARACTER::DoRefineWithScroll(LPITEM item)
 	M2_DESTROY_ITEM(new_item);
 	return true;
 }
+
 
 bool CHARACTER::RefineInformation(BYTE bCell, BYTE bType, int iAdditionalCell)
 {

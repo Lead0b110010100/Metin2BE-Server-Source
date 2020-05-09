@@ -3321,13 +3321,24 @@ void CHARACTER::PointChange(BYTE type, GoldType amount, bool bAmount, bool bBroa
 				}
 
 				if (GetLevel() <= 10)
-					AutoGiveItem(27001, 2);
+				{
+					AutoGiveItem(27001, 5);
+				}
 				else if (GetLevel() <= 30)
-					AutoGiveItem(27002, 2);
+				{
+					AutoGiveItem(27002, 10);
+				}
+				else if (GetLevel() <= 50)
+				{
+					AutoGiveItem(27003, 20);
+				}
+				else if (GetLevel() <= 80)
+				{
+					AutoGiveItem(27003, 50);
+				}
 				else
 				{
-					AutoGiveItem(27002, 2);
-//					AutoGiveItem(27003, 2);
+					AutoGiveItem(27003, 50);
 				}
 
 				PointChange(POINT_HP, GetMaxHP() - GetHP());
