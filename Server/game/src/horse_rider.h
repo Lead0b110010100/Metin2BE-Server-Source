@@ -2,6 +2,7 @@
 #define __HORSE_H
 
 #include "constants.h"
+#include "config.h"
 #include "cmd.h"
 // #ifdef ENABLE_NEWSTUFF
 // #include <lua.h>
@@ -36,8 +37,8 @@ class CHorseRider
 
 		BYTE		GetHorseLevel() const { return m_Horse.bLevel; }
 		BYTE		GetHorseGrade();
-		short		GetHorseHealth() const	{ return m_Horse.sHealth; }
-		short		GetHorseStamina() const	{ return m_Horse.sStamina; }
+		short		GetHorseHealth() const	{ return setHorsesThatCantDie.count(GetMyHorseVnum()) ? c_aHorseStat[m_Horse.bLevel].iMaxHealth : m_Horse.sHealth; }
+		short		GetHorseStamina() const	{ return setHorsesThatCantDie.count(GetMyHorseVnum()) ? c_aHorseStat[m_Horse.bLevel].iMaxStamina : m_Horse.sStamina; }
 		short		GetHorseMaxHealth();
 		short		GetHorseMaxStamina();
 
