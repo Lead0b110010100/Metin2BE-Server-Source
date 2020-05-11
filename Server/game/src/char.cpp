@@ -2007,11 +2007,6 @@ void CHARACTER::SetProto(const CMob * pkMob)
 
 	ApplyMobAttribute(t);
 
-	if (IsStone())
-	{
-		DetermineDropMetinStone();
-	}
-
 	if (IsWarp() || IsGoto())
 	{
 		StartWarpNPCEvent();
