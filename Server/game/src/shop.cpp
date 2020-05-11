@@ -286,7 +286,7 @@ GoldType CShop::Buy(LPCHARACTER ch, BYTE pos)
 		}
 	}
 
-	ch->PointChange(POINT_GOLD, -dwPrice, false);
+	ch->ChangeGold(-dwPrice);
 
 	// 상점에서 살떄 세금 5%
 	if (!m_pkPC)
@@ -330,7 +330,7 @@ GoldType CShop::Buy(LPCHARACTER ch, BYTE pos)
 		r_item.pkItem = NULL;
 		BroadcastUpdateItem(pos);
 
-		m_pkPC->PointChange(POINT_GOLD, dwPrice, false);
+		m_pkPC->ChangeGold(dwPrice);
 		CMonarch::instance().SendtoDBAddMoney(0, m_pkPC->GetEmpire(), m_pkPC);
 	}
 	else

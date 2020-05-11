@@ -762,7 +762,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 
 		void			ComputePoints();
 		void			ComputeBattlePoints();
-		void			PointChange(BYTE type, GoldType amount, bool bAmount = false, bool bBroadcast = false);
+		void PointChange(BYTE type, int amount, bool bAmount = false, bool bBroadcast = false);
 		void			PointsPacket();
 		void			ApplyPoint(BYTE bApplyType, int iVal);
 		void			CheckMaximumPoints();	// HP, SP 등의 현재 값이 최대값 보다 높은지 검사하고 높다면 낮춘다.
@@ -1208,9 +1208,10 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		GoldType				GetGold() const		{ return m_points.gold;	}
 		void			SetGold(GoldType gold)	{ m_points.gold = gold;	}
 		bool			DropGold(GoldType gold);
-		INT				GetAllowedGold() const;
+		GoldType				GetAllowedGold() const;
 		void			GiveGold(GoldType iAmount);	// 파티가 있으면 파티 분배, 로그 등의 처리
 		// End of Money
+		void ChangeGold(GoldType amount);
 
 		////////////////////////////////////////////////////////////////////////////////////////
 		// Shop related

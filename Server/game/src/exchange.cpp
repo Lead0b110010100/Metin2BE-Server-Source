@@ -460,8 +460,8 @@ bool CExchange::Done()
 
 	if (m_lGold)
 	{
-		GetOwner()->PointChange(POINT_GOLD, -m_lGold, true);
-		victim->PointChange(POINT_GOLD, m_lGold, true);
+		GetOwner()->ChangeGold(-m_lGold);
+		victim->ChangeGold(m_lGold);
 
 		if (m_lGold > 1000)
 		{

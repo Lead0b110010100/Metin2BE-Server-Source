@@ -966,7 +966,7 @@ void AuctionManager::bid (LPCHARACTER ch, DWORD item_id, int bid_price)
 		return;
 	}
 
-	ch->PointChange(POINT_GOLD, -bid_price, false);
+	ch->ChangeGold(-bid_price);
 
 	TPacketGDCommnadAuction pack_bid;
 	pack_bid.bid (item_id, bid_price);
@@ -997,7 +997,7 @@ void AuctionManager::immediate_purchase (LPCHARACTER ch, DWORD item_id)
 		return;
 	}
 
-	ch->PointChange(POINT_GOLD, -item_info->get_impur_price(), false);
+	ch->ChangeGold(-item_info->get_impur_price());
 
 	TPacketGDCommnadAuction pack_impur;
 	pack_impur.impur (item_id);
@@ -1080,7 +1080,7 @@ void AuctionManager::rebid (LPCHARACTER ch, DWORD item_id, int bid_price)
 
 	MyBid.Lock (ch->GetPlayerID(), item_id);
 
-	ch->PointChange(POINT_GOLD, -(bid_price - money), false);
+	ch->ChangeGold(-(bid_price - money));
 
 	TPacketGDCommnadAuction pack_rebid;
 	pack_rebid.rebid (item_id, (bid_price - money));
@@ -1112,7 +1112,7 @@ void AuctionManager::bid_cancel (LPCHARACTER ch, DWORD item_id)
 	}
 
 	MyBid.Delete (ch->GetPlayerID(), item_id);
-	ch->PointChange(POINT_GOLD, money, true);
+	ch->ChangeGold(money);
 
 	TPacketGDCommnadAuction pack_bc;
 	pack_bc.bid_cancel (item_id);
@@ -1347,7 +1347,7 @@ void AuctionManager::recv_result_auction (DWORD commander_id, TPacketDGResultAuc
 			DWORD item_id = cmd_result->target;
 			cmd_result++;
 			int restore_money = *((int*)cmd_result);
-			ch->PointChange(POINT_GOLD, restore_money, true);
+			ch->ChangeGold(restore_money);
 
 			MyBid.UnLock (commander_id, item_id);
 		}
@@ -1357,7 +1357,7 @@ void AuctionManager::recv_result_auction (DWORD commander_id, TPacketDGResultAuc
 			DWORD item_id = cmd_result->target;
 			cmd_result++;
 			TAuctionItemInfo* auction_info = (TAuctionItemInfo*)cmd_result;
-			ch->PointChange(POINT_GOLD, 0, true);
+			ch->ChangeGold(0);
 
 			MyBid.Insert (commander_id, item_id, auction_info->get_bid_price());
 			Auction.UpdateItemInfo (auction_info);

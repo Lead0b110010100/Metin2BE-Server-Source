@@ -188,7 +188,7 @@ GoldType CShopEx::Buy(LPCHARACTER ch, BYTE pos)
 	switch (shopTab.coinType)
 	{
 	case SHOP_COIN_TYPE_GOLD:
-		ch->PointChange(POINT_GOLD, -dwPrice, false);
+		ch->ChangeGold(-dwPrice);
 		break;
 	case SHOP_COIN_TYPE_SECONDARY_COIN:
 		ch->RemoveSpecifyTypeItem(ITEM_SECONDARY_COIN, dwPrice);

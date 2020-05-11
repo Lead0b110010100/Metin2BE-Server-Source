@@ -1630,7 +1630,7 @@ ACMD(do_set)
 				GoldType gold = 0;
 				str_to_number(gold, arg3);
 				DBManager::instance().SendMoneyLog(MONEY_LOG_MISC, 3, gold);
-				tch->PointChange(POINT_GOLD, gold, true);
+				tch->ChangeGold(gold);
 			}
 			break;
 
@@ -3277,7 +3277,7 @@ ACMD(do_build)
 				else
 				{
 					// 건설 비용 소모
-					ch->PointChange(POINT_GOLD, -static_cast<GoldType>(t->dwPrice));
+					ch->ChangeGold(-static_cast<GoldType>(t->dwPrice));
 
 					// 아이템 자재 사용하기
 					{

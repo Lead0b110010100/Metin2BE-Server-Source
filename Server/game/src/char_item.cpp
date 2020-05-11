@@ -740,7 +740,6 @@ bool CHARACTER::DoRefine(LPITEM item, bool bMoneyOnly)
 
 			sys_log(0, "Refine Success %lld", cost);
 			pkNewItem->AttrLog();
-			//PointChange(POINT_GOLD, -cost);
 			sys_log(0, "PayPee %lld", cost);
 			PayRefineFee(cost);
 			sys_log(0, "PayPee End %lld", cost);
@@ -764,7 +763,6 @@ bool CHARACTER::DoRefine(LPITEM item, bool bMoneyOnly)
 		item->AttrLog();
 		ITEM_MANAGER::instance().RemoveItem(item, "REMOVE (REFINE FAIL)");
 
-		//PointChange(POINT_GOLD, -cost);
 		PayRefineFee(cost);
 	}
 
@@ -999,7 +997,6 @@ bool CHARACTER::DoRefineWithScroll(LPITEM item)
 			pkNewItem->AddToCharacter(this, TItemPos(INVENTORY, bCell));
 			ITEM_MANAGER::instance().FlushDelayedSave(pkNewItem);
 			pkNewItem->AttrLog();
-			//PointChange(POINT_GOLD, -prt->cost);
 			PayRefineFee(prt->cost);
 
 			quest::CQuestManager::instance().RefineItem(GetPlayerID(), pkNewItem);
@@ -1031,8 +1028,6 @@ bool CHARACTER::DoRefineWithScroll(LPITEM item)
 			ITEM_MANAGER::instance().FlushDelayedSave(pkNewItem);
 
 			pkNewItem->AttrLog();
-
-			//PointChange(POINT_GOLD, -prt->cost);
 			PayRefineFee(prt->cost);
 		}
 		else
@@ -2406,7 +2401,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 									}
 									else if (bi[i].vnum == 1)
 									{
-										PointChange(POINT_GOLD, 1000, true);
+										ChangeGold(1000);
 									}
 									else
 									{
@@ -3477,7 +3472,6 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 							case ITEM_GIVE_STAT_RESET_COUNT_VNUM:
 								{
-									//PointChange(POINT_GOLD, -iCost);
 									PointChange(POINT_STAT_RESET_COUNT, 1);
 									item->SetCount(item->GetCount()-1);
 								}
@@ -3556,7 +3550,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 									int iGold = item->GetSocket(0);
 									ITEM_MANAGER::instance().RemoveItem(item);
 									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("돈 %d 냥을 획득했습니다."), iGold);
-									PointChange(POINT_GOLD, iGold);
+									ChangeGold(iGold);
 								}
 								break;
 
@@ -5362,7 +5356,7 @@ bool CHARACTER::DropGold(GoldType gold)
 		if (item->AddToGround(GetMapIndex(), pos))
 		{
 			//Motion(MOTION_PICKUP);
-			PointChange(POINT_GOLD, -gold, true);
+			ChangeGold(-gold);
 
 			if (gold > 1000) // 천원 이상만 기록한다.
 				LogManager::instance().CharLog(this, gold, "DROP_GOLD", "");
@@ -5562,7 +5556,7 @@ namespace NPartyPickupDistribute
 			if (ch!=c)
 				if (DISTANCE_APPROX(ch->GetX() - x, ch->GetY() - y) <= PARTY_DEFAULT_RANGE)
 				{
-					ch->PointChange(POINT_GOLD, iMoney, true);
+					ch->ChangeGold(iMoney);
 
 					if (iMoney > 1000) // 천원 이상만 기록한다.
 					{
@@ -5601,7 +5595,7 @@ void CHARACTER::GiveGold(GoldType iAmount)
 			pParty->ForEachOnlineMember(funcMoneyDist);
 		}
 
-		PointChange(POINT_GOLD, dwMyAmount, true);
+		ChangeGold(dwMyAmount);
 
 		if (dwMyAmount > 1000) // 천원 이상만 기록한다.
 		{
@@ -5610,7 +5604,7 @@ void CHARACTER::GiveGold(GoldType iAmount)
 	}
 	else
 	{
-		PointChange(POINT_GOLD, iAmount, true);
+		ChangeGold(iAmount);
 
 		if (iAmount > 1000) // 천원 이상만 기록한다.
 		{
@@ -6842,7 +6836,7 @@ bool CHARACTER::GiveItemFromSpecialItemGroup(DWORD dwGroupNum, std::vector<DWORD
 		switch (dwVnum)
 		{
 			case CSpecialItemGroup::GOLD:
-				PointChange(POINT_GOLD, dwCount);
+				ChangeGold(dwCount);
 				LogManager::instance().CharLog(this, dwCount, "TREASURE_GOLD", "");
 
 				bSuccess = true;

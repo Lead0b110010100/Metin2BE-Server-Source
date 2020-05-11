@@ -1720,7 +1720,7 @@ bool CGuild::ChargeSP(LPCHARACTER ch, int iSP)
 		gold = iSP * 100;
 	}
 
-	ch->PointChange(POINT_GOLD, -gold);
+	ch->ChangeGold(-gold);
 	DBManager::instance().SendMoneyLog(MONEY_LOG_GUILD, 1, -gold);
 
 	SendDBSkillUpdate(iSP);
@@ -1797,7 +1797,7 @@ void CGuild::RequestDepositMoney(LPCHARACTER ch, GoldType iGold)
 		return;
 
 
-	ch->PointChange(POINT_GOLD, -iGold);
+	ch->ChangeGold(-iGold);
 
 	TPacketGDGuildMoney p;
 	p.dwGuild = GetID();
@@ -1864,7 +1864,7 @@ void CGuild::RecvWithdrawMoneyGive(GoldType iChangeGold)
 
 	if (ch)
 	{
-		ch->PointChange(POINT_GOLD, iChangeGold);
+		ch->ChangeGold(iChangeGold);
 		sys_log(0, "GUILD: WITHDRAW %s:%u player %s[%u] gold %lld", GetName(), GetID(), ch->GetName(), ch->GetPlayerID(), iChangeGold);
 	}
 

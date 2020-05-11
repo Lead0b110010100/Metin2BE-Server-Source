@@ -298,6 +298,9 @@ enum
 
 	HEADER_GC_REFRESH_GM_STATE = 214,
 
+	HEADER_GC_CHARACTER_GOLD = 220,
+	HEADER_GC_CHARACTER_GOLD_CHANGE = 221,
+
 
 	/////////////////////////////////////////////////////////////////////////////
 
@@ -1099,8 +1102,14 @@ typedef struct packet_main_character4_bgm_vol
 typedef struct packet_points
 {
 	BYTE	header;
-	GoldType		points[POINT_MAX_NUM];
+	INT		points[POINT_MAX_NUM];
 } TPacketGCPoints;
+
+typedef struct packet_gold
+{
+	BYTE	header;
+	GoldType		gold;
+} TPacketGCGold;
 
 typedef struct packet_skill_level
 {
@@ -1113,9 +1122,17 @@ typedef struct packet_point_change
 	int		header;
 	DWORD	dwVID;
 	BYTE	type;
-	GoldType	amount;
-	GoldType	value;
+	int	amount;
+	int	value;
 } TPacketGCPointChange;
+
+typedef struct packet_gold_change
+{
+	BYTE header;
+	DWORD dwVID;
+	GoldType amount;
+	GoldType value;
+} TPacketGCGoldChange;
 
 typedef struct packet_stun
 {

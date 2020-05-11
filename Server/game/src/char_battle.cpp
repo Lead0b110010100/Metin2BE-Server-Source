@@ -1956,7 +1956,7 @@ bool CHARACTER::Damage(LPCHARACTER pAttacker, int dam, EDamageType type) // retu
 				if (number(1, 100) <= pAttacker->GetPoint(POINT_STEAL_GOLD))
 				{
 					int iAmount = number(1, GetLevel());
-					pAttacker->PointChange(POINT_GOLD, iAmount);
+					pAttacker->ChangeGold(iAmount);
 					DBManager::instance().SendMoneyLog(MONEY_LOG_MISC, 1, iAmount);
 				}
 			}

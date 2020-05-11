@@ -355,7 +355,7 @@ namespace quest
 		}
 
 		DBManager::instance().SendMoneyLog(MONEY_LOG_QUEST, ch->GetPlayerID(), iAmount);
-		ch->PointChange(POINT_GOLD, iAmount, true);
+		ch->ChangeGold(iAmount);
 		return 0;
 	}
 
@@ -1041,7 +1041,7 @@ namespace quest
 		else
 		{
 			DBManager::instance().SendMoneyLog(MONEY_LOG_QUEST, ch->GetPlayerID(), gold);
-			ch->PointChange(POINT_GOLD, gold, true);
+			ch->ChangeGold(gold);
 		}
 
 		return 0;

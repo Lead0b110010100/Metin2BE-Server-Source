@@ -1711,7 +1711,6 @@ void CHARACTER::PointsPacket()
 	pack.points[POINT_MAX_HP]		= GetMaxHP();
 	pack.points[POINT_SP]		= GetSP();
 	pack.points[POINT_MAX_SP]		= GetMaxSP();
-	pack.points[POINT_GOLD]		= GetGold();
 	pack.points[POINT_STAMINA]		= GetStamina();
 	pack.points[POINT_MAX_STAMINA]	= GetMaxStamina();
 
@@ -1719,6 +1718,11 @@ void CHARACTER::PointsPacket()
 		pack.points[i] = GetPoint(i);
 
 	GetDesc()->Packet(&pack, sizeof(TPacketGCPoints));
+
+	TPacketGCGold packGold;
+	packGold.header = HEADER_GC_CHARACTER_GOLD;
+	packGold.gold = GetGold();
+	GetDesc()->Packet(&packGold, sizeof(TPacketGCGold));
 }
 
 bool CHARACTER::ChangeSex()
@@ -3094,14 +3098,9 @@ void CHARACTER::SetPoint(BYTE type, GoldType val)
 	}
 }
 
-INT CHARACTER::GetAllowedGold() const
+GoldType CHARACTER::GetAllowedGold() const
 {
-	if (GetLevel() <= 10)
-		return 100000;
-	else if (GetLevel() <= 20)
-		return 500000;
-	else
-		return 50000000;
+	return GOLD_MAX;
 }
 
 void CHARACTER::CheckMaximumPoints()
@@ -3113,9 +3112,9 @@ void CHARACTER::CheckMaximumPoints()
 		PointChange(POINT_SP, GetMaxSP() - GetSP());
 }
 
-void CHARACTER::PointChange(BYTE type, GoldType amount, bool bAmount, bool bBroadcast)
+void CHARACTER::PointChange(BYTE type, int amount, bool bAmount, bool bBroadcast)
 {
-	GoldType val = 0;
+	int val = 0;
 
 	//sys_log(0, "PointChange %d %d | %d -> %d cHP %d mHP %d", type, amount, GetPoint(type), GetPoint(type)+amount, GetHP(), GetMaxHP());
 
@@ -3456,41 +3455,6 @@ void CHARACTER::PointChange(BYTE type, GoldType amount, bool bAmount, bool bBroa
 		case POINT_MAX_STAMINA:
 			SetMaxStamina(GetMaxStamina() + amount);
 			val = GetMaxStamina();
-			break;
-
-		case POINT_GOLD:
-			{
-				const GoldType nTotalMoney = static_cast<GoldType>(GetGold()) + static_cast<GoldType>(amount);
-
-				if (GOLD_MAX <= nTotalMoney)
-				{
-					sys_err("[OVERFLOW_GOLD] OriGold %lld AddedGold %lld id %u Name %s ", GetGold(), amount, GetPlayerID(), GetName());
-					LogManager::instance().CharLog(this, GetGold() + amount, "OVERFLOW_GOLD", "");
-					return;
-				}
-
-				// 청소년보호
-				if (g_bChinaIntoxicationCheck && amount > 0)
-				{
-					if (IsOverTime(OT_NONE))
-					{
-						dev_log(LOG_DEB0, "<GOLD_LOG> %s = NONE", GetName());
-					}
-					else if (IsOverTime(OT_3HOUR))
-					{
-						amount = (amount / 2);
-						dev_log(LOG_DEB0, "<GOLD_LOG> %s = 3HOUR", GetName());
-					}
-					else if (IsOverTime(OT_5HOUR))
-					{
-						amount = 0;
-						dev_log(LOG_DEB0, "<GOLD_LOG> %s = 5HOUR", GetName());
-					}
-				}
-
-				SetGold(GetGold() + amount);
-				val = GetGold();
-			}
 			break;
 
 		case POINT_SKILL:
@@ -3995,6 +3959,36 @@ void CHARACTER::ApplyPoint(BYTE bApplyType, int iVal)
 		default:
 			sys_err("Unknown apply type %d name %s", bApplyType, GetName());
 			break;
+	}
+}
+
+void CHARACTER::ChangeGold(GoldType amount)
+{
+	const GoldType nTotalMoney = static_cast<GoldType>(GetGold()) + static_cast<GoldType>(amount);
+
+	if (GetAllowedGold() <= nTotalMoney)
+	{
+		sys_err("[OVERFLOW_GOLD] OriGold %lld AddedGold %lld id %u Name %s ", GetGold(), amount, GetPlayerID(), GetName());
+		LogManager::instance().CharLog(this, GetGold() + amount, "OVERFLOW_GOLD", "");
+		return;
+	}
+
+	SetGold(GetGold() + amount);
+
+	if (GetDesc())
+	{
+		TPacketGCGoldChange pack;
+
+		pack.header = HEADER_GC_CHARACTER_GOLD_CHANGE;
+		pack.dwVID = m_vid;
+		
+		if (amount <= 0)
+			pack.amount = 0;
+		else
+			pack.amount = amount;
+
+		pack.value = GetGold();
+		GetDesc()->Packet(&pack, sizeof(TPacketGCGoldChange));
 	}
 }
 
@@ -6864,7 +6858,7 @@ GoldType CHARACTER::ComputeRefineFee(GoldType iCost, int iMultiply) const
 
 void CHARACTER::PayRefineFee(GoldType iTotalMoney)
 {
-	PointChange(POINT_GOLD, -iTotalMoney);
+	ChangeGold(-iTotalMoney);
 }
 // END_OF_ADD_REFINE_BUILDING
 

@@ -555,7 +555,7 @@ bool Cube_make (LPCHARACTER ch)
 
 	// 제조시 필요한 골드 차감
 	if (0 < cube_proto->gold)
-		ch->PointChange(POINT_GOLD, -(cube_proto->gold), false);
+		ch->ChangeGold(-(cube_proto->gold));
 
 	percent_number = number(1,100);
 	if ( percent_number<=cube_proto->percent)

@@ -365,7 +365,7 @@ void CShopManager::Sell(LPCHARACTER ch, BYTE bCell, BYTE bCount)
 	//군주 시스템 : 세금 징수
 	CMonarch::instance().SendtoDBAddMoney(0, ch->GetEmpire(), ch);
 
-	ch->PointChange(POINT_GOLD, dwPrice, false);
+	ch->ChangeGold(dwPrice);
 }
 
 bool CompareShopItemName(const SShopItemTable& lhs, const SShopItemTable& rhs)

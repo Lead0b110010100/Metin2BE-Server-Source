@@ -2452,7 +2452,7 @@ void CInputMain::AnswerMakeGuild(LPCHARACTER ch, const char* c_pData)
 
 		int GuildCreateFee = 200000;
 
-		ch->PointChange(POINT_GOLD, -GuildCreateFee);
+		ch->ChangeGold(-GuildCreateFee);
 		DBManager::instance().SendMoneyLog(MONEY_LOG_GUILD, ch->GetPlayerID(), -GuildCreateFee);
 
 		char Log[128];
