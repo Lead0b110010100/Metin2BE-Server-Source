@@ -1168,7 +1168,7 @@ void CInputDB::SafeboxLoad(LPDESC d, const char * c_pData)
 	if (!d->GetCharacter())
 		return;
 
-	BYTE bSize = 1;
+	BYTE bSize = 5;
 
 	LPCHARACTER ch = d->GetCharacter();
 
@@ -1181,16 +1181,6 @@ void CInputDB::SafeboxLoad(LPDESC d, const char * c_pData)
 	}
 	//END_PREVENT_TRADE_WINDOW
 
-	// ADD_PREMIUM
-	if (d->GetCharacter()->GetPremiumRemainSeconds(PREMIUM_SAFEBOX) > 0 ||
-			d->GetCharacter()->IsEquipUniqueGroup(UNIQUE_GROUP_LARGE_SAFEBOX))
-		bSize = 5;
-	// END_OF_ADD_PREMIUM
-
-	//if (d->GetCharacter()->IsEquipUniqueItem(UNIQUE_ITEM_SAFEBOX_EXPAND))
-	//bSize = 3; // 창고확장권
-
-	//d->GetCharacter()->LoadSafebox(p->bSize * SAFEBOX_PAGE_SIZE, p->dwGold, p->wItemCount, (TPlayerItem *) (c_pData + sizeof(TSafeboxTable)));
 	d->GetCharacter()->LoadSafebox(bSize * SAFEBOX_PAGE_SIZE, p->dwGold, p->wItemCount, (TPlayerItem *) (c_pData + sizeof(TSafeboxTable)));
 }
 
