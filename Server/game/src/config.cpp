@@ -51,6 +51,7 @@ bool	g_bGuildInfiniteMembers = false;
 bool	g_bChinaIntoxicationCheck = false;
 bool	g_bEnableSpeedHackCrash = false;
 int		g_iStatusPointGetLevelLimit = 90;
+int		g_iSkillPointGetLevelLimit = 90;
 int		g_iStatusPointSetMaxValue = 90;
 int		g_iShoutLimitLevel = 15;
 // int		g_iShoutLimitTime = 15;
@@ -1111,6 +1112,17 @@ static bool __LoadGeneralConfigFile(const char* configName)
 
 			g_iStatusPointGetLevelLimit = MINMAX(0, flag, PLAYER_MAX_LEVEL_CONST);
 			fprintf(stdout, "STATUS_POINT_GET_LEVEL_LIMIT: %d\n", g_iStatusPointGetLevelLimit);
+			continue;
+		}
+
+		TOKEN("skill_point_get_level_limit")
+		{
+			int flag = 0;
+			str_to_number(flag, value_string);
+			if (flag <= 0) continue;
+
+			g_iSkillPointGetLevelLimit = MINMAX(0, flag, PLAYER_MAX_LEVEL_CONST);
+			fprintf(stdout, "SKILL_POINT_GET_LEVEL_LIMIT: %d\n", g_iSkillPointGetLevelLimit);
 			continue;
 		}
 

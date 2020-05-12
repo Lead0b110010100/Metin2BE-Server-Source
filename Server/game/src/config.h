@@ -55,6 +55,7 @@ extern bool	g_bGuildInfiniteMembers;
 extern bool	g_bChinaIntoxicationCheck;
 extern bool	g_bEnableSpeedHackCrash;
 extern int g_iStatusPointGetLevelLimit;
+extern int g_iSkillPointGetLevelLimit;
 extern int g_iStatusPointSetMaxValue;
 extern int g_iShoutLimitLevel;
 extern DWORD g_dwSkillBookNextReadMin;

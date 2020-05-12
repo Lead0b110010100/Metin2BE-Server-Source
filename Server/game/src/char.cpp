@@ -3298,7 +3298,7 @@ void CHARACTER::PointChange(BYTE type, int amount, bool bAmount, bool bBroadcast
 
 							if (GetSkillGroup())
 							{
-								if (GetLevel() >= 5)
+								if ((GetLevel() <= g_iSkillPointGetLevelLimit) && GetLevel() >= 5)
 									PointChange(POINT_SKILL, 1);
 
 								if (GetLevel() >= 9)
