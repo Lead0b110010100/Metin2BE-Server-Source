@@ -4483,27 +4483,22 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 										// 절대로 연재가 추가 안될거라 하여 하드 코딩함.
 										if (item->GetVnum() == 71151 || item->GetVnum() == 76023)
 										{
-											if ((item2->GetType() == ITEM_WEAPON)
-												|| (item2->GetType() == ITEM_ARMOR && item2->GetSubType() == ARMOR_BODY))
+											bool bCanUse = true;
+
+											if (ITEM_COSTUME == item2->GetType())
+												bCanUse = false;
+
+											for (int i = 0; i < ITEM_LIMIT_MAX_NUM; ++i)
 											{
-												bool bCanUse = true;
-												for (int i = 0; i < ITEM_LIMIT_MAX_NUM; ++i)
+												if (item2->GetLimitType(i) == LIMIT_LEVEL && item2->GetLimitValue(i) > 24)
 												{
-													if (item2->GetLimitType(i) == LIMIT_LEVEL && item2->GetLimitValue(i) > 24)
-													{
-														bCanUse = false;
-														break;
-													}
-												}
-												if (false == bCanUse)
-												{
-													ChatPacket(CHAT_TYPE_INFO, LC_TEXT("적용 레벨보다 높아 사용이 불가능합니다."));
+													bCanUse = false;
 													break;
 												}
 											}
-											else
+											if (!bCanUse)
 											{
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("무기와 갑옷에만 사용 가능합니다."));
+												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("적용 레벨보다 높아 사용이 불가능합니다."));
 												break;
 											}
 										}
@@ -4533,27 +4528,23 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 										// 절대로 연재가 추가 안될거라 하여 하드 코딩함.
 										if (item->GetVnum() == 71152 || item->GetVnum() == 76024)
 										{
-											if ((item2->GetType() == ITEM_WEAPON)
-												|| (item2->GetType() == ITEM_ARMOR && item2->GetSubType() == ARMOR_BODY))
+											bool bCanUse = true;
+
+											if (ITEM_COSTUME == item2->GetType())
+												bCanUse = false;
+
+											for (int i = 0; i < ITEM_LIMIT_MAX_NUM; ++i)
 											{
-												bool bCanUse = true;
-												for (int i = 0; i < ITEM_LIMIT_MAX_NUM; ++i)
+												if (item2->GetLimitType(i) == LIMIT_LEVEL && item2->GetLimitValue(i) > 24)
 												{
-													if (item2->GetLimitType(i) == LIMIT_LEVEL && item2->GetLimitValue(i) > 24)
-													{
-														bCanUse = false;
-														break;
-													}
-												}
-												if (false == bCanUse)
-												{
-													ChatPacket(CHAT_TYPE_INFO, LC_TEXT("적용 레벨보다 높아 사용이 불가능합니다."));
+													bCanUse = false;
 													break;
 												}
 											}
-											else
+
+											if (!bCanUse)
 											{
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("무기와 갑옷에만 사용 가능합니다."));
+												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("적용 레벨보다 높아 사용이 불가능합니다."));
 												break;
 											}
 										}
