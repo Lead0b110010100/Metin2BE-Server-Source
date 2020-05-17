@@ -171,7 +171,9 @@ void CInputAuth::Login(LPDESC d, const char * c_pData)
 				"UNIX_TIMESTAMP(fish_mind_expire),"
 				"UNIX_TIMESTAMP(marriage_fast_expire),"
 				"UNIX_TIMESTAMP(money_drop_rate_expire),"
-				"UNIX_TIMESTAMP(create_time)"
+				"UNIX_TIMESTAMP(create_time),"
+				"DR,"
+				"DM"
 				" FROM account WHERE login='%s'",
 
 				szPasswd, szLogin);
@@ -189,7 +191,9 @@ void CInputAuth::Login(LPDESC d, const char * c_pData)
 				"UNIX_TIMESTAMP(fish_mind_expire),"
 				"UNIX_TIMESTAMP(marriage_fast_expire),"
 				"UNIX_TIMESTAMP(money_drop_rate_expire),"
-				"UNIX_TIMESTAMP(create_time)"
+				"UNIX_TIMESTAMP(create_time),"
+				"DR,"
+				"DM"
 				" FROM account WHERE login='%s'", szLogin);
 #else
 		// @fixme138 1. PASSWORD('%s') -> %s 2. szPasswd wrapped inside mysql_hash_password(%s).c_str()
@@ -202,7 +206,9 @@ void CInputAuth::Login(LPDESC d, const char * c_pData)
 				"UNIX_TIMESTAMP(fish_mind_expire),"
 				"UNIX_TIMESTAMP(marriage_fast_expire),"
 				"UNIX_TIMESTAMP(money_drop_rate_expire),"
-				"UNIX_TIMESTAMP(create_time)"
+				"UNIX_TIMESTAMP(create_time),"
+				"DR,"
+				"DM"
 				" FROM account WHERE login='%s'",
 				mysql_hash_password(szPasswd).c_str(), szLogin);
 #endif
@@ -329,7 +335,9 @@ void CInputAuth::LoginOpenID(LPDESC d, const char * c_pData)
 				"UNIX_TIMESTAMP(fish_mind_expire),"
 				"UNIX_TIMESTAMP(marriage_fast_expire),"
 				"UNIX_TIMESTAMP(money_drop_rate_expire),"
-				"UNIX_TIMESTAMP(create_time)"
+				"UNIX_TIMESTAMP(create_time),"
+				"DR,"
+				"DM"
 				" FROM account WHERE login='%s'",
 
 				szPasswd, szLogin);
@@ -347,7 +355,9 @@ void CInputAuth::LoginOpenID(LPDESC d, const char * c_pData)
 				"UNIX_TIMESTAMP(fish_mind_expire),"
 				"UNIX_TIMESTAMP(marriage_fast_expire),"
 				"UNIX_TIMESTAMP(money_drop_rate_expire),"
-				"UNIX_TIMESTAMP(create_time)"
+				"UNIX_TIMESTAMP(create_time),"
+				"DR,"
+				"DM"
 				" FROM account WHERE login='%s'", szLogin);
 #else
 		// @fixme138 1. PASSWORD('%s') -> %s 2. szPasswd wrapped inside mysql_hash_password(%s).c_str()
@@ -360,7 +370,9 @@ void CInputAuth::LoginOpenID(LPDESC d, const char * c_pData)
 				"UNIX_TIMESTAMP(fish_mind_expire),"
 				"UNIX_TIMESTAMP(marriage_fast_expire),"
 				"UNIX_TIMESTAMP(money_drop_rate_expire),"
-				"UNIX_TIMESTAMP(create_time)"
+				"UNIX_TIMESTAMP(create_time),"
+				"DR,"
+				"DM"
 				" FROM account WHERE login='%s'",
 				mysql_hash_password(szPasswd).c_str(), szLogin);
 #endif

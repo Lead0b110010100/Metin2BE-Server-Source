@@ -486,6 +486,8 @@ void DBManager::SendAuthLogin(LPDESC d)
 	ptod.dwLoginKey = d->GetLoginKey();
 	ptod.bBillType = pkLD->GetBillType();
 	ptod.dwBillID = pkLD->GetBillID();
+	ptod.iDR = r.iDR;
+	ptod.iDM = r.iDM;
 
 	thecore_memcpy(ptod.iPremiumTimes, pkLD->GetPremiumPtr(), sizeof(ptod.iPremiumTimes));
 	thecore_memcpy(&ptod.adwClientKey, pkLD->GetClientKey(), sizeof(DWORD) * 4);
@@ -727,6 +729,8 @@ void DBManager::AnalyzeReturnQuery(SQLMsg * pMsg)
 					char szSocialID[SOCIAL_ID_MAX_LEN + 1] = {0, };
 					char szStatus[ACCOUNT_STATUS_MAX_LEN + 1] = {0, };
 					DWORD dwID = 0;
+					int iDR = 0;
+					int iDM = 0;
 
 					if (!row[col])
 					{
@@ -802,7 +806,7 @@ void DBManager::AnalyzeReturnQuery(SQLMsg * pMsg)
 
 						{
 							long retValue = 0;
-							str_to_number(retValue, row[col]);
+							str_to_number(retValue, row[col++]);
 
 							time_t create_time = retValue;
 							struct tm * tm1;
@@ -813,6 +817,24 @@ void DBManager::AnalyzeReturnQuery(SQLMsg * pMsg)
 							sys_log(0, "Block Time %d ", strncmp(szCreateDate, g_stBlockDate.c_str(), 8));
 						}
 					}
+
+					str_to_number(iDR, row[col++]);
+
+					if (!row[col])
+					{
+					   	sys_err("error column %d", col);
+						M2_DELETE(pinfo);
+						break;
+				   	}
+
+					str_to_number(iDM, row[col++]);
+
+					if (!row[col])
+					{
+					   	sys_err("error column %d", col);
+						M2_DELETE(pinfo);
+						break;
+				   	}
 
 					int nPasswordDiff = strcmp(szEncrytPassword, szPassword);
 
@@ -881,6 +903,9 @@ void DBManager::AnalyzeReturnQuery(SQLMsg * pMsg)
 						trim_and_lower(pinfo->login, r.login, sizeof(r.login));
 						strlcpy(r.passwd, pinfo->passwd, sizeof(r.passwd));
 						strlcpy(r.social_id, szSocialID, sizeof(r.social_id));
+						r.iDR = iDR;
+						r.iDM = iDM;
+
 						DESC_MANAGER::instance().ConnectAccount(r.login, d);
 
 						d->SetMatrixCode(szMatrixCode);

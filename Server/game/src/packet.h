@@ -301,6 +301,9 @@ enum
 	HEADER_GC_CHARACTER_GOLD = 220,
 	HEADER_GC_CHARACTER_GOLD_CHANGE = 221,
 
+	HEADER_GC_CHARACTER_DRAGON_POINT = 222,
+	HEADER_GC_CHARACTER_DRAGON_POINT_CHANGE = 223,
+
 
 	/////////////////////////////////////////////////////////////////////////////
 
@@ -2412,6 +2415,21 @@ typedef struct SPacketGGGiveItem
 	DWORD dwVnum;
 	DWORD dwCount;
 } TPacketGGGiveItem;
+
+typedef struct SPacketGCDragonPoint
+{
+	BYTE byHeader;
+	int iDR;
+	int iDM;
+} TPacketGCDragonPoint;
+
+typedef struct SPacketGCDragonPointChange
+{
+	BYTE byHeader;
+	DWORD dwVID;
+	int iDR;
+	int iDM;
+} TPacketGCDragonPointChange;
 
 #pragma pack()
 #endif

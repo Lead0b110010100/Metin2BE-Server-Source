@@ -158,6 +158,9 @@ enum
 	HEADER_GD_UPDATE_CHANNELSTATUS	= 139,
 	HEADER_GD_REQUEST_CHANNELSTATUS	= 140,
 
+	HEADER_GD_SET_DR = 141,
+	HEADER_GD_SET_DM = 142,
+
 	HEADER_GD_SETUP			= 0xff,
 
 	///////////////////////////////////////////////
@@ -373,6 +376,8 @@ typedef struct SAccountTable
 	char		status[ACCOUNT_STATUS_MAX_LEN + 1];
 	BYTE		bEmpire;
 	TSimplePlayer	players[PLAYER_PER_ACCOUNT];
+	int iDR;
+	int iDM;
 } TAccountTable;
 
 typedef struct SPacketDGCreateSuccess
@@ -1067,6 +1072,8 @@ typedef struct SPacketGDAuthLogin
 	BYTE	bBillType;
 	DWORD	dwBillID;
 	int		iPremiumTimes[PREMIUM_MAX_NUM];
+	int iDR;
+	int iDM;
 } TPacketGDAuthLogin;
 
 typedef struct SPacketGDLoginByKey
@@ -1206,6 +1213,8 @@ typedef struct SPacketLoginOnSetup
 	char    szHost[MAX_HOST_LENGTH + 1];
 	DWORD   dwLoginKey;
 	DWORD   adwClientKey[4];
+	int iDR;
+	int iDM;
 } TPacketLoginOnSetup;
 
 typedef struct SPacketGDCreateObject
@@ -1492,6 +1501,18 @@ typedef struct TSimpleGMState
 	bool bState;
 	DWORD dwLanguages;
 } TSimpleGMState;
+
+typedef struct SPacketGDSetDR
+{
+	DWORD dwAccountID;
+	int iDR;
+} TPacketGDSetDR;
+
+typedef struct SPacketGDSetDM
+{
+	DWORD dwAccountID;
+	int iDM;
+} TPacketGDSetDM;
 
 #pragma pack()
 #endif

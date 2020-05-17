@@ -1366,6 +1366,8 @@ void CClientManager::QUERY_SETUP(CPeer * peer, DWORD dwHandle, const char * c_pD
 		trim_and_lower(pck->szLogin, r.login, sizeof(r.login));
 		strlcpy(r.social_id, pck->szSocialID, sizeof(r.social_id));
 		strlcpy(r.passwd, "TEMP", sizeof(r.passwd));
+		r.iDR = pck->iDR;
+		r.iDM = pck->iDM;
 
 		InsertLoginData(pkLD);
 
@@ -1940,6 +1942,8 @@ void CClientManager::QUERY_AUTH_LOGIN(CPeer * pkPeer, DWORD dwHandle, TPacketGDA
 		trim_and_lower(p->szLogin, r.login, sizeof(r.login));
 		strlcpy(r.social_id, p->szSocialID, sizeof(r.social_id));
 		strlcpy(r.passwd, "TEMP", sizeof(r.passwd));
+		r.iDR = p->iDR;
+		r.iDM = p->iDM;
 
 		sys_log(0, "AUTH_LOGIN id(%u) login(%s) social_id(%s) login_key(%u), client_key(%u %u %u %u)",
 				p->dwID, p->szLogin, p->szSocialID, p->dwLoginKey,
@@ -2881,6 +2885,15 @@ void CClientManager::ProcessPackets(CPeer * peer)
 			}
 			break;
 #endif
+
+			case HEADER_GD_SET_DR:
+				QUERY_ACCOUNT_SET_DR(peer, dwHandle, (TPacketGDSetDR*)data);
+				break;
+
+			case HEADER_GD_SET_DM:
+				QUERY_ACCOUNT_SET_DM(peer, dwHandle, (TPacketGDSetDM*)data);
+				break;
+
 			default:
 				sys_err("Unknown header (header: %d handle: %d length: %d)", header, dwHandle, dwLength);
 				break;

@@ -2104,6 +2104,13 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		bool SetGMState(std::string stName, bool bState);
 
 		void Rewarp();
+
+	public:
+		int GetDR();
+		void SetDR(int iDR);
+
+		int GetDM();
+		void SetDM(int iDM);
 };
 
 ESex GET_SEX(LPCHARACTER ch);

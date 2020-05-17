@@ -1373,3 +1373,22 @@ void CClientManager::FlushPlayerCacheSet(DWORD pid)
 	}
 }
 
+void CClientManager::QUERY_ACCOUNT_SET_DR(CPeer * peer, DWORD dwHandle, TPacketGDSetDR * data)
+{
+	CLoginData * pkLD = GetLoginDataByAID(data->dwAccountID);
+
+	if (pkLD)
+	{
+		pkLD->GetAccountRef().iDR = data->iDR;
+	}
+}
+
+void CClientManager::QUERY_ACCOUNT_SET_DM(CPeer * peer, DWORD dwHandle, TPacketGDSetDM * data)
+{
+	CLoginData * pkLD = GetLoginDataByAID(data->dwAccountID);
+
+	if (pkLD)
+	{
+		pkLD->GetAccountRef().iDM = data->iDM;
+	}
+}

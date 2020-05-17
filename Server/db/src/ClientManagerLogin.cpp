@@ -151,6 +151,8 @@ void CClientManager::QUERY_LOGIN_BY_KEY(CPeer * pkPeer, DWORD dwHandle, TPacketG
 	strlcpy(pkTab->passwd, r.passwd, sizeof(pkTab->passwd));
 	strlcpy(pkTab->social_id, r.social_id, sizeof(pkTab->social_id));
 	strlcpy(pkTab->status, "OK", sizeof(pkTab->status));
+	pkTab->iDR = r.iDR;
+	pkTab->iDM = r.iDM;
 
 	ClientHandleInfo * info = new ClientHandleInfo(dwHandle);
 	info->pAccountTable = pkTab;

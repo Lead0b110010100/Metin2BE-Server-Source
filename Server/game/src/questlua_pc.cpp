@@ -359,6 +359,50 @@ namespace quest
 		return 0;
 	}
 
+	ALUA(pc_give_dr)
+	{
+		LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
+
+		if (!lua_isnumber(L, 1))
+		{
+			sys_err("QUEST : wrong argument");
+			return 0;
+		}
+
+		int iAmount = (int)lua_tonumber(L, 1);
+
+		if (iAmount <= 0)
+		{
+			sys_err("QUEST : DR amount less then zero");
+			return 0;
+		}
+
+		ch->SetDR(ch->GetDR() + iAmount);
+		return 0;
+	}
+
+	ALUA(pc_give_dm)
+	{
+		LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
+
+		if (!lua_isnumber(L, 1))
+		{
+			sys_err("QUEST : wrong argument");
+			return 0;
+		}
+
+		int iAmount = (int)lua_tonumber(L, 1);
+
+		if (iAmount <= 0)
+		{
+			sys_err("QUEST : DR amount less then zero");
+			return 0;
+		}
+
+		ch->SetDM(ch->GetDM() + iAmount);
+		return 0;
+	}
+
 	ALUA(pc_warp_to_guild_war_observer_position)
 	{
 		luaL_checknumber(L, 1);
@@ -3727,6 +3771,9 @@ teleport_area:
 			//pc.make_guild0(guild_name)
 			{ "make_guild0",			pc_make_guild0	},	// it returns few state values which you can manage via lua [return lua number]
 #endif
+
+			{ "give_dr", pc_give_dr	},
+			{ "give_dm", pc_give_dm	},
 
 			{ NULL,			NULL			}
 		};

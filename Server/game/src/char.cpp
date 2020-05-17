@@ -1723,6 +1723,12 @@ void CHARACTER::PointsPacket()
 	packGold.header = HEADER_GC_CHARACTER_GOLD;
 	packGold.gold = GetGold();
 	GetDesc()->Packet(&packGold, sizeof(TPacketGCGold));
+
+	TPacketGCDragonPoint packDragonPoint;
+	packDragonPoint.byHeader = HEADER_GC_CHARACTER_DRAGON_POINT;
+	packDragonPoint.iDR = GetDR();
+	packDragonPoint.iDM = GetDM();
+	GetDesc()->Packet(&packDragonPoint, sizeof(TPacketGCDragonPoint));
 }
 
 bool CHARACTER::ChangeSex()
@@ -7507,4 +7513,68 @@ void CHARACTER::Rewarp()
 	ChatPacket(CHAT_TYPE_INFO, "You warp to ( %d, %d )", GetX(), GetY());
 	WarpSet(GetX(), GetY(), GetMapIndex());
 	Stop();
+}
+
+int CHARACTER::GetDR()
+{
+	if (GetDesc())
+		return GetDesc()->GetAccountTable().iDR;
+
+	return 0;
+}
+
+void CHARACTER::SetDR(int iDR)
+{
+	LPDESC d = GetDesc();
+
+	if(!d)
+		return;
+
+	d->GetAccountTable().iDR = iDR;
+
+	TPacketGDSetDR packet;
+	packet.dwAccountID = d->GetAccountTable().id;
+	packet.iDR = iDR;
+
+	db_clientdesc->DBPacket(HEADER_GD_SET_DR, d->GetHandle(), &packet, sizeof(TPacketGDSetDR));
+	DBManager::instance().DirectQuery("UPDATE account.account SET DR = %u WHERE id = '%d'", iDR, d->GetAccountTable().id);
+
+	TPacketGCDragonPointChange p;
+	p.byHeader = HEADER_GC_CHARACTER_DRAGON_POINT_CHANGE;
+	p.dwVID = m_vid;
+	p.iDR = MAX(0, iDR);
+	p.iDM = MAX(0, GetDM());
+	d->Packet(&p, sizeof(TPacketGCDragonPointChange));
+}
+
+int CHARACTER::GetDM()
+{
+	if (GetDesc())
+		return GetDesc()->GetAccountTable().iDM;
+
+	return 0;
+}
+
+void CHARACTER::SetDM(int iDM)
+{
+	LPDESC d = GetDesc();
+
+	if(!d)
+		return;
+
+	d->GetAccountTable().iDM = iDM;
+
+	TPacketGDSetDM packet;
+	packet.dwAccountID = d->GetAccountTable().id;
+	packet.iDM = iDM;
+
+	db_clientdesc->DBPacket(HEADER_GD_SET_DM, d->GetHandle(), &packet, sizeof(TPacketGDSetDM));
+	DBManager::instance().DirectQuery("UPDATE account.account SET DM = %u WHERE id = '%d'", iDM, d->GetAccountTable().id);
+
+	TPacketGCDragonPointChange p;
+	p.byHeader = HEADER_GC_CHARACTER_DRAGON_POINT_CHANGE;
+	p.dwVID = m_vid;
+	p.iDR = MAX(0, GetDR());
+	p.iDM = MAX(0, iDM);
+	d->Packet(&p, sizeof(TPacketGCDragonPointChange));
 }

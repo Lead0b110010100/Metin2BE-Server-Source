@@ -318,6 +318,9 @@ class CClientManager : public CNetBase, public singleton<CClientManager>
 	void		QUERY_PARTY_STATE_CHANGE(CPeer * peer, TPacketPartyStateChange* p);
 	void		QUERY_PARTY_SET_MEMBER_LEVEL(CPeer * peer, TPacketPartySetMemberLevel* p);
 
+	void QUERY_ACCOUNT_SET_DR(CPeer * peer, DWORD dwHandle, TPacketGDSetDR * data);
+	void QUERY_ACCOUNT_SET_DM(CPeer * peer, DWORD dwHandle, TPacketGDSetDM * data);
+
 	void		QUERY_RELOAD_PROTO();
 
 	void		QUERY_CHANGE_NAME(CPeer * peer, DWORD dwHandle, TPacketGDChangeName * p);
