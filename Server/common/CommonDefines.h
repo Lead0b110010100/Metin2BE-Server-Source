@@ -32,7 +32,7 @@ typedef long long GoldType;
 #endif
 
 // #define ENABLE_PLAYER_PER_ACCOUNT5
-#define ENABLE_DICE_SYSTEM
+// #define ENABLE_DICE_SYSTEM
 #define ENABLE_EXTEND_INVEN_SYSTEM
 
 // #define ENABLE_MOUNT_COSTUME_SYSTEM

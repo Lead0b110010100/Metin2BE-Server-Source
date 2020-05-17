@@ -8,7 +8,7 @@
 
 extern std::string g_stLocale;
 
-const int GUILD_RANK_MAX_NUM = 20;
+const int GUILD_RANK_MAX_NUM = 22;
 
 bool isEurope()
 {
@@ -864,6 +864,8 @@ const int c_aiScoreByLevel[GUILD_MAX_LEVEL+1] =
 	45000,
 	50000,
 	55000,
+	60000,
+	65000,
 };
 
 const int c_aiScoreByRanking[GUILD_RANK_MAX_NUM+1] =
@@ -888,7 +890,9 @@ const int c_aiScoreByRanking[GUILD_RANK_MAX_NUM+1] =
 	3000,
 	2000,
 	1000,
-	500		// 20À§
+	500,		// 20À§
+	300,
+	200,
 };
 
 void CGuildManager::BootReserveWar()

@@ -224,9 +224,13 @@ bool ITEM_MANAGER::ReadSpecialDropItemFile(const char * c_pszFileName)
 
 					if (!GetVnumByOriginalName(name.c_str(), dwVnum))
 					{
-						if (name == "°æÇèÄ¡" || name == "exp")
+						if (name == "exp")
 						{
 							dwVnum = CSpecialItemGroup::EXP;
+						}
+						else if (name == "gold")
+						{
+							dwVnum = CSpecialItemGroup::GOLD;
 						}
 						else if (name == "mob")
 						{
@@ -507,6 +511,7 @@ bool ITEM_MANAGER::ReadEtcDropItemFile(const char * c_pszFileName)
 
 		DWORD dwItemVnum;
 
+		//if (!ITEM_MANAGER::instance().GetTable(dwVnum))
 		if (!ITEM_MANAGER::instance().GetVnumByOriginalName(szItemName, dwItemVnum))
 		{
 			sys_err("No such an item (name: %s)", szItemName);
