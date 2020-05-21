@@ -7,6 +7,7 @@
 #include "affect.h"
 #include "config.h"
 #include "utils.h"
+#include "item.h"
 
 #undef sys_err
 #ifndef __WIN32__
@@ -61,15 +62,19 @@ namespace quest
 	{
 		LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
 
-		// 소환하면 멀리서부터 달려오는지 여부
 		bool bFromFar = lua_isboolean(L, 1) ? lua_toboolean(L, 1) : false;
-
-		// 소환수의 vnum
 		DWORD horseVnum= lua_isnumber(L, 2) ? lua_tonumber(L, 2) : 0;
-
 		const char* name = lua_isstring(L, 3) ? lua_tostring(L, 3) : 0;
-		ch->HorseSummon(true, bFromFar, horseVnum, name);
 
+		CQuestManager &q = CQuestManager::instance();
+		LPITEM item = q.GetCurrentItem();
+
+		if (item && item->GetVnum() >= 50051 && item->GetVnum() <= 50053 && item->GetSocket(0) != 0)
+		{
+			horseVnum = item->GetSocket(0);
+		}
+
+		ch->HorseSummon(true, bFromFar, horseVnum, name);
 		ch->SetQuestFlag("ride.mountVnum", horseVnum);
 		return 0;
 	}
