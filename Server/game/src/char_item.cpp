@@ -2306,11 +2306,13 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 								}
 								break;
 
-								//기존 용기의 망토
-							case UNIQUE_ITEM_CAPE_OF_COURAGE:
-								//라마단 보상용 용기의 망토
 							case 70057:
 							case REWARD_BOX_UNIQUE_ITEM_CAPE_OF_COURAGE:
+								AggregateMonster();
+								item->SetCount(item->GetCount()-1);
+								break;
+
+							case UNIQUE_ITEM_CAPE_OF_COURAGE:
 								AggregateMonster();
 								break;
 
