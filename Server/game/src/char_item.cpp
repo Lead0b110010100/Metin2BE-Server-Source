@@ -3996,6 +3996,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 						break;
 
 					case USE_POTION:
+					{
 						if (CArenaManager::instance().IsArenaMap(GetMapIndex()) == true)
 						{
 							if (quest::CQuestManager::instance().GetEventFlag("arena_potion_limit") > 0)
@@ -4035,29 +4036,26 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 						}
 #endif
 
-						if (item->GetValue(1) != 0)
+						bool bSuccess = false;
+
+						if (item->GetValue(0) && GetPoint(POINT_HP_RECOVERY) + GetHP() < GetMaxHP())
 						{
-							if (GetPoint(POINT_SP_RECOVERY) + GetSP() >= GetMaxSP())
-							{
-								return false;
-							}
-
-							PointChange(POINT_SP_RECOVERY, item->GetValue(1) * MIN(200, (100 + GetPoint(POINT_POTION_BONUS))) / 100);
-							StartAffectEvent();
-							EffectPacket(SE_SPUP_BLUE);
-						}
-
-						if (item->GetValue(0) != 0)
-						{
-							if (GetPoint(POINT_HP_RECOVERY) + GetHP() >= GetMaxHP())
-							{
-								return false;
-							}
-
 							PointChange(POINT_HP_RECOVERY, item->GetValue(0) * MIN(200, (100 + GetPoint(POINT_POTION_BONUS))) / 100);
 							StartAffectEvent();
 							EffectPacket(SE_HPUP_RED);
+							bSuccess = true;
 						}
+
+						if (item->GetValue(1) && GetPoint(POINT_SP_RECOVERY) + GetSP() < GetMaxSP())
+						{
+							PointChange(POINT_SP_RECOVERY, item->GetValue(1) * MIN(200, (100 + GetPoint(POINT_POTION_BONUS))) / 100);
+							StartAffectEvent();
+							EffectPacket(SE_SPUP_BLUE);
+							bSuccess = true;
+						}
+
+						if (!bSuccess)
+							return false;
 
 						if (GetDungeon())
 							GetDungeon()->UsePotion(this);
@@ -4067,7 +4065,8 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 						item->SetCount(item->GetCount() - 1);
 						m_nPotionLimit--;
-						break;
+					}
+					break;
 
 					case USE_POTION_CONTINUE:
 						{
