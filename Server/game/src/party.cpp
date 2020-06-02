@@ -1230,8 +1230,7 @@ void CParty::ComputeRolePoint(LPCHARACTER ch, BYTE bRole, bool bAdd)
 	{
 		case PARTY_ROLE_ATTACKER:
 			{
-				//int iBonus = (int) (10 + 90 * k);
-				int iBonus = (int) (10 + 60 * k);
+				int iBonus = (int) (m_iLeadership == 40 ? 100 : 10 + 60 * k);
 
 				if (ch->GetPoint(POINT_PARTY_ATTACKER_BONUS) != iBonus)
 				{
@@ -1243,7 +1242,7 @@ void CParty::ComputeRolePoint(LPCHARACTER ch, BYTE bRole, bool bAdd)
 
 		case PARTY_ROLE_TANKER:
 			{
-				int iBonus = (int) (50 + 1450 * k);
+				int iBonus = (int) (m_iLeadership == 40 ? 2000 : 50 + 1450 * k);
 
 				if (ch->GetPoint(POINT_PARTY_TANKER_BONUS) != iBonus)
 				{
@@ -1255,7 +1254,7 @@ void CParty::ComputeRolePoint(LPCHARACTER ch, BYTE bRole, bool bAdd)
 
 		case PARTY_ROLE_BUFFER:
 			{
-				int iBonus = (int) (5 + 45 * k);
+				int iBonus = (int) (m_iLeadership == 40 ? 600 : 5 + 45 * k);
 
 				if (ch->GetPoint(POINT_PARTY_BUFFER_BONUS) != iBonus)
 				{
@@ -1266,7 +1265,7 @@ void CParty::ComputeRolePoint(LPCHARACTER ch, BYTE bRole, bool bAdd)
 
 		case PARTY_ROLE_SKILL_MASTER:
 			{
-				int iBonus = (int) (25 + 600 * k);
+				int iBonus = (int) (m_iLeadership == 40 ? 800 : 25 + 600 * k);
 
 				if (ch->GetPoint(POINT_PARTY_SKILL_MASTER_BONUS) != iBonus)
 				{
@@ -1275,9 +1274,10 @@ void CParty::ComputeRolePoint(LPCHARACTER ch, BYTE bRole, bool bAdd)
 				}
 			}
 			break;
+
 		case PARTY_ROLE_HASTE:
 			{
-				int iBonus = (int) (1+5*k);
+				int iBonus = (int) (m_iLeadership == 40 ? 10 : 1+5*k);
 				if (ch->GetPoint(POINT_PARTY_HASTE_BONUS) != iBonus)
 				{
 					ch->PointChange(POINT_PARTY_HASTE_BONUS, iBonus - ch->GetPoint(POINT_PARTY_HASTE_BONUS));
@@ -1285,9 +1285,10 @@ void CParty::ComputeRolePoint(LPCHARACTER ch, BYTE bRole, bool bAdd)
 				}
 			}
 			break;
+
 		case PARTY_ROLE_DEFENDER:
 			{
-				int iBonus = (int) (5+30*k);
+				int iBonus = (int) (m_iLeadership == 40 ? 50 : 5+30*k);
 				if (ch->GetPoint(POINT_PARTY_DEFENDER_BONUS) != iBonus)
 				{
 					ch->PointChange(POINT_PARTY_DEFENDER_BONUS, iBonus - ch->GetPoint(POINT_PARTY_DEFENDER_BONUS));
