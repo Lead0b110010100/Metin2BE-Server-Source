@@ -256,7 +256,7 @@ void CParty::Initialize()
 {
 	sys_log(2, "Party::Initialize");
 
-	m_iExpDistributionMode = PARTY_EXP_DISTRIBUTION_NON_PARITY;
+	m_iExpDistributionMode = PARTY_EXP_DISTRIBUTION_PARITY;
 	m_pkChrExpCentralize = NULL;
 
 	m_dwLeaderPID = 0;
