@@ -5712,7 +5712,6 @@ bool CHARACTER::PickupItem(DWORD dwVID)
 		}
 		else if (!IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_GIVE | ITEM_ANTIFLAG_DROP) && GetParty())
 		{
-			// 다른 파티원 소유권 아이템을 주으려고 한다면
 			NPartyPickupDistribute::FFindOwnership funcFindOwnership(item);
 
 			GetParty()->ForEachOnlineMember(funcFindOwnership);
