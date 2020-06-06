@@ -136,7 +136,7 @@ CExchange::CExchange(LPCHARACTER pOwner)
 	m_pOwner = pOwner;
 	pOwner->SetExchange(this);
 
-	m_pGrid = M2_NEW CGrid(4,3);
+	m_pGrid = M2_NEW CGrid(6, 4);
 }
 
 CExchange::~CExchange()

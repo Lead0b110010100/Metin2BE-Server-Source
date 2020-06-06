@@ -5,7 +5,7 @@ class CGrid;
 
 enum EExchangeValues
 {
-	EXCHANGE_ITEM_MAX_NUM 	= 12,
+	EXCHANGE_ITEM_MAX_NUM 	= (6 * 4),
 	EXCHANGE_MAX_DISTANCE	= 1000
 };
 
