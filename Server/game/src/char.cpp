@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "../../common/CommonDefines.h"
 #include "../../common/teen_packet.h"
 #include "../../common/VnumHelper.h"
 
@@ -57,12 +58,43 @@
 #include "skill_power.h"
 #include "XTrapManager.h"
 #include "buff_on_attributes.h"
+
+#ifdef __SEND_TARGET_INFO__
+#include <algorithm>
+#include <iterator>
+using namespace std;
+#endif
+
+#ifdef ENABLE_TARGET_AFFECT
+#include <sstream>
+const WORD g_wAffects[SIMPLE_AFFECT_MAX_NUM] = {
+	AFFECT_POISON,
+	AFFECT_SLOW,
+	AFFECT_STUN
+};
+bool IsInAffect(LPCHARACTER ch, DWORD dwAffect)
+{
+	if (!ch->IsMonster())
+		return false;
+	
+	bool isIn = false;
+	for (WORD i = 0; i < SIMPLE_AFFECT_MAX_NUM; ++i)
+	{
+		WORD wAffect = g_wAffects[i];
+		if (wAffect == dwAffect)
+		{
+			isIn = true;
+			break;
+		}
+	}
+	return isIn;
+}
+#endif
 #include "protocol.h"
 
 #ifdef __PET_SYSTEM__
 #include "PetSystem.h"
 #endif
-#include "../../common/CommonDefines.h"
 
 extern const BYTE g_aBuffOnAttrPoints;
 extern bool RaceToJob(unsigned race, unsigned *ret_job);
@@ -182,6 +214,10 @@ void CHARACTER::Initialize()
 	m_fSyncTime = get_float_time()-3;
 	m_dwPlayerID = 0;
 	m_dwKillerPID = 0;
+	
+#ifdef __SEND_TARGET_INFO__
+	dwLastTargetInfoPulse = 0;
+#endif
 
 	m_iMoveCount = 0;
 
@@ -220,6 +256,9 @@ void CHARACTER::Initialize()
 	// MINING
 	m_pkMiningEvent = NULL;
 	// END_OF_MINING
+#ifdef ENABLE_CHANGE_CHANNEL
+	m_pkChangeChannelEvent = NULL;
+#endif
 
 	m_pkPoisonEvent = NULL;
 #ifdef ENABLE_WOLFMAN_CHARACTER
@@ -580,6 +619,9 @@ void CHARACTER::Destroy()
 	event_cancel(&m_pkTimedEvent);
 	event_cancel(&m_pkStunEvent);
 	event_cancel(&m_pkFishingEvent);
+#ifdef ENABLE_CHANGE_CHANNEL
+	event_cancel(&m_pkChangeChannelEvent);
+#endif
 	event_cancel(&m_pkPoisonEvent);
 #ifdef ENABLE_WOLFMAN_CHARACTER
 	event_cancel(&m_pkBleedingEvent);
@@ -1310,6 +1352,7 @@ void CHARACTER::CreatePlayerProto(TPlayerTable & tab)
 
 	tab.sRandomHP = m_points.iRandomHP;
 	tab.sRandomSP = m_points.iRandomSP;
+	tab.sHorse_appearance = m_points.horse_appearance;
 
 	for (int i = 0; i < QUICKSLOT_MAX_NUM; ++i)
 		tab.quickslot[i] = m_quickslot[i];
@@ -1861,6 +1904,7 @@ void CHARACTER::SetPlayerProto(const TPlayerTable * t)
 
 	m_points.iRandomHP = t->sRandomHP;
 	m_points.iRandomSP = t->sRandomSP;
+	m_points.horse_appearance = t->sHorse_appearance;
 
 	// REMOVE_REAL_SKILL_LEVLES
 	if (m_pSkillLevels)
@@ -2062,7 +2106,10 @@ void CHARACTER::SetProto(const CMob * pkMob)
 			GetRaceNum() == 20106 ||
 			GetRaceNum() == 20107 ||
 			GetRaceNum() == 20108 ||
-			GetRaceNum() == 20109
+			GetRaceNum() == 20109 ||
+			GetRaceNum() == 20110 ||
+			GetRaceNum() == 20111 ||
+			GetRaceNum() == 20112
 	  )
 	{
 		m_stateIdle.Set(this, &CHARACTER::BeginStateEmpty, &CHARACTER::StateHorse, &CHARACTER::EndStateEmpty);
@@ -2394,7 +2441,11 @@ void CHARACTER::ComputePoints()
 		}
 
 		// 기본 값들
-		SetPoint(POINT_MOV_SPEED,	100);
+#ifdef GMS_CAN_WALK_REALLY_FAST
+		RefreshSpeed();
+#else
+		SetPoint(POINT_MOV_SPEED, g_playerMovingSpeed);
+#endif
 		SetPoint(POINT_ATT_SPEED,	100);
 		PointChange(POINT_ATT_SPEED, GetPoint(POINT_PARTY_HASTE_BONUS));
 		SetPoint(POINT_CASTING_SPEED,	100);
@@ -3057,7 +3108,11 @@ int CHARACTER::GetLimitPoint(BYTE type) const
 			min_limit = 0;
 
 			if (IsPC())
+#ifdef GMS_CAN_WALK_REALLY_FAST
+				limit = GetQuestFlag("gm.speed_mode") ? GM_MAX_MOVE_SPEED : 200;
+#else
 				limit = 200;
+#endif
 			else
 				limit = 250;
 			break;
@@ -5259,6 +5314,10 @@ void CHARACTER::ClearTarget()
 	p.header = HEADER_GC_TARGET;
 	p.dwVID = 0;
 	p.bHPPercent = 0;
+#ifdef __VIEW_TARGET_DECIMAL_HP__
+	p.iMinHP = 0;
+	p.iMaxHP = 0;
+#endif
 
 	CHARACTER_SET::iterator it = m_set_pkChrTargetedBy.begin();
 
@@ -5295,17 +5354,43 @@ void CHARACTER::SetTarget(LPCHARACTER pkChrTarget)
 	m_pkChrTarget = pkChrTarget;
 
 	TPacketGCTarget p;
+#ifdef ENABLE_TARGET_AFFECT
+	memset(p.affects, 0, sizeof(p.affects));
+#endif
 
 	p.header = HEADER_GC_TARGET;
 
 	if (m_pkChrTarget)
 	{
 		m_pkChrTarget->m_set_pkChrTargetedBy.insert(this);
-
 		p.dwVID	= m_pkChrTarget->GetVID();
-
-		if ((m_pkChrTarget->IsPC() && !m_pkChrTarget->IsPolymorphed()) || (m_pkChrTarget->GetMaxHP() <= 0))
+		
+#ifdef __VIEW_TARGET_PLAYER_HP__
+		if ((m_pkChrTarget->GetMaxHP() <= 0))
+		{
 			p.bHPPercent = 0;
+#ifdef __VIEW_TARGET_DECIMAL_HP__
+			p.iMinHP = 0;
+			p.iMaxHP = 0;
+#endif
+		}
+		else if (m_pkChrTarget->IsPC() && !m_pkChrTarget->IsPolymorphed())
+		{
+			p.bHPPercent = MINMAX(0, (m_pkChrTarget->GetHP() * 100) / m_pkChrTarget->GetMaxHP(), 100);
+#ifdef __VIEW_TARGET_DECIMAL_HP__
+			p.iMinHP = m_pkChrTarget->GetHP();
+			p.iMaxHP = m_pkChrTarget->GetMaxHP();
+#endif
+#else
+		if ((m_pkChrTarget->IsPC() && !m_pkChrTarget->IsPolymorphed()) || (m_pkChrTarget->GetMaxHP() <= 0))
+		{
+			p.bHPPercent = 0;
+#ifdef __VIEW_TARGET_DECIMAL_HP__
+			p.iMinHP = 0;
+			p.iMaxHP = 0;
+#endif
+#endif
+		}
 		else
 		{
 			if (m_pkChrTarget->GetRaceNum() == 20101 ||
@@ -5326,19 +5411,60 @@ void CHARACTER::SetTarget(LPCHARACTER pkChrTarget)
 					int iHorseMaxHealth = owner->GetHorseMaxHealth();
 
 					if (iHorseMaxHealth)
+					{
 						p.bHPPercent = MINMAX(0,  iHorseHealth * 100 / iHorseMaxHealth, 100);
+#ifdef __VIEW_TARGET_DECIMAL_HP__
+						p.iMinHP = 100;
+						p.iMaxHP = 100;
+#endif
+					}
 					else
+					{
 						p.bHPPercent = 100;
+#ifdef __VIEW_TARGET_DECIMAL_HP__
+						p.iMinHP = 100;
+						p.iMaxHP = 100;
+#endif
+					}
 				}
 				else
+				{
 					p.bHPPercent = 100;
+#ifdef __VIEW_TARGET_DECIMAL_HP__
+					p.iMinHP = 100;
+					p.iMaxHP = 100;
+#endif
+				}
 			}
 			else
 			{
-				if (m_pkChrTarget->GetMaxHP() <= 0) // @fixme136
+				if (m_pkChrTarget->GetMaxHP() <= 0)
+				{
 					p.bHPPercent = 0;
+#ifdef __VIEW_TARGET_DECIMAL_HP__
+					p.iMinHP = 0;
+					p.iMaxHP = 0;
+#endif
+				}
 				else
+				{
 					p.bHPPercent = MINMAX(0, (m_pkChrTarget->GetHP() * 100) / m_pkChrTarget->GetMaxHP(), 100);
+#ifdef __VIEW_TARGET_DECIMAL_HP__
+					p.iMinHP = m_pkChrTarget->GetHP();
+					p.iMaxHP = m_pkChrTarget->GetMaxHP();
+#endif
+				}
+#ifdef ENABLE_TARGET_AFFECT
+				for (WORD i = 0; i < SIMPLE_AFFECT_MAX_NUM; ++i)
+				{
+					CAffect* pAffect = m_pkChrTarget->FindAffect(g_wAffects[i]);
+					if (!pAffect)
+						continue;
+
+					p.affects[i].dwAffectID = pAffect->dwFlag-1;
+					p.affects[i].lDuration = pAffect->lDuration;
+				}
+#endif
 			}
 		}
 	}
@@ -5346,6 +5472,10 @@ void CHARACTER::SetTarget(LPCHARACTER pkChrTarget)
 	{
 		p.dwVID = 0;
 		p.bHPPercent = 0;
+#ifdef __VIEW_TARGET_DECIMAL_HP__
+		p.iMinHP = 0;
+		p.iMaxHP = 0;
+#endif
 	}
 
 	GetDesc()->Packet(&p, sizeof(TPacketGCTarget));
@@ -5360,14 +5490,45 @@ void CHARACTER::BroadcastTargetPacket()
 
 	p.header = HEADER_GC_TARGET;
 	p.dwVID = GetVID();
-
-	if (IsPC())
+	if (GetMaxHP() <= 0)
+	{
 		p.bHPPercent = 0;
-	else if (GetMaxHP() <= 0) // @fixme136
-		p.bHPPercent = 0;
+#ifdef __VIEW_TARGET_DECIMAL_HP__
+		p.iMinHP = 0;
+		p.iMaxHP = 0;
+#endif
+	}
 	else
+	{
+#ifdef __VIEW_TARGET_PLAYER_HP__
 		p.bHPPercent = MINMAX(0, (GetHP() * 100) / GetMaxHP(), 100);
+#ifdef __VIEW_TARGET_DECIMAL_HP__
+		p.iMinHP = GetHP();
+		p.iMaxHP = GetMaxHP();
+#endif
+#else
+		if (IsPC())
+		{
+			p.bHPPercent = 0;
+#ifdef __VIEW_TARGET_DECIMAL_HP__
+			p.iMinHP = 0;
+			p.iMaxHP = 0;
+#endif
+		}
+		else
+		{
+			p.bHPPercent = MINMAX(0, (GetHP() * 100) / GetMaxHP(), 100);
+#ifdef __VIEW_TARGET_DECIMAL_HP__
+			p.iMinHP = GetHP();
+			p.iMaxHP = GetMaxHP();
+#endif
+		}
+#endif
+	}
 
+#ifdef ENABLE_TARGET_AFFECT
+	memset(p.affects, 0, sizeof(p.affects));
+#endif
 	CHARACTER_SET::iterator it = m_set_pkChrTargetedBy.begin();
 
 	while (it != m_set_pkChrTargetedBy.end())
@@ -5383,6 +5544,39 @@ void CHARACTER::BroadcastTargetPacket()
 		pkChr->GetDesc()->Packet(&p, sizeof(TPacketGCTarget));
 	}
 }
+
+#ifdef ENABLE_TARGET_AFFECT
+void CHARACTER::BroadcastTargetAffect(bool remove, DWORD flag, long duration)
+{
+	CHARACTER_SET::iterator it = m_set_pkChrTargetedBy.begin();
+
+	std::stringstream command("");
+	if (remove)
+		command << "RemoveTargetBoardAffect ";
+	else
+		command << "AddTargetBoardAffect ";
+
+	command << flag;
+
+	if (!remove)
+		command << ' ' << duration;
+
+	const char* szCommand = command.str().c_str();
+
+	while (it != m_set_pkChrTargetedBy.end())
+	{
+		LPCHARACTER pkChr = *it++;
+
+		if (!pkChr->GetDesc())
+		{
+			sys_err("%s %p does not have desc", pkChr->GetName(), get_pointer(pkChr));
+			abort();
+		}
+
+		pkChr->ChatPacket(CHAT_TYPE_COMMAND, szCommand);
+	}
+}
+#endif
 
 void CHARACTER::CheckTarget()
 {
@@ -5491,6 +5685,9 @@ bool CHARACTER::WarpSet(long x, long y, long lPrivateMapIndex)
 		p.lAddr = inet_addr(g_stProxyIP.c_str());
 #endif
 	p.wPort	= wPort;
+#if defined(__LOADING_TIP__)
+	p.l_MapIndex = lMapIndex;
+#endif
 
 	GetDesc()->Packet(&p, sizeof(TPacketGCWarp));
 
@@ -7445,6 +7642,50 @@ int	CHARACTER::GetSkillPowerByLevel(int level, bool bMob) const
 	return CTableBySkill::instance().GetSkillPowerByLevelFromType(GetJob(), GetSkillGroup(), MINMAX(0, level, SKILL_MAX_LEVEL), bMob);
 }
 
+#ifdef ENABLE_CHANGE_CHANNEL
+void CHARACTER::ChangeChannel(DWORD channelId){
+	long lAddr;
+	long lMapIndex;
+	WORD wPort;
+	long x = this->GetX();
+	long y = this->GetY();
+
+	if (!CMapLocation::instance().Get(x, y, lMapIndex, lAddr, wPort)){
+		sys_err("cannot find map location index %d x %d y %d name %s", lMapIndex, x, y, GetName());
+		return;
+	}
+	
+	if(lMapIndex >= 10000){
+		this->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't change channel in private map."));
+		return;
+	}
+
+	Stop();
+	Save();
+
+	if(GetSectree()){
+		GetSectree()->RemoveEntity(this);
+		ViewCleanup();
+		EncodeRemovePacket(this);
+	}
+	TPacketGCWarp p;
+
+	
+	p.bHeader	= HEADER_GC_WARP;
+	p.lX	= x;
+	p.lY	= y;
+	p.lAddr	= lAddr;
+/* #ifdef ENABLE_NEWSTUFF
+	if (!g_stProxyIP.empty())
+		p.lAddr = inet_addr(g_stProxyIP.c_str());
+#endif */
+	
+	p.wPort	= (wPort - 100*(g_bChannel-1) + 100*(channelId-1));
+	
+	GetDesc()->Packet(&p, sizeof(TPacketGCWarp));
+}
+#endif
+
 void CHARACTER::RefreshGMStateInformation(bool bIsGamemaster, bool bClear)
 {
 	LPDESC d = GetDesc();
@@ -7578,3 +7819,50 @@ void CHARACTER::SetDM(int iDM)
 	p.iDM = MAX(0, iDM);
 	d->Packet(&p, sizeof(TPacketGCDragonPointChange));
 }
+
+#ifdef RENEWAL_DEAD_PACKET
+#include "threeway_war.h"
+DWORD CHARACTER::CalculateDeadTime(BYTE type)
+{
+	//generated from do_restart(cmd_general.cpp)
+	if (!m_pkDeadEvent)
+		return 0;
+	int iTimeToDead = (event_time(m_pkDeadEvent) / passes_per_sec);
+	if (type == REVIVE_TYPE_AUTO_TOWN)
+		return iTimeToDead-7;
+	if (!test_server && type == REVIVE_TYPE_HERE && (!GetWarMap() || GetWarMap()->GetType() == GUILD_WAR_TYPE_FLAG)) {
+		if (IsHack(false) && !CThreeWayWar::instance().IsSungZiMapIndex(GetMapIndex()))
+			return iTimeToDead - (180 - g_nPortalLimitTime);
+		if (iTimeToDead > 170)
+			return iTimeToDead - 170;
+	}
+	if (IsHack(false) && ((!GetWarMap() || GetWarMap()->GetType() == GUILD_WAR_TYPE_FLAG) || !CThreeWayWar::instance().IsSungZiMapIndex(GetMapIndex())))
+		return iTimeToDead - (180 - g_nPortalLimitTime);
+	if (iTimeToDead > 173) 
+		return iTimeToDead - 173;
+	return 0;
+}
+#endif
+
+#ifdef GMS_CAN_WALK_REALLY_FAST
+void CHARACTER::ToggleGMSpeed()
+{
+	SetQuestFlag("gm.speed_mode", !GetQuestFlag("gm.speed_mode"));
+	ChatPacket(CHAT_TYPE_INFO, "speed mode: %d", GetQuestFlag("gm.speed_mode"));
+
+	ComputePoints();
+	UpdatePacket();
+}
+
+void CHARACTER::RefreshSpeed()
+{
+	if (GetQuestFlag("gm.speed_mode"))
+	{
+		SetPoint(POINT_MOV_SPEED, GM_MAX_MOVE_SPEED);
+	}
+	else
+	{
+		SetPoint(POINT_MOV_SPEED, g_playerMovingSpeed);
+	}
+}
+#endif

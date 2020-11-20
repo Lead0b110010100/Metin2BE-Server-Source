@@ -181,6 +181,11 @@ enum
 	HEADER_GC_SCRIPT				= 45,
 	HEADER_GC_QUEST_CONFIRM			= 46,
 
+#ifdef __SEND_TARGET_INFO__
+	HEADER_GC_TARGET_INFO			= 58,
+	HEADER_CG_TARGET_INFO_LOAD		= 59,
+#endif
+
 	HEADER_GC_MOUNT				= 61,
 	HEADER_GC_OWNERSHIP				= 62,
 	HEADER_GC_TARGET			 	= 63,
@@ -971,7 +976,11 @@ typedef struct packet_add_char
 
 	BYTE	bType;
 	WORD	wRaceNum;
-	BYTE	bMovingSpeed;
+#ifdef GMS_CAN_WALK_REALLY_FAST
+	short bMovingSpeed;
+#else
+	BYTE bMovingSpeed;
+#endif
 	BYTE	bAttackSpeed;
 
 	BYTE	bStateFlag;
@@ -1018,7 +1027,11 @@ typedef struct packet_update_char
 	DWORD	dwVID;
 
 	WORD        awPart[CHR_EQUIPPART_NUM];
-	BYTE	bMovingSpeed;
+#ifdef GMS_CAN_WALK_REALLY_FAST
+	short bMovingSpeed;
+#else
+	BYTE bMovingSpeed;
+#endif
 	BYTE	bAttackSpeed;
 
 	BYTE	bStateFlag;
@@ -1143,10 +1156,26 @@ typedef struct packet_stun
 	DWORD	vid;
 } TPacketGCStun;
 
+#ifdef RENEWAL_DEAD_PACKET
+enum EReviveTypes
+{
+	REVIVE_TYPE_HERE,
+	REVIVE_TYPE_TOWN,
+	REVIVE_TYPE_AUTO_TOWN,
+	REVIVE_TYPE_MAX
+};
+#endif
+
 typedef struct packet_dead
 {
+#ifdef RENEWAL_DEAD_PACKET
+	packet_dead() {	memset(&t_d, 0, sizeof(t_d)); }
+#endif
 	BYTE	header;
 	DWORD	vid;
+#ifdef RENEWAL_DEAD_PACKET
+	BYTE	t_d[REVIVE_TYPE_MAX];
+#endif
 } TPacketGCDead;
 
 struct TPacketGCItemDelDeprecated
@@ -1205,10 +1234,22 @@ typedef struct packet_item_update
 
 typedef struct packet_item_ground_add
 {
+#ifdef ENABLE_EXTENDED_ITEMNAME_ON_GROUND
+	packet_item_ground_add()
+	{
+		memset(&alSockets, 0, sizeof(alSockets));
+		memset(&aAttrs, 0, sizeof(aAttrs));
+	}
+#endif
+
 	BYTE	bHeader;
 	long 	x, y, z;
 	DWORD	dwVID;
 	DWORD	dwVnum;
+#ifdef ENABLE_EXTENDED_ITEMNAME_ON_GROUND
+	long	alSockets[ITEM_SOCKET_MAX_NUM];//3
+	TPlayerItemAttribute aAttrs[ITEM_ATTRIBUTE_MAX_NUM];//7
+#endif
 } TPacketGCItemGroundAdd;
 
 typedef struct packet_item_ownership
@@ -1480,12 +1521,44 @@ typedef struct command_target
 	DWORD	dwVID;
 } TPacketCGTarget;
 
+#ifdef ENABLE_TARGET_AFFECT
+typedef struct SSimpleAffect
+{
+	DWORD dwAffectID; 
+	long lDuration;
+} TSimpleAffect;
+#endif
+
 typedef struct packet_target
 {
 	BYTE	header;
 	DWORD	dwVID;
 	BYTE	bHPPercent;
+#ifdef __VIEW_TARGET_DECIMAL_HP__
+	int		iMinHP;
+	int		iMaxHP;
+#endif
+#ifdef ENABLE_TARGET_AFFECT
+	TSimpleAffect affects[SIMPLE_AFFECT_MAX_NUM];
+#endif
 } TPacketGCTarget;
+
+#ifdef __SEND_TARGET_INFO__
+typedef struct packet_target_info
+{
+	BYTE	header;
+	DWORD	dwVID;
+	DWORD	race;
+	DWORD	dwVnum;
+	BYTE	count;
+} TPacketGCTargetInfo;
+
+typedef struct packet_target_info_load
+{
+	BYTE header;
+	DWORD dwVID;
+} TPacketCGTargetInfoLoad;
+#endif
 
 typedef struct packet_warp
 {
@@ -1494,6 +1567,9 @@ typedef struct packet_warp
 	long	lY;
 	long	lAddr;
 	WORD	wPort;
+#if defined(__LOADING_TIP__)
+	long	l_MapIndex;
+#endif
 } TPacketGCWarp;
 
 typedef struct command_warp

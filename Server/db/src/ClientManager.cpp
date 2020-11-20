@@ -810,15 +810,27 @@ void CClientManager::RESULT_SAFEBOX_LOAD(CPeer * pkPeer, SQLMsg * msg)
 
 					TPlayerItem item;
 					memset(&item, 0, sizeof(TPlayerItem));
-
+					
+					#ifdef ENABLE_EXTEND_ITEM_AWARD
+					DWORD dwSocket2 = pItemAward->dwSocket2;
+					#else
 					DWORD dwSocket2 = 0;
+					#endif
 
 					if (pItemTable->bType == ITEM_UNIQUE)
 					{
+#ifdef ENABLE_EXTEND_ITEM_AWARD
+						// 12.04.2019 - Correction for unique items based on the real time.
+						const long lValue0 = pItemTable->alValues[ITEM_SOCKET_REMAIN_SEC];
+						const long lValue2 = pItemTable->alValues[ITEM_SOCKET_UNIQUE_REMAIN_TIME];
+						const time_t tNow = CClientManager::instance().GetCurrentTime();
+						dwSocket2 = (lValue2 == 0) ? static_cast<DWORD>(lValue0) : static_cast<DWORD>(tNow + lValue0);
+#else
 						if (pItemAward->dwSocket2 != 0)
 							dwSocket2 = pItemAward->dwSocket2;
 						else
 							dwSocket2 = pItemTable->alValues[0];
+#endif
 					}
 					else if ((dwItemVnum == 50300 || dwItemVnum == 70037) && pItemAward->dwSocket0 == 0)
 					{
@@ -834,7 +846,9 @@ void CClientManager::RESULT_SAFEBOX_LOAD(CPeer * pkPeer, SQLMsg * msg)
 							break;
 						} while (1);
 
+						#ifndef ENABLE_EXTEND_ITEM_AWARD
 						pItemAward->dwSocket0 = dwSkillVnum;
+						#endif
 					}
 					else
 					{
@@ -902,6 +916,33 @@ void CClientManager::RESULT_SAFEBOX_LOAD(CPeer * pkPeer, SQLMsg * msg)
 							}
 						}
 
+#ifdef ENABLE_EXTEND_ITEM_AWARD
+						ItemAwardManager::instance().CheckItemCount(*pItemAward, *pItemTable);
+						ItemAwardManager::instance().CheckItemBlend(*pItemAward, *pItemTable);
+						ItemAwardManager::instance().CheckItemAddonType(*pItemAward, *pItemTable);
+						ItemAwardManager::instance().CheckItemSkillBook(*pItemAward, m_vec_skillTable);
+						#ifdef USE_ITEM_AWARD_CHECK_ATTRIBUTES
+						ItemAwardManager::instance().CheckItemAttributes(*pItemAward, *pItemTable, m_vec_itemAttrTable);
+						#endif
+						
+						// START_OF_AUTO_QUERY
+						char szColumns[QUERY_MAX_LEN], szValues[QUERY_MAX_LEN];
+						
+						int	iLen = snprintf(szColumns, sizeof(szColumns), "id, owner_id, window, pos, vnum, count");
+						int	iValueLen = snprintf(szValues, sizeof(szValues), "%u, %u, '%s', %d, %u, %u", GainItemID(), pi->account_id, (pi->ip[0] == 0) ? "SAFEBOX" : "MALL", iPos, pItemAward->dwVnum, pItemAward->dwCount);
+
+						iLen += snprintf(szColumns + iLen, sizeof(szColumns) - iLen, ", socket0, socket1, socket2");
+						iValueLen += snprintf(szValues + iValueLen, sizeof(szValues) - iValueLen, ", %u, %u, %u", pItemAward->dwSocket0, pItemAward->dwSocket1, dwSocket2);
+
+						for (size_t i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
+						{
+							iLen += snprintf(szColumns + iLen, sizeof(szColumns) - iLen, ", attrtype%d, attrvalue%d", i, i);
+							iValueLen += snprintf(szValues + iValueLen, sizeof(szValues) - iValueLen, ", %d, %d", pItemAward->aAttr[i].bType, pItemAward->aAttr[i].sValue);
+						}
+						// END_OF_AUTO_QUERY
+						
+						snprintf(szQuery, sizeof(szQuery), "INSERT INTO item%s (%s) VALUES(%s)", GetTablePostfix(), szColumns, szValues);
+#else
 						snprintf(szQuery, sizeof(szQuery),
 								"INSERT INTO item%s (id, owner_id, window, pos, vnum, count, socket0, socket1, socket2) "
 								"VALUES(%u, %u, '%s', %d, %u, %u, %u, %u, %u)",
@@ -911,6 +952,7 @@ void CClientManager::RESULT_SAFEBOX_LOAD(CPeer * pkPeer, SQLMsg * msg)
 								pi->ip[0] == 0 ? "SAFEBOX" : "MALL",
 								iPos,
 								pItemAward->dwVnum, pItemAward->dwCount, pItemAward->dwSocket0, pItemAward->dwSocket1, dwSocket2);
+#endif
 					}
 
 					std::auto_ptr<SQLMsg> pmsg(CDBManager::instance().DirectQuery(szQuery));
@@ -928,6 +970,9 @@ void CClientManager::RESULT_SAFEBOX_LOAD(CPeer * pkPeer, SQLMsg * msg)
 					item.alSockets[0] = pItemAward->dwSocket0;
 					item.alSockets[1] = pItemAward->dwSocket1;
 					item.alSockets[2] = dwSocket2;
+#ifdef ENABLE_EXTEND_ITEM_AWARD
+					thecore_memcpy(&item.aAttr, pItemAward->aAttr, sizeof(item.aAttr));
+#endif
 					s_items.push_back(item);
 
 					vec_dwFinishedAwardID.push_back(std::make_pair(pItemAward->dwID, item.id));
@@ -4488,11 +4533,11 @@ void CClientManager::UpdateChannelStatus(TChannelStatus* pData)
 {
 	TChannelStatusMap::iterator it = m_mChannelStatus.find(pData->nPort);
 	if (it != m_mChannelStatus.end()) {
-		it->second = pData->bStatus;
+		it->second.first = pData->bStatus;
+		it->second.second = pData->player_count;
 	}
-	else {
-		m_mChannelStatus.insert(TChannelStatusMap::value_type(pData->nPort, pData->bStatus));
-	}
+	else
+		m_mChannelStatus.emplace(pData->nPort, std::make_pair(pData->bStatus, pData->player_count));
 }
 
 void CClientManager::RequestChannelStatus(CPeer* peer, DWORD dwHandle)
@@ -4500,9 +4545,10 @@ void CClientManager::RequestChannelStatus(CPeer* peer, DWORD dwHandle)
 	const int nSize = m_mChannelStatus.size();
 	peer->EncodeHeader(HEADER_DG_RESPOND_CHANNELSTATUS, dwHandle, sizeof(TChannelStatus)*nSize+sizeof(int));
 	peer->Encode(&nSize, sizeof(int));
-	for (TChannelStatusMap::iterator it = m_mChannelStatus.begin(); it != m_mChannelStatus.end(); it++) {
-		peer->Encode(&it->first, sizeof(short));
-		peer->Encode(&it->second, sizeof(BYTE));
+	for (const auto& v : m_mChannelStatus) {
+		peer->Encode(&v.first, sizeof(decltype(v.first)));
+		peer->Encode(&v.second.first, sizeof(decltype(v.second.first)));
+		peer->Encode(&v.second.second, sizeof(decltype(v.second.second)));
 	}
 }
 

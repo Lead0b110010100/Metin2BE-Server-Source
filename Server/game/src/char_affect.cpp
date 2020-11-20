@@ -304,6 +304,10 @@ int CHARACTER::ProcessAffect()
 				SendAffectRemovePacket(GetDesc(), GetPlayerID(), pkAff->dwType, pkAff->bApplyOn);
 			}
 
+#ifdef ENABLE_TARGET_AFFECT
+			if (IsInAffect(this, pkAff->dwType))
+				BroadcastTargetAffect(true, pkAff->dwFlag - 1);
+#endif
 			CAffect::Release(pkAff);
 
 			continue;
@@ -595,6 +599,11 @@ bool CHARACTER::AddAffect(DWORD dwType, BYTE bApplyOn, long lApplyValue, DWORD d
 	if (pkAff->dwFlag || wMovSpd != GetPoint(POINT_MOV_SPEED) || wAttSpd != GetPoint(POINT_ATT_SPEED))
 		UpdatePacket();
 
+#ifdef ENABLE_TARGET_AFFECT
+	if (IsInAffect(this, pkAff->dwType))
+		BroadcastTargetAffect(false, pkAff->dwFlag - 1, pkAff->lDuration);
+#endif
+
 	StartAffectEvent();
 
 	if (IsPC())
@@ -697,6 +706,10 @@ bool CHARACTER::RemoveAffect(CAffect * pkAff)
 		SendAffectRemovePacket(GetDesc(), GetPlayerID(), pkAff->dwType, pkAff->bApplyOn);
 	}
 
+#ifdef ENABLE_TARGET_AFFECT
+	if (IsInAffect(this, pkAff->dwType))
+		BroadcastTargetAffect(true, pkAff->dwFlag - 1, pkAff->lDuration);
+#endif
 	CAffect::Release(pkAff);
 	return true;
 }

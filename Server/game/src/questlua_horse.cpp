@@ -259,6 +259,30 @@ namespace quest
 
 		return 1;
 	}
+	
+	ALUA(horse_set_appearance)
+	{
+		LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
+		if(!ch)
+			return 0;
+		if (!lua_isnumber(L, 1)) 
+		{
+			sys_err("wrong horse_appearance vnum");
+			return 0;
+		}
+		ch->SetHorseAppearance((DWORD)lua_tonumber(L, 1));
+		return 0;
+	}
+
+	ALUA(horse_get_appearance)
+	{
+		LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
+		if(!ch)
+			return 0;
+		lua_pushnumber(L, ch->GetHorseAppearance());
+		return 1;
+	}
+	
 // #ifdef ENABLE_NEWSTUFF
 	// ALUA(horse_set_stat0)
 	// {
@@ -273,6 +297,7 @@ namespace quest
 		// return 0;
 	// }
 // #endif
+
 	void RegisterHorseFunctionTable()
 	{
 		luaL_reg horse_functions[] =
@@ -297,6 +322,8 @@ namespace quest
 			{ "feed",			horse_feed				},
 			{ "set_name",		horse_set_name			},
 			{ "get_name",		horse_get_name			},
+			{ "set_appearance",		horse_set_appearance},
+			{ "get_appearance",		horse_get_appearance},
 // #ifdef ENABLE_NEWSTUFF
 			// horse.set_stat0(health, stamina) -- /do_horse_set_stat
 			// { "set_stat0",		horse_set_stat0			},	// [return nothing]

@@ -3,6 +3,7 @@
 
 #include "../../common/tables.h"
 
+extern short g_playerMovingSpeed;
 extern std::set<DWORD> setAccessoryBlacklist;
 
 enum EMonsterChatState

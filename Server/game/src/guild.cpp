@@ -1270,7 +1270,15 @@ void CGuild::UseSkill(DWORD dwVnum, LPCHARACTER ch, DWORD pid)
 
 		victim = ch;
 	}
+	
+	if ((pkSk->dwFlag & SKILL_FLAG_PARTY))
+	{
+		if (ch->FindAffect(pkSk->dwVnum))
+		return;
 
+		victim = ch;
+	}
+	
 	if (ch->IsAffectFlag(AFF_REVIVE_INVISIBLE))
 		ch->RemoveAffect(AFFECT_REVIVE_INVISIBLE);
 
@@ -1773,7 +1781,14 @@ int CGuild::GetMaxMemberCount()
 	if (g_bGuildInfiniteMembers)
 		return INT_MAX;
 
-	return 32 + 2 * (m_data.level-1) + m_iMemberCountBonus;
+	if (!m_data.level)
+		return 0;
+
+	static std::vector<BYTE> vecMaxGuildLevels {
+		32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 80, 100
+	};
+
+	return vecMaxGuildLevels[m_data.level - 1] + m_iMemberCountBonus;
 }
 // END_OF_GUILD_MEMBER_COUNT_BONUS
 

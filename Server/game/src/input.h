@@ -159,6 +159,10 @@ class CInputMain : public CInputProcessor
 		void		Refine(LPCHARACTER ch, const char* c_pData);
 
 		void		Roulette(LPCHARACTER ch, const char* c_pData);
+
+#ifdef __SEND_TARGET_INFO__
+		void		TargetInfoLoad(LPCHARACTER ch, const char* c_pData);
+#endif
 };
 
 class CInputDead : public CInputMain

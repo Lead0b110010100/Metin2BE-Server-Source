@@ -2,6 +2,48 @@
 #define __INC_METIN2_COMMON_DEFINES_H__
 
 //////////////////////////////////////////////////////////////////////////
+
+// --- TP Anzeige
+//#define __VIEW_TARGET_PLAYER_HP__
+#define __VIEW_TARGET_DECIMAL_HP__
+
+// --- Channel Switcher
+#define ENABLE_CHANGE_CHANNEL
+
+// --- Verbesserungsfenster geöffnet lassen
+#define ENABLE_REFINE_RENEWAL
+
+// --- Restart Tod NEU
+#define RENEWAL_DEAD_PACKET
+
+// --- Aktive Affects bei Mobs und Spieler anzeigen
+#define ENABLE_TARGET_AFFECT
+
+// --- Schreibt info in PN
+#define ENABLE_WHISPER_TIPPING
+
+// --- VWK per Button rückverwandeln
+#define ENABLE_AFFECT_POLYMORPH_REMOVE
+
+// --- Stack enpacken Add-on
+#define ENABLE_UNSTACK_ADDON
+
+// --- Item Namen auf Boden Erweiterung
+#define ENABLE_EXTENDED_ITEMNAME_ON_GROUND
+
+// --- Monster Target Info
+#define __SEND_TARGET_INFO__
+
+// --- Ladescreen Infos
+#define __LOADING_TIP__
+
+#define ENABLE_GM_FUNCTIONS
+#ifdef ENABLE_GM_FUNCTIONS
+#define GMS_CAN_WALK_REALLY_FAST
+#endif
+
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 // ### General Features ###
 //#define ENABLE_QUEST_CATEGORY
 #define ENABLE_D_NJGUILD
@@ -29,6 +71,12 @@ typedef long long GoldType;
 // #define USE_ITEM_CLAW_AS_DAGGER
 #define USE_WOLFMAN_STONES
 #define USE_WOLFMAN_BOOKS
+#endif
+
+#define ENABLE_EXTEND_ITEM_AWARD
+#ifdef ENABLE_EXTEND_ITEM_AWARD
+	#define ENABLE_ITEMAWARD_REFRESH
+	#define USE_ITEM_AWARD_CHECK_ATTRIBUTES // c++11 or higher
 #endif
 
 // #define ENABLE_PLAYER_PER_ACCOUNT5

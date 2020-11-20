@@ -135,6 +135,22 @@ EVENTINFO(TimedEventInfo)
 	}
 };
 
+#ifdef ENABLE_CHANGE_CHANNEL
+EVENTINFO(ChangeChannelEventInfo)
+{
+	DynamicCharacterPtr ch;
+	int				channel_number;
+	int         	left_second;
+
+	ChangeChannelEventInfo()
+	: ch()
+	, channel_number( 0 )
+	, left_second( 0 )
+	{
+	}
+};
+#endif
+
 struct SendDisconnectFunc
 {
 	void operator () (LPDESC d)
@@ -323,6 +339,108 @@ EVENTFUNC(timed_event)
 
 	return PASSES_PER_SEC(1);
 }
+
+#ifdef ENABLE_CHANGE_CHANNEL
+EVENTFUNC(change_channel_event)
+{
+	ChangeChannelEventInfo * info = dynamic_cast<ChangeChannelEventInfo *>( event->info );
+
+	if ( info == NULL )
+	{
+		sys_err( "change_channel_event> <Factor> Null pointer" );
+		return 0;
+	}
+
+	LPCHARACTER	ch = info->ch;
+	if (ch == NULL) { // <Factor>
+		return 0;
+	}
+
+	if (info->left_second <= 0)
+	{
+		ch->m_pkChangeChannelEvent = NULL;
+
+		ch->ChangeChannel(info->channel_number);
+	
+		return 0;
+	}
+	else
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Change channel in %d seconds."), info->left_second);
+		--info->left_second;
+	}
+
+	return PASSES_PER_SEC(1);
+}
+
+ACMD(do_change_channel)
+{
+	char arg1[256];
+	one_argument(argument, arg1, sizeof(arg1));
+
+	DWORD channel_number = 0;
+	str_to_number(channel_number, arg1);
+	
+	//if (ch->m_pkChangeChannelEvent)
+	//{
+	//	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Change channel canceled."));
+	//	event_cancel(&ch->m_pkChangeChannelEvent);
+	//	return;
+	//}
+	
+	if(!ch)
+	{
+		return;	
+	}
+	
+	if(channel_number == 99 || g_bChannel == 99){
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't change channel in this map."));
+		return;		
+	}
+	
+	if(channel_number == g_bChannel)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You are already in this channel."));
+		return;		
+	}
+	
+	if (ch->IsDead() || !ch->CanWarp())
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't do that now. Wait 10 seconds and try again."));
+		return;
+	}
+	
+	if(channel_number <= 0 || channel_number > 6)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This channel is not valid."));
+		return;
+	}
+	
+	if (channel_number != 0)
+	{
+		if (ch->m_pkChangeChannelEvent)
+		{
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Change channel canceled."));
+			event_cancel(&ch->m_pkChangeChannelEvent);
+			return;
+		}
+	
+		ChangeChannelEventInfo* info = AllocEventInfo<ChangeChannelEventInfo>();
+	
+		{
+			if (ch->IsPosition(POS_FIGHTING))
+				info->left_second = 10;
+			else
+				info->left_second = 3;
+		}
+	
+		info->ch					= ch;
+		info->channel_number		= channel_number;
+	
+		ch->m_pkChangeChannelEvent	= event_create(change_channel_event, info, 1);
+	}
+}
+#endif
 
 ACMD(do_cmd)
 {
@@ -1010,6 +1128,20 @@ ACMD(do_set_run_mode)
 	ch->SetNowWalking(false);
 	ch->SetWalking(false);
 }
+
+#ifdef ENABLE_AFFECT_POLYMORPH_REMOVE
+ACMD(do_remove_polymorph)
+{
+	if (!ch)
+		return;
+	
+	if (!ch->IsPolymorphed())
+		return;
+	
+	ch->SetPolymorph(0);
+	ch->RemoveAffect(AFFECT_POLYMORPH);
+}
+#endif
 
 ACMD(do_war)
 {
@@ -2302,69 +2434,36 @@ ACMD(do_cube)
 
 ACMD(do_in_game_mall)
 {
-	if (LC_IsEurope() == true)
-	{
-		char country_code[3];
+	char buf[512+1];
+	char sas[33];
+	MD5_CTX ctx;
+	const char sas_key[] = "GF9001";
+	
+	char language[3];
+	strcpy(language, "de");//If you have multilanguage, update this
+	
+	snprintf(buf, sizeof(buf), "%u%u%s", ch->GetPlayerID(), ch->GetAID(), sas_key);
 
-		switch (LC_GetLocalType())
-		{
-			case LC_GERMANY:	country_code[0] = 'd'; country_code[1] = 'e'; country_code[2] = '\0'; break;
-			case LC_FRANCE:		country_code[0] = 'f'; country_code[1] = 'r'; country_code[2] = '\0'; break;
-			case LC_ITALY:		country_code[0] = 'i'; country_code[1] = 't'; country_code[2] = '\0'; break;
-			case LC_SPAIN:		country_code[0] = 'e'; country_code[1] = 's'; country_code[2] = '\0'; break;
-			case LC_UK:			country_code[0] = 'e'; country_code[1] = 'n'; country_code[2] = '\0'; break;
-			case LC_TURKEY:		country_code[0] = 't'; country_code[1] = 'r'; country_code[2] = '\0'; break;
-			case LC_POLAND:		country_code[0] = 'p'; country_code[1] = 'l'; country_code[2] = '\0'; break;
-			case LC_PORTUGAL:	country_code[0] = 'p'; country_code[1] = 't'; country_code[2] = '\0'; break;
-			case LC_GREEK:		country_code[0] = 'g'; country_code[1] = 'r'; country_code[2] = '\0'; break;
-			case LC_RUSSIA:		country_code[0] = 'r'; country_code[1] = 'u'; country_code[2] = '\0'; break;
-			case LC_DENMARK:	country_code[0] = 'd'; country_code[1] = 'k'; country_code[2] = '\0'; break;
-			case LC_BULGARIA:	country_code[0] = 'b'; country_code[1] = 'g'; country_code[2] = '\0'; break;
-			case LC_CROATIA:	country_code[0] = 'h'; country_code[1] = 'r'; country_code[2] = '\0'; break;
-			case LC_MEXICO:		country_code[0] = 'm'; country_code[1] = 'x'; country_code[2] = '\0'; break;
-			case LC_ARABIA:		country_code[0] = 'a'; country_code[1] = 'e'; country_code[2] = '\0'; break;
-			case LC_CZECH:		country_code[0] = 'c'; country_code[1] = 'z'; country_code[2] = '\0'; break;
-			case LC_ROMANIA:	country_code[0] = 'r'; country_code[1] = 'o'; country_code[2] = '\0'; break;
-			case LC_HUNGARY:	country_code[0] = 'h'; country_code[1] = 'u'; country_code[2] = '\0'; break;
-			case LC_NETHERLANDS: country_code[0] = 'n'; country_code[1] = 'l'; country_code[2] = '\0'; break;
-			case LC_USA:		country_code[0] = 'u'; country_code[1] = 's'; country_code[2] = '\0'; break;
-			case LC_CANADA:	country_code[0] = 'c'; country_code[1] = 'a'; country_code[2] = '\0'; break;
-			default:
-				if (test_server == true)
-				{
-					country_code[0] = 'd'; country_code[1] = 'e'; country_code[2] = '\0';
-				}
-				break;
-		}
-
-		char buf[512+1];
-		char sas[33];
-		MD5_CTX ctx;
-		const char sas_key[] = "GF9001";
-
-		snprintf(buf, sizeof(buf), "%u%u%s", ch->GetPlayerID(), ch->GetAID(), sas_key);
-
-		MD5Init(&ctx);
-		MD5Update(&ctx, (const unsigned char *) buf, strlen(buf));
+	MD5Init(&ctx);
+	MD5Update(&ctx, (const unsigned char *) buf, strlen(buf));
 #ifdef __FreeBSD__
-		MD5End(&ctx, sas);
+	MD5End(&ctx, sas);
 #else
-		static const char hex[] = "0123456789abcdef";
-		unsigned char digest[16];
-		MD5Final(digest, &ctx);
-		int i;
-		for (i = 0; i < 16; ++i) {
-			sas[i+i] = hex[digest[i] >> 4];
-			sas[i+i+1] = hex[digest[i] & 0x0f];
-		}
-		sas[i+i] = '\0';
+	static const char hex[] = "0123456789abcdef";
+	unsigned char digest[16];
+	MD5Final(digest, &ctx);
+	int i;
+	for (i = 0; i < 16; ++i) {
+		sas[i+i] = hex[digest[i] >> 4];
+		sas[i+i+1] = hex[digest[i] & 0x0f];
+	}
+	sas[i+i] = '\0';
 #endif
 
-		snprintf(buf, sizeof(buf), "mall http://%s/ishop?pid=%u&c=%s&sid=%d&sas=%s",
-				g_strWebMallURL.c_str(), ch->GetPlayerID(), country_code, g_server_id, sas);
+	snprintf(buf, sizeof(buf), "mall http://goku.shop.%s?pid=%u&lang=%s&sid=%d&sas=%s",
+			g_strWebMallURL.c_str(), ch->GetPlayerID(), language, g_server_id, sas);
 
-		ch->ChatPacket(CHAT_TYPE_COMMAND, buf);
-	}
+	ch->ChatPacket(CHAT_TYPE_COMMAND, buf);
 }
 
 // ÁÖ»çÀ§
@@ -2693,6 +2792,57 @@ ACMD (do_bid_cancel)
 	two_arguments (argument, arg1, sizeof(arg1), arg2, sizeof(arg2));
 
 	AuctionManager::instance().bid_cancel (ch, strtoul(arg1, NULL, 10));
+}
+#endif
+
+#ifdef ENABLE_UNSTACK_ADDON
+ACMD(do_split_items)
+{
+	if (!ch)
+		return;
+	
+	const char *line;
+	char arg1[256], arg2[256], arg3[256];
+	line = two_arguments(argument, arg1, sizeof(arg1), arg2, sizeof(arg2));
+	one_argument(line, arg3, sizeof(arg3));
+	
+	if (!*arg1 || !*arg2 || !*arg3)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, "Wrong command use.");
+		return;
+	}
+	
+	if (!ch->CanWarp())
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, "Close all windows and wait a few seconds, before using this.");
+		return;
+	}
+	
+	WORD count = 0; //zamien se to na bajta jak nie masz zwiekszonych slotów.
+	WORD cell = 0;
+	WORD destCell = 0;
+	
+	str_to_number(cell, arg1);
+	str_to_number(count, arg2);
+	str_to_number(destCell, arg3);
+	
+	LPITEM item = ch->GetInventoryItem(cell);
+	if (item != NULL)
+	{
+		WORD itemCount = item->GetCount(); //to tez se kurwa zamien na byte'a jak nie masz slotów zwiekszonych.
+		while (itemCount > 0)
+		{
+			if (count > itemCount)
+				count = itemCount;
+			
+			int iEmptyPosition = ch->GetEmptyInventoryFromIndex(destCell, item->GetSize());
+			if (iEmptyPosition == -1)
+				break;
+			
+			itemCount -= count;
+			ch->MoveItem(TItemPos(INVENTORY, cell), TItemPos(INVENTORY, iEmptyPosition), count);
+		}
+	}
 }
 #endif
 

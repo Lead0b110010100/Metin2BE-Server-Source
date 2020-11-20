@@ -1427,10 +1427,12 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 	}
 	// END_OF_BOSS_KILL_LOG
 
+#ifndef RENEWAL_DEAD_PACKET
 	TPacketGCDead pack;
 	pack.header	= HEADER_GC_DEAD;
 	pack.vid	= m_vid;
 	PacketAround(&pack, sizeof(pack));
+#endif
 
 	REMOVE_BIT(m_pointsInstant.instant_flag, INSTANT_FLAG_STUN);
 
@@ -1498,6 +1500,15 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 	{
 		m_pkExchange->Cancel();
 	}
+
+#ifdef RENEWAL_DEAD_PACKET
+	TPacketGCDead pack;
+	pack.header	= HEADER_GC_DEAD;
+	pack.vid	= m_vid;
+	for (BYTE i = REVIVE_TYPE_HERE; i < REVIVE_TYPE_MAX; i++)
+		pack.t_d[i] = CalculateDeadTime(i);
+	PacketAround(&pack, sizeof(pack));
+#endif
 
 	if (IsCubeOpen() == true)
 	{

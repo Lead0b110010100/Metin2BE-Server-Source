@@ -459,6 +459,7 @@ typedef struct SPlayerTable
 
 	short	sRandomHP;
 	short	sRandomSP;
+	DWORD	sHorse_appearance;
 
 	int         playtime;
 
@@ -1488,6 +1489,7 @@ typedef struct SChannelStatus
 {
 	short nPort;
 	BYTE bStatus;
+	int player_count;
 } TChannelStatus;
 
 typedef struct TSimpleGMState

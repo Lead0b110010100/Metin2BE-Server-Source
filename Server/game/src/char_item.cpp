@@ -540,6 +540,19 @@ int CHARACTER::GetEmptyInventory(BYTE size) const
 	return -1;
 }
 
+#ifdef ENABLE_UNSTACK_ADDON
+int CHARACTER::GetEmptyInventoryFromIndex(WORD index, BYTE itemSize) const //SPLIT ITEMS
+{
+	if (index > INVENTORY_MAX_NUM)
+		return -1;
+	
+	for (WORD i = index; i < INVENTORY_MAX_NUM; ++i)
+		if (IsEmptyItemGrid(TItemPos (INVENTORY, i), itemSize))
+			return i;
+	return -1;
+}
+#endif
+
 int CHARACTER::CountEmptyInventory() const
 {
 	int	count = 0;
@@ -1777,8 +1790,10 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 					if (GiveItemFromSpecialItemGroup(dwBoxVnum, dwVnums, dwCounts, item_gets, count))
 					{
-						ITEM_MANAGER::instance().RemoveItem(item);
-						ITEM_MANAGER::instance().RemoveItem(item2);
+						/* ITEM_MANAGER::instance().RemoveItem(item);
+						ITEM_MANAGER::instance().RemoveItem(item2); */
+						item->SetCount(item->GetCount()-1);
+						item2->SetCount(item2->GetCount()-1);
 
 						for (int i = 0; i < count; i++){
 							switch (dwVnums[i])
@@ -5358,7 +5373,7 @@ bool CHARACTER::DropGold(GoldType gold)
 #else
 			item->StartDestroyEvent();
 #endif
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("떨어진 아이템은 %d분 후 사라집니다."), 150/60);
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("떨어진 아이템은 %d분 후 사라집니다."), gold);
 		}
 
 		Save();
@@ -5605,7 +5620,7 @@ void CHARACTER::GiveGold(GoldType iAmount)
 	}
 }
 
-bool CHARACTER::PickupItem(DWORD dwVID)
+/* bool CHARACTER::PickupItem(DWORD dwVID)
 {
 	if (!HasItemRights())
 		return false;
@@ -5758,6 +5773,197 @@ bool CHARACTER::PickupItem(DWORD dwVID)
 
 	return false;
 }
+ */
+
+bool CHARACTER::PickupItem(DWORD dwVID)
+{
+	LPITEM item = ITEM_MANAGER::instance().FindByVID(dwVID);
+
+	if (IsObserverMode())
+		return false;
+
+	if (!item || !item->GetSectree())
+		return false;
+
+	if (item->DistanceValid(this))
+	{
+		if (item->IsOwnership(this))
+		{
+			// 만약 주으려 하는 아이템이 엘크라면
+			if (item->GetType() == ITEM_ELK)
+			{
+				GiveGold(item->GetCount());
+				item->RemoveFromGround();
+
+				M2_DESTROY_ITEM(item);
+
+				Save();
+			}
+			// 평범한 아이템이라면
+			else
+			{
+				if (item->IsStackable() && !IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_STACK))
+				{
+					BYTE bCount = item->GetCount();
+
+					for (int i = 0; i < INVENTORY_MAX_NUM; ++i)
+					{
+						LPITEM item2 = GetInventoryItem(i);
+
+						if (!item2)
+							continue;
+
+						if (item2->GetVnum() == item->GetVnum())
+						{
+							int j;
+
+							for (j = 0; j < ITEM_SOCKET_MAX_NUM; ++j)
+								if (item2->GetSocket(j) != item->GetSocket(j))
+									break;
+
+							if (j != ITEM_SOCKET_MAX_NUM)
+								continue;
+
+							BYTE bCount2 = MIN(g_bItemCountLimit - item2->GetCount(), bCount);
+							bCount -= bCount2;
+
+							item2->SetCount(item2->GetCount() + bCount2);
+
+							if (bCount == 0)
+							{
+								ChatPacket(CHAT_TYPE_INFO, LC_TEXT("아이템 획득: %s"), item2->GetName());
+								M2_DESTROY_ITEM(item);
+								if (item2->GetType() == ITEM_QUEST)
+									quest::CQuestManager::instance().PickupItem (GetPlayerID(), item2);
+								return true;
+							}
+						}
+					}
+					item->SetCount(bCount);
+				}
+
+				int iEmptyCell;
+				if ((iEmptyCell = GetEmptyInventory(item->GetSize())) == -1)
+				{
+					sys_log(0, "No empty inventory pid %u size %ud itemid %u", GetPlayerID(), item->GetSize(), item->GetID());
+					ChatPacket(CHAT_TYPE_INFO, LC_TEXT("소지하고 있는 아이템이 너무 많습니다."));
+					return false;
+				}
+
+				item->RemoveFromGround();
+				
+				item->AddToCharacter(this, TItemPos(INVENTORY, iEmptyCell));
+
+				char szHint[32+1];
+				
+				snprintf(szHint, sizeof(szHint), "%s %u %u", item->GetName(), item->GetCount(), item->GetOriginalVnum());
+				LogManager::instance().ItemLog(this, item, "GET", szHint);
+				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("아이템 획득: %s"), item->GetName());
+
+				if (item->GetType() == ITEM_QUEST)
+					quest::CQuestManager::instance().PickupItem (GetPlayerID(), item);
+			}
+
+			//Motion(MOTION_PICKUP);
+			return true;
+		}
+		else if (!IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_GIVE | ITEM_ANTIFLAG_DROP) && GetParty())
+		{
+			// 다른 파티원 소유권 아이템을 주으려고 한다면
+			NPartyPickupDistribute::FFindOwnership funcFindOwnership(item);
+
+			GetParty()->ForEachOnlineMember(funcFindOwnership);
+
+			LPCHARACTER owner = funcFindOwnership.owner;
+			
+			if (!owner)
+				return false;
+
+			int iEmptyCell;
+
+			//FIX_DROP_PARTY
+			if (owner)
+			{
+				if (item->IsStackable() && !IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_STACK))
+				{
+					BYTE bCount = item->GetCount();
+					for (int i = 0; i < INVENTORY_MAX_NUM; ++i)
+					{
+						LPITEM item2 = owner->GetInventoryItem(i);
+
+						if (!item2)
+							continue;
+						if (item2->GetVnum() == item->GetVnum())
+						{
+							int j;
+
+							for (j = 0; j < ITEM_SOCKET_MAX_NUM; ++j)
+							if (item2->GetSocket(j) != item->GetSocket(j))
+								break;
+
+							if (j != ITEM_SOCKET_MAX_NUM)
+								continue;
+
+							BYTE bCount2 = MIN(g_bItemCountLimit - item2->GetCount(), bCount);
+							bCount -= bCount2;
+
+							item2->SetCount(item2->GetCount() + bCount2);
+
+							if (bCount == 0)
+							{
+								owner->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("아이템 획득: %s 님으로부터 %s"), GetName(), item->GetName());
+								ChatPacket(CHAT_TYPE_INFO, LC_TEXT("아이템 전달: %s 님에게 %s"), owner->GetName(), item->GetName());
+								M2_DESTROY_ITEM(item);
+								if (item2->GetType() == ITEM_QUEST)
+									quest::CQuestManager::instance().PickupItem(owner->GetPlayerID(), item2);
+								return true;
+							}
+						}
+					}
+					
+					item->SetCount(bCount);
+				}
+			}
+			//END FIX_DROP_PARTY 
+			
+			if (!(owner && (iEmptyCell = owner->GetEmptyInventory(item->GetSize())) != -1))
+			{
+				owner = this;
+
+				if ((iEmptyCell = GetEmptyInventory(item->GetSize())) == -1)
+				{
+					owner->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("소지하고 있는 아이템이 너무 많습니다."));
+					return false;
+				}
+			}
+
+			item->RemoveFromGround();
+
+			item->AddToCharacter(owner, TItemPos(INVENTORY, iEmptyCell));
+
+			char szHint[32+1];
+			snprintf(szHint, sizeof(szHint), "%s %u %u", item->GetName(), item->GetCount(), item->GetOriginalVnum());
+			LogManager::instance().ItemLog(owner, item, "GET", szHint);
+
+			if (owner == this)
+				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("아이템 획득: %s"), item->GetName());
+			else
+			{
+				owner->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("아이템 획득: %s 님으로부터 %s"), GetName(), item->GetName());
+				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("아이템 전달: %s 님에게 %s"), owner->GetName(), item->GetName());
+			}
+
+
+			if (item->GetType() == ITEM_QUEST)
+				quest::CQuestManager::instance().PickupItem (owner->GetPlayerID(), item);
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
 
 bool CHARACTER::SwapItem(BYTE bCell, BYTE bDestCell)
 {

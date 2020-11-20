@@ -47,6 +47,13 @@ bool timed_event_cancel(LPCHARACTER ch)
 		event_cancel(&ch->m_pkTimedEvent);
 		return true;
 	}
+#ifdef ENABLE_CHANGE_CHANNEL
+	if (ch->m_pkChangeChannelEvent)
+	{
+		event_cancel(&ch->m_pkChangeChannelEvent);
+		return true;
+	}
+#endif
 
 	/* RECALL_DELAY
 	   차후 전투로 인해 귀환부 딜레이가 취소 되어야 할 경우 주석 해제

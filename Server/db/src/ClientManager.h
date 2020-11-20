@@ -39,7 +39,7 @@ class CClientManager : public CNetBase, public singleton<CClientManager>
 	typedef boost::unordered_set<CItemCache *, boost::hash<CItemCache*> > TItemCacheSet;
 	typedef boost::unordered_map<DWORD, TItemCacheSet *> TItemCacheSetPtrMap;
 	typedef boost::unordered_map<DWORD, CItemPriceListTableCache*> TItemPriceListCacheMap;
-	typedef boost::unordered_map<short, BYTE> TChannelStatusMap;
+	typedef boost::unordered_map<short, std::pair<BYTE, int>> TChannelStatusMap;
 
 	// MYSHOP_PRICE_LIST
 	/// 아이템 가격정보 리스트 요청 정보

@@ -83,6 +83,13 @@ void Command_ApplyAffect(LPCHARACTER ch, const char* argument, const char* affec
 }
 // END_OF_ADD_COMMAND_SLOW_STUN
 
+#ifdef GMS_CAN_WALK_REALLY_FAST
+ACMD(do_toggle_gm_speed)
+{
+	ch->ToggleGMSpeed();
+}
+#endif
+
 ACMD(do_pcbang_update)
 {
 	char arg1[256];

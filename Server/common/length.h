@@ -80,6 +80,9 @@ enum EMisc
 
 	MAX_PASSPOD = 8 ,
 
+#ifdef GMS_CAN_WALK_REALLY_FAST
+	GM_MAX_MOVE_SPEED = 1000,
+#endif
 
 	//END_LIMIT_GOLD
 
@@ -88,6 +91,16 @@ enum EMisc
 	SHOP_TAB_NAME_MAX = 32,
 	SHOP_TAB_COUNT_MAX = 3,
 };
+
+#ifdef ENABLE_TARGET_AFFECT
+enum ESimpleAffect
+{
+	SIMPLE_AFFECT_POISION,
+	SIMPLE_AFFECT_SLOW,
+	SIMPLE_AFFECT_STUN,
+	SIMPLE_AFFECT_MAX_NUM
+};
+#endif
 
 enum EMatrixCard
 {

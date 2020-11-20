@@ -23,6 +23,10 @@ ACMD(do_rewarp);
 ACMD(do_rename);
 ACMD(do_afk);
 
+#ifdef GMS_CAN_WALK_REALLY_FAST
+ACMD(do_toggle_gm_speed);
+#endif
+
 ACMD(do_warp);
 ACMD(do_goto);
 ACMD(do_item);
@@ -32,6 +36,9 @@ ACMD(do_mob_aggresive);
 ACMD(do_mob_coward);
 ACMD(do_mob_map);
 ACMD(do_purge);
+#ifdef ENABLE_AFFECT_POLYMORPH_REMOVE
+ACMD(do_remove_polymorph);
+#endif
 ACMD(do_weaken);
 ACMD(do_item_purge);
 ACMD(do_state);
@@ -42,6 +49,9 @@ ACMD(do_big_notice);
 ACMD(do_notice_test);
 ACMD(do_big_notice_test);
 ACMD(do_map_big_notice);
+#endif
+#ifdef ENABLE_UNSTACK_ADDON
+ACMD(do_split_items);
 #endif
 ACMD(do_who);
 ACMD(do_user);
@@ -57,6 +67,10 @@ ACMD(do_greset);
 ACMD(do_mount);
 ACMD(do_fishing);
 ACMD(do_refine_rod);
+
+#ifdef ENABLE_CHANGE_CHANNEL
+ACMD(do_change_channel);
+#endif
 
 // REFINE_PICK
 ACMD(do_max_pick);
@@ -371,6 +385,9 @@ struct command_info cmd_info[] =
 	{ "quit",		do_cmd,			SCMD_QUIT,		POS_DEAD,	GM_PLAYER	},
 	{ "logou",		do_inputall,		0,			POS_DEAD,	GM_PLAYER	},
 	{ "logout",		do_cmd,			SCMD_LOGOUT,		POS_DEAD,	GM_PLAYER	},
+#ifdef ENABLE_CHANGE_CHANNEL
+	{ "change_channel",	 do_change_channel,	0,	POS_DEAD,	GM_PLAYER	},
+#endif	
 	{ "skillup",	do_skillup,		0,			POS_DEAD,	GM_PLAYER	},
 	{ "gskillup",	do_guildskillup,	0,			POS_DEAD,	GM_PLAYER	},
 	{ "pvp",		do_pvp,			0,			POS_DEAD,	GM_PLAYER	},
@@ -613,6 +630,14 @@ struct command_info cmd_info[] =
 	{ "use_item",		do_use_item,	0, POS_DEAD,		GM_LOW_WIZARD},
 
 	{ "do_clear_affect", do_clear_affect, 	0, POS_DEAD,		GM_LOW_WIZARD},
+
+#ifdef ENABLE_AFFECT_POLYMORPH_REMOVE
+	{ "remove_polymorph",	do_remove_polymorph,	0,		POS_DEAD,	GM_PLAYER	},
+#endif
+#ifdef ENABLE_UNSTACK_ADDON
+	{ "split_items", do_split_items, 0, POS_DEAD, GM_PLAYER },
+#endif
+
 #ifdef ENABLE_NEWSTUFF
 	//item
 	{ "add_rare_attr",		do_add_rare_attr,			0,			POS_DEAD,	GM_IMPLEMENTOR	},
@@ -626,10 +651,12 @@ struct command_info cmd_info[] =
 #ifdef ENABLE_WOLFMAN_CHARACTER
 	{ "bleeding",			do_bleeding,				0,			POS_DEAD,	GM_IMPLEMENTOR	},
 #endif
-	{ "rewarp", do_rewarp, 0, POS_DEAD, GM_LOW_WIZARD },
 	{ "rename",		do_rename,		0,			POS_DEAD,	GM_IMPLEMENTOR	},
 	{ "afk",		do_afk,		0,			POS_DEAD,	GM_PLAYER	},
 	{ "give", do_give, 0, POS_DEAD, GM_IMPLEMENTOR },
+#ifdef GMS_CAN_WALK_REALLY_FAST
+	{ "toggle_gm_speed", do_toggle_gm_speed, 0, POS_DEAD, GM_WIZARD },
+#endif
 
 	{ "\n",		NULL,			0,			POS_DEAD,	GM_IMPLEMENTOR	}  /* 반드시 이 것이 마지막이어야 한다. */
 };

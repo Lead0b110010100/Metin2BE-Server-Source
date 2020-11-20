@@ -269,9 +269,13 @@ void CHARACTER::HorseSummon(bool bSummon, bool bFromFar, DWORD dwVnum, const cha
 	}
 }
 
-DWORD CHARACTER::GetMyHorseVnum() const
+DWORD CHARACTER::GetMyHorseVnum()
 {
 	int delta = 0;
+	DWORD horse_looks;
+	
+	if((horse_looks = GetHorseAppearance()) > 0)
+		return horse_looks;
 
 	if (GetGuild())
 	{

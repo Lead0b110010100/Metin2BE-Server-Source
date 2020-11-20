@@ -615,6 +615,10 @@ void CInputLogin::Entergame(LPDESC d, const char * data)
 	// 캐릭터를 맵에 추가
 	ch->Show(ch->GetMapIndex(), pos.x, pos.y, pos.z);
 
+#ifdef GMS_CAN_WALK_REALLY_FAST
+	ch->RefreshSpeed();
+#endif
+
 	SECTREE_MANAGER::instance().SendNPCPosition(ch);
 	ch->ReviveInvisible(5);
 

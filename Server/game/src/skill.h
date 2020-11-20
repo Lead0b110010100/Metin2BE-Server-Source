@@ -33,9 +33,9 @@ enum ESkillFlags
 	SKILL_FLAG_WIND		= (1 << 24),	// 官恩 加己
 	SKILL_FLAG_ELEC		= (1 << 25),	// 傈扁 加己
 	SKILL_FLAG_FIRE		= (1 << 26),	// 阂 加己
+	SKILL_FLAG_PARTY	= (1 << 27),
 #ifdef ENABLE_WOLFMAN_CHARACTER
-	SKILL_FLAG_BLEEDING	= (1 << 27),
-	SKILL_FLAG_PARTY	= (1 << 28),
+	SKILL_FLAG_BLEEDING	= (1 << 28),
 #endif
 };
 

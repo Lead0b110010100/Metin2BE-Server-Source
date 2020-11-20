@@ -2,6 +2,7 @@
 #include "char.h"
 #include "../../common/CommonDefines.h"
 
+short g_playerMovingSpeed = 100;
 std::set<DWORD> setAccessoryBlacklist { 14220, 16220, 17220 };
 
 TJobInitialPoints JobInitialPoints[JOB_MAX_NUM] =
@@ -526,9 +527,9 @@ const DWORD guild_exp_table2[GUILD_MAX_LEVEL+1] =
 	2600000UL,
 	3200000UL,
 	4000000UL,
-	16800000UL,
-	16800000UL,
-	16800000UL
+	5652000UL,
+	7000000UL,
+	7000000UL
 };
 // END_OF_INTERNATIONAL_VERSION 길드경험치
 

@@ -61,6 +61,61 @@ static int __deposit_limit()
 	return (1000*10000); // 1천만
 }
 
+#ifdef __SEND_TARGET_INFO__
+void CInputMain::TargetInfoLoad(LPCHARACTER ch, const char* c_pData)
+{
+	TPacketCGTargetInfoLoad* p = (TPacketCGTargetInfoLoad*)c_pData;
+	TPacketGCTargetInfo pInfo;
+	pInfo.header = HEADER_GC_TARGET_INFO;
+	static std::vector<LPITEM> s_vec_item;
+	s_vec_item.clear();
+	LPITEM pkInfoItem;
+	LPCHARACTER m_pkChrTarget = CHARACTER_MANAGER::instance().Find(p->dwVID);
+
+	// if (m_pkChrTarget && (m_pkChrTarget->IsMonster() || m_pkChrTarget->IsStone()))
+	// {
+		// if (thecore_heart->pulse - (int) ch->GetLastTargetInfoPulse() < passes_per_sec * 3)
+			// return;
+
+		// ch->SetLastTargetInfoPulse(thecore_heart->pulse);
+
+	if (ITEM_MANAGER::instance().CreateDropItemVector(m_pkChrTarget, ch, s_vec_item) && (m_pkChrTarget->IsMonster() || m_pkChrTarget->IsStone()))
+	{
+		if (s_vec_item.size() == 0);
+		else if (s_vec_item.size() == 1)
+		{
+			pkInfoItem = s_vec_item[0];
+			pInfo.dwVID	= m_pkChrTarget->GetVID();
+			pInfo.race = m_pkChrTarget->GetRaceNum();
+			pInfo.dwVnum = pkInfoItem->GetVnum();
+			pInfo.count = pkInfoItem->GetCount();
+			ch->GetDesc()->Packet(&pInfo, sizeof(TPacketGCTargetInfo));
+		}
+		else
+		{
+			int iItemIdx = s_vec_item.size() - 1;
+			while (iItemIdx >= 0)
+			{
+				pkInfoItem = s_vec_item[iItemIdx--];
+
+				if (!pkInfoItem)
+				{
+					sys_err("pkInfoItem null in vector idx %d", iItemIdx + 1);
+					continue;
+				}
+
+					pInfo.dwVID	= m_pkChrTarget->GetVID();
+					pInfo.race = m_pkChrTarget->GetRaceNum();
+					pInfo.dwVnum = pkInfoItem->GetVnum();
+					pInfo.count = pkInfoItem->GetCount();
+					ch->GetDesc()->Packet(&pInfo, sizeof(TPacketGCTargetInfo));
+			}
+		}
+	}
+	// }
+}
+#endif
+
 void SendBlockChatInfo(LPCHARACTER ch, int sec)
 {
 	if (sec <= 0)
@@ -372,8 +427,17 @@ int CInputMain::Whisper(LPCHARACTER ch, const char * data, size_t uiBytes)
 			pack.bType = WHISPER_TYPE_NOT_EXIST;
 			pack.wSize = sizeof(TPacketGCWhisper);
 			strlcpy(pack.szNameFrom, pinfo->szNameTo, sizeof(pack.szNameFrom));
+#ifdef ENABLE_WHISPER_TIPPING			
+			char buf[CHAT_MAX_LEN + 1];
+			strlcpy(buf, data + sizeof(TPacketCGWhisper), MIN(iExtraLen + 1, sizeof(buf)));
+			if (!(std::string(buf).find("|?whisper_renewal>|") != std::string::npos || std::string(buf).find("|?whisper_renewal<|") != std::string::npos)) {
+				ch->GetDesc()->Packet(&pack, sizeof(TPacketGCWhisper));
+				sys_log(0, "WHISPER: no player");
+			}
+#else
 			ch->GetDesc()->Packet(&pack, sizeof(TPacketGCWhisper));
 			sys_log(0, "WHISPER: no player");
+#endif
 		}
 	}
 	else
@@ -2416,16 +2480,16 @@ void CInputMain::AnswerMakeGuild(LPCHARACTER ch, const char* c_pData)
 {
 	TPacketCGAnswerMakeGuild* p = (TPacketCGAnswerMakeGuild*) c_pData;
 
-	if (ch->GetGold() < 200000)
+	if (ch->GetGold() < 10000000)
 		return;
 
-	if (get_global_time() - ch->GetQuestFlag("guild_manage.new_disband_time") <
+	/* if (get_global_time() - ch->GetQuestFlag("guild_manage.new_disband_time") <
 			CGuildManager::instance().GetDisbandDelay())
 	{
 		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 해산한 후 %d일 이내에는 길드를 만들 수 없습니다."),
 				quest::CQuestManager::instance().GetEventFlag("guild_disband_delay"));
 		return;
-	}
+	} */
 
 	if (ch->GetGuild())
 		return;
@@ -2450,7 +2514,7 @@ void CInputMain::AnswerMakeGuild(LPCHARACTER ch, const char* c_pData)
 	{
 		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> [%s] 길드가 생성되었습니다."), cp.name);
 
-		int GuildCreateFee = 200000;
+		int GuildCreateFee = 10000000;
 
 		ch->ChangeGold(-GuildCreateFee);
 		DBManager::instance().SendMoneyLog(MONEY_LOG_GUILD, ch->GetPlayerID(), -GuildCreateFee);
@@ -3236,11 +3300,7 @@ int CInputMain::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 			break;
 
 		case HEADER_CG_ANSWER_MAKE_GUILD:
-#ifdef ENABLE_NEWGUILDMAKE
-			ch->ChatPacket(CHAT_TYPE_INFO, "<%s> AnswerMakeGuild disabled", __FUNCTION__);
-#else
 			AnswerMakeGuild(ch, c_pData);
-#endif
 			break;
 
 		case HEADER_CG_GUILD:
@@ -3268,6 +3328,14 @@ int CInputMain::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 		case HEADER_CG_CLIENT_VERSION:
 			Version(ch, c_pData);
 			break;
+
+#ifdef __SEND_TARGET_INFO__
+		case HEADER_CG_TARGET_INFO_LOAD:
+			{
+				TargetInfoLoad(ch, c_pData);
+			}
+			break;
+#endif
 
 		case HEADER_CG_HS_ACK:
 			if (isHackShieldEnable)

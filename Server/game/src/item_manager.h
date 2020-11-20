@@ -393,6 +393,9 @@ class ITEM_MANAGER : public singleton<ITEM_MANAGER>
 
 		bool			GetDropPct(LPCHARACTER pkChr, LPCHARACTER pkKiller, OUT int& iDeltaPercent, OUT int& iRandRange);
 		bool			CreateDropItem(LPCHARACTER pkChr, LPCHARACTER pkKiller, std::vector<LPITEM> & vec_item);
+#ifdef __SEND_TARGET_INFO__
+		bool			CreateDropItemVector(LPCHARACTER pkChr, LPCHARACTER pkKiller, std::vector<LPITEM> & vec_item);
+#endif
 
 		bool			ReadCommonDropItemFile(const char * c_pszFileName);
 		bool			ReadEtcDropItemFile(const char * c_pszFileName);

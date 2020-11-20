@@ -409,6 +409,7 @@ typedef struct character_point
 
 	int				iRandomHP;
 	int				iRandomSP;
+	unsigned int horse_appearance;
 
 	int				stamina;
 
@@ -622,6 +623,16 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 
 		//////////////////////////////////////////////////////////////////////////////////
 		// Basic Points
+
+#ifdef __SEND_TARGET_INFO__
+	private:
+		DWORD			dwLastTargetInfoPulse;
+
+	public:
+		DWORD			GetLastTargetInfoPulse() const	{ return dwLastTargetInfoPulse; }
+		void			SetLastTargetInfoPulse(DWORD pulse) { dwLastTargetInfoPulse = pulse; }
+#endif
+
 	public:
 		DWORD			GetPlayerID() const	{ return m_dwPlayerID; }
 
@@ -643,6 +654,9 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		void			SetRace(BYTE race);
 		bool			ChangeSex();
 
+#ifdef RENEWAL_DEAD_PACKET
+		DWORD			CalculateDeadTime(BYTE type);
+#endif
 		DWORD			GetAID() const;
 		int				GetChangeEmpireCount() const;
 		void			SetChangeEmpireCount();
@@ -1167,6 +1181,9 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		void			AutoGiveItem(LPITEM item, bool longOwnerShip = false);
 
 		int				GetEmptyInventory(BYTE size) const;
+#ifdef ENABLE_UNSTACK_ADDON
+		int				GetEmptyInventoryFromIndex(WORD index, BYTE itemSize) const;
+#endif
 		int				CountEmptyInventory() const;
 
 		int				CountSpecifyItem(DWORD vnum) const;
@@ -1226,6 +1243,10 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		void			OpenMyShop(const char * c_pszSign, TShopItemTable * pTable, BYTE bItemCount);
 		LPSHOP			GetMyShop() const { return m_pkMyShop; }
 		void			CloseMyShop();
+
+#ifdef ENABLE_CHANGE_CHANNEL
+		void 			ChangeChannel(DWORD channelId);
+#endif
 
 	protected:
 
@@ -1605,7 +1626,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		virtual	bool		StartRiding();
 		virtual	bool		StopRiding();
 
-		virtual	DWORD		GetMyHorseVnum() const;
+		virtual	DWORD		GetMyHorseVnum();
 
 		virtual	void		HorseDie();
 		virtual bool		ReviveHorse();
@@ -1754,6 +1775,9 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		LPEVENT				m_pkRecoveryEvent;
 		LPEVENT				m_pkTimedEvent;
 		LPEVENT				m_pkFishingEvent;
+#ifdef ENABLE_CHANGE_CHANNEL
+		LPEVENT				m_pkChangeChannelEvent;
+#endif
 		LPEVENT				m_pkAffectEvent;
 		LPEVENT				m_pkPoisonEvent;
 #ifdef ENABLE_WOLFMAN_CHARACTER
@@ -2032,6 +2056,10 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 	private:
 		bool cannot_dead;
 
+#ifdef ENABLE_TARGET_AFFECT
+	public:
+		void BroadcastTargetAffect(bool remove, DWORD flag, long duration=0);
+#endif
 #ifdef __PET_SYSTEM__
 	private:
 		bool m_bIsPet;
@@ -2111,8 +2139,20 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 
 		int GetDM();
 		void SetDM(int iDM);
+		DWORD	GetHorseAppearance()	{ return m_points.horse_appearance; }
+		void	SetHorseAppearance(DWORD vnum)	{ m_points.horse_appearance = vnum; }
+
+	public:
+#ifdef GMS_CAN_WALK_REALLY_FAST
+		void ToggleGMSpeed();
+		void RefreshSpeed();
+#endif
 };
 
+#ifdef ENABLE_TARGET_AFFECT
+extern const WORD g_wAffects[SIMPLE_AFFECT_MAX_NUM];
+extern bool IsInAffect(LPCHARACTER ch, DWORD dwAffect);
+#endif
 ESex GET_SEX(LPCHARACTER ch);
 void NoticeAll(const char *c_szMessage);
 

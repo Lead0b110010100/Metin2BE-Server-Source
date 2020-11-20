@@ -1558,20 +1558,24 @@ namespace quest
 		}
 		else if (name == "gold_drop_limit_time")
 		{
-			g_GoldDropTimeLimitValue = value * 1000;
+			//g_GoldDropTimeLimitValue = value * 1000;
+			g_GoldDropTimeLimitValue = 0;
 		}
 #ifdef ENABLE_NEWSTUFF
 		else if (name == "item_drop_limit_time")
 		{
-			g_ItemDropTimeLimitValue = value * 1000;
+			//g_ItemDropTimeLimitValue = value * 1000;
+			g_ItemDropTimeLimitValue = 0;
 		}
 		else if (name == "box_use_limit_time")
 		{
-			g_BoxUseTimeLimitValue = value * 1000;
+			//g_BoxUseTimeLimitValue = value * 1000;
+			g_BoxUseTimeLimitValue = 0;
 		}
 		else if (name == "buysell_limit_time")
 		{
-			g_BuySellTimeLimitValue = value * 1000;
+			//g_BuySellTimeLimitValue = value * 1000;
+			g_BuySellTimeLimitValue = 0;
 		}
 		else if (name == "no_drop_metin_stone")
 		{

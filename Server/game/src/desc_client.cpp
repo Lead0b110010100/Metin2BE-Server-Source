@@ -306,6 +306,7 @@ void CLIENT_DESC::UpdateChannelStatus(DWORD t, bool fForce)
 
 		TChannelStatus channelStatus;
 		channelStatus.nPort = mother_port;
+		channelStatus.player_count = iTotal;
 
 		if (g_bNoMoreClient) channelStatus.bStatus = 0;
 		else channelStatus.bStatus = iTotal > g_iFullUserCount ? 3 : iTotal > g_iBusyUserCount ? 2 : 1;

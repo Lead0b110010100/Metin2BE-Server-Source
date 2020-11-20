@@ -46,6 +46,19 @@ static const DWORD s_adwSubSkillVnums[] =
 	SKILL_RESIST_PENETRATE
 };
 
+struct FPartyPIDCollector
+{
+	std::vector <DWORD> vecPIDs;
+		FPartyPIDCollector()
+		{
+		}
+		
+	void operator () (LPCHARACTER ch)
+	{
+		vecPIDs.push_back(ch->GetPlayerID());
+	}
+};
+
 time_t CHARACTER::GetSkillNextReadTime(DWORD dwVnum) const
 {
 	if (dwVnum >= SKILL_MAX_NUM)
@@ -2663,10 +2676,21 @@ bool CHARACTER::UseSkill(DWORD dwVnum, LPCHARACTER pkVictim, bool bUseGrandMaste
 
 	if (IS_SET(pkSk->dwFlag, SKILL_FLAG_SELFONLY))
 		ComputeSkill(dwVnum, this);
-#ifdef ENABLE_WOLFMAN_CHARACTER
-	else if (IS_SET(pkSk->dwFlag, SKILL_FLAG_PARTY))
-		ComputeSkillParty(dwVnum, this);
-#endif
+	else if (IS_SET(pkSk->dwFlag, SKILL_FLAG_PARTY) && !GetParty())
+		ComputeSkill(dwVnum, pkVictim);
+	else if (IS_SET(pkSk->dwFlag, SKILL_FLAG_PARTY) && GetParty())
+	{
+		FPartyPIDCollector f;
+		GetParty()->ForEachOnMapMember(f, GetMapIndex());
+		//Fix where you should exit your party to buff someone who is not in your party//
+		if (!pkVictim->GetParty())
+			ComputeSkill(dwVnum, pkVictim);
+		for (std::vector <DWORD>::iterator it = f.vecPIDs.begin(); it != f.vecPIDs.end(); it++)
+		{
+			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(*it);
+			ComputeSkill(dwVnum, ch);
+		}
+	}
 	else if (!IS_SET(pkSk->dwFlag, SKILL_FLAG_ATTACK))
 		ComputeSkill(dwVnum, pkVictim);
 	else if (dwVnum == SKILL_BYEURAK)
@@ -3578,9 +3602,9 @@ eMountType GetMountLevelByVnum(DWORD dwMountVnum, bool IsNew) // updated to 2014
 				return MOUNT_TYPE_NONE;
 		// @fixme116 end
 		// Classic
-		case 20110: // Classic Boar
-		case 20111: // Classic Wolf
-		case 20112: // Classic Tiger
+		case 20110: // super military horse (no guild)
+		case 20111: // super military horse (guild member)
+		case 20112: // super military horse (guild master)
 		case 20113: // Classic Lion
 		case 20114: // White Lion
 		// Special Lv2

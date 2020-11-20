@@ -132,6 +132,12 @@ void CItem::EncodeInsertPacket(LPENTITY ent)
 	pack.z		= c_pos.z;
 	pack.dwVnum		= GetVnum();
 	pack.dwVID		= m_dwVID;
+#ifdef ENABLE_EXTENDED_ITEMNAME_ON_GROUND
+	for (size_t i = 0; i < ITEM_SOCKET_MAX_NUM; ++i)
+		pack.alSockets[i] = GetSocket(i);
+
+	thecore_memcpy(pack.aAttrs, GetAttributes(), sizeof(pack.aAttrs));
+#endif
 	//pack.count	= m_dwCount;
 
 	d->Packet(&pack, sizeof(pack));
@@ -171,6 +177,43 @@ void CItem::EncodeRemovePacket(LPENTITY ent)
 	d->Packet(&pack, sizeof(pack));
 	sys_log(2, "Item::EncodeRemovePacket %s to %s", GetName(), ((LPCHARACTER) ent)->GetName());
 }
+
+/* #ifdef ENABLE_EXTENDED_ITEMNAME_ON_GROUND
+const char * CItem::GetName()
+{
+	static char szItemName[128];
+	memset(szItemName, 0, sizeof(szItemName));
+	if (GetProto())
+	{
+		int len = 0;
+		switch (GetType())
+		{
+			case ITEM_POLYMORPH:
+			{
+				const DWORD dwMobVnum = GetSocket(0);
+				const CMob* pMob = CMobManager::instance().Get(dwMobVnum);
+				if (pMob)
+					len = snprintf(szItemName, sizeof(szItemName), "%s", pMob->m_table.szLocaleName);
+
+				break;
+			}
+			case ITEM_SKILLBOOK:
+			case ITEM_SKILLFORGET:
+			{
+				const DWORD dwSkillVnum = (GetVnum() == ITEM_SKILLBOOK_VNUM || GetVnum() == ITEM_SKILLFORGET_VNUM) ? GetSocket(0) : 0;
+				const CSkillProto* pSkill = (dwSkillVnum != 0) ? CSkillManager::instance().Get(dwSkillVnum) : NULL;
+				if (pSkill)
+					len = snprintf(szItemName, sizeof(szItemName), "%s", pSkill->szName);
+
+				break;
+			}
+		}
+		len += snprintf(szItemName + len, sizeof(szItemName) - len, (len>0)?" %s":"%s", GetProto()->szLocaleName);
+	}
+
+	return szItemName;
+}
+#endif */
 
 void CItem::SetProto(const TItemTable * table)
 {
