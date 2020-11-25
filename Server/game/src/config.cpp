@@ -1462,7 +1462,7 @@ static bool __LoadGeneralConfigFile(const char* configName)
 		TOKEN("pk_protect_level")
 		{
 		    str_to_number(PK_PROTECT_LEVEL, value_string);
-		    fprintf(stderr, "PK_PROTECT_LEVEL: %d", PK_PROTECT_LEVEL);
+		    fprintf(stderr, "PK_PROTECT_LEVEL: %d\n", PK_PROTECT_LEVEL);
 		}
 
 		TOKEN("max_level")
