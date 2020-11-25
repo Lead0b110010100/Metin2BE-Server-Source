@@ -331,7 +331,6 @@ void CHARACTER::DeathPenalty(BYTE bTown)
 			{
 				sys_log(0, "NO_DEATH_PENALTY_AFFECT(%s)", GetName());
 				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("용신의 가호로 경험치가 떨어지지 않았습니다."));
-				RemoveAffect(AFFECT_NO_DEATH_PENALTY);
 				return;
 			}
 		}
