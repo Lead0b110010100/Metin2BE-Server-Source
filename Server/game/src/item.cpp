@@ -447,15 +447,21 @@ bool CItem::AddToGround(long lMapIndex, const PIXEL_POSITION & pos, bool skipOwn
 
 bool CItem::DistanceValid(LPCHARACTER ch)
 {
-	if (!GetSectree())
-		return false;
+    if (!GetSectree())
+        return false;
 
-	int iDist = DISTANCE_APPROX(GetX() - ch->GetX(), GetY() - ch->GetY());
+    int32_t iDist = DISTANCE_APPROX(GetX() - ch->GetX(), GetY() - ch->GetY());
+    uint16_t max_distance = ch->IsRiding() ? 500 : 300;
+    uint16_t tolerance = 150;
 
-	if (iDist > 1000)
-		return false;
+    if (iDist > max_distance + tolerance)
+    {
+        if (test_server)
+            ch->ChatPacket(CHAT_TYPE_INFO, "%d: Distance is not valid: %d > %d", GetID(), iDist, max_distance + tolerance);
+        return false;
+    }
 
-	return true;
+    return true;
 }
 
 bool CItem::CanUsedBy(LPCHARACTER ch)
