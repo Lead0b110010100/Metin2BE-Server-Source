@@ -2441,11 +2441,7 @@ void CHARACTER::ComputePoints()
 		}
 
 		// 기본 값들
-#ifdef GMS_CAN_WALK_REALLY_FAST
-		RefreshSpeed();
-#else
 		SetPoint(POINT_MOV_SPEED, g_playerMovingSpeed);
-#endif
 		SetPoint(POINT_ATT_SPEED,	100);
 		PointChange(POINT_ATT_SPEED, GetPoint(POINT_PARTY_HASTE_BONUS));
 		SetPoint(POINT_CASTING_SPEED,	100);
@@ -7850,19 +7846,18 @@ void CHARACTER::ToggleGMSpeed()
 	SetQuestFlag("gm.speed_mode", !GetQuestFlag("gm.speed_mode"));
 	ChatPacket(CHAT_TYPE_INFO, "speed mode: %d", GetQuestFlag("gm.speed_mode"));
 
-	ComputePoints();
-	UpdatePacket();
+	RefreshSpeed();
 }
 
 void CHARACTER::RefreshSpeed()
 {
 	if (GetQuestFlag("gm.speed_mode"))
 	{
-		SetPoint(POINT_MOV_SPEED, GM_MAX_MOVE_SPEED);
+		AddAffect(AFFECT_GM_SPEED, POINT_MOV_SPEED, 1000, AFF_NONE, INFINITE_AFFECT_DURATION, 0, true, true);
 	}
 	else
 	{
-		SetPoint(POINT_MOV_SPEED, g_playerMovingSpeed);
+		RemoveAffect(AFFECT_GM_SPEED);
 	}
 }
 #endif
