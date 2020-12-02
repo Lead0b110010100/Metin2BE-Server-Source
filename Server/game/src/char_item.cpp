@@ -7007,9 +7007,9 @@ void CHARACTER::ClearRefineMode()
 }
 
 bool CHARACTER::GiveItemFromSpecialItemGroup(DWORD dwGroupNum, std::vector<DWORD> &dwItemVnums,
-											std::vector<DWORD> &dwItemCounts, std::vector <LPITEM> &item_gets, int &count)
+											 std::vector<DWORD> &dwItemCounts, std::vector<LPITEM> &item_gets, int &count)
 {
-	const CSpecialItemGroup* pGroup = ITEM_MANAGER::instance().GetSpecialItemGroup(dwGroupNum);
+	const CSpecialItemGroup *pGroup = ITEM_MANAGER::instance().GetSpecialItemGroup(dwGroupNum);
 
 	if (!pGroup)
 	{
@@ -7017,8 +7017,11 @@ bool CHARACTER::GiveItemFromSpecialItemGroup(DWORD dwGroupNum, std::vector<DWORD
 		return false;
 	}
 
-	std::vector <int> idxes;
+	std::vector<int> idxes;
 	int n = pGroup->GetMultiIndex(idxes);
+
+	if (n == -1)
+		return false;
 
 	bool bSuccess;
 
@@ -7028,98 +7031,148 @@ bool CHARACTER::GiveItemFromSpecialItemGroup(DWORD dwGroupNum, std::vector<DWORD
 		int idx = idxes[i];
 		DWORD dwVnum = pGroup->GetVnum(idx);
 		DWORD dwCount = pGroup->GetCount(idx);
-		int	iRarePct = pGroup->GetRarePct(idx);
-		LPITEM item_get = NULL;
+		int iRarePct = pGroup->GetRarePct(idx);
+		LPITEM item = NULL;
 		switch (dwVnum)
 		{
-			case CSpecialItemGroup::GOLD:
-				ChangeGold(dwCount);
-				LogManager::instance().CharLog(this, dwCount, "TREASURE_GOLD", "");
+		case CSpecialItemGroup::GOLD:
+			ChangeGold(static_cast<int>(dwCount));
+			LogManager::instance().CharLog(this, dwCount, "TREASURE_GOLD", "");
 
-				bSuccess = true;
-				break;
-			case CSpecialItemGroup::EXP:
-				{
-					PointChange(POINT_EXP, dwCount);
-					LogManager::instance().CharLog(this, dwCount, "TREASURE_EXP", "");
+			bSuccess = true;
+			break;
 
-					bSuccess = true;
-				}
-				break;
+		case CSpecialItemGroup::EXP:
+		{
+			PointChange(POINT_EXP, dwCount);
+			LogManager::instance().CharLog(this, dwCount, "TREASURE_EXP", "");
 
-			case CSpecialItemGroup::MOB:
-				{
-					sys_log(0, "CSpecialItemGroup::MOB %d", dwCount);
-					int x = GetX() + number(-500, 500);
-					int y = GetY() + number(-500, 500);
+			bSuccess = true;
+		}
+		break;
 
-					LPCHARACTER ch = CHARACTER_MANAGER::instance().SpawnMob(dwCount, GetMapIndex(), x, y, 0, true, -1);
-					if (ch)
-						ch->SetAggressive();
-					bSuccess = true;
-				}
-				break;
-			case CSpecialItemGroup::SLOW:
-				{
-					sys_log(0, "CSpecialItemGroup::SLOW %d", -(int)dwCount);
-					AddAffect(AFFECT_SLOW, POINT_MOV_SPEED, -(int)dwCount, AFF_SLOW, 300, 0, true);
-					bSuccess = true;
-				}
-				break;
-			case CSpecialItemGroup::DRAIN_HP:
-				{
-					int iDropHP = GetMaxHP()*dwCount/100;
-					sys_log(0, "CSpecialItemGroup::DRAIN_HP %d", -iDropHP);
-					iDropHP = MIN(iDropHP, GetHP()-1);
-					sys_log(0, "CSpecialItemGroup::DRAIN_HP %d", -iDropHP);
-					PointChange(POINT_HP, -iDropHP);
-					bSuccess = true;
-				}
-				break;
-			case CSpecialItemGroup::POISON:
-				{
-					AttackedByPoison(NULL);
-					bSuccess = true;
-				}
-				break;
+		case CSpecialItemGroup::MOB:
+		{
+			sys_log(0, "CSpecialItemGroup::MOB %d", dwCount);
+			int x = GetX() + number(-500, 500);
+			int y = GetY() + number(-500, 500);
+
+			LPCHARACTER ch = CHARACTER_MANAGER::instance().SpawnMob(dwCount, GetMapIndex(), x, y, 0, true, -1);
+			if (ch)
+				ch->SetAggressive();
+			bSuccess = true;
+		}
+		break;
+		case CSpecialItemGroup::SLOW:
+		{
+			sys_log(0, "CSpecialItemGroup::SLOW %d", -(int)dwCount);
+			AddAffect(AFFECT_SLOW, POINT_MOV_SPEED, -(int)dwCount, AFF_SLOW, 300, 0, true);
+			bSuccess = true;
+		}
+		break;
+		case CSpecialItemGroup::DRAIN_HP:
+		{
+			int iDropHP = GetMaxHP() * dwCount / 100;
+			sys_log(0, "CSpecialItemGroup::DRAIN_HP %d", -iDropHP);
+			iDropHP = MIN(iDropHP, GetHP() - 1);
+			sys_log(0, "CSpecialItemGroup::DRAIN_HP %d", -iDropHP);
+			PointChange(POINT_HP, -iDropHP);
+			bSuccess = true;
+		}
+		break;
+		case CSpecialItemGroup::POISON:
+		{
+			AttackedByPoison(NULL);
+			bSuccess = true;
+		}
+		break;
 #ifdef ENABLE_WOLFMAN_CHARACTER
-			case CSpecialItemGroup::BLEEDING:
-				{
-					AttackedByBleeding(NULL);
-					bSuccess = true;
-				}
-				break;
+		case CSpecialItemGroup::BLEEDING:
+		{
+			AttackedByBleeding(NULL);
+			bSuccess = true;
+		}
+		break;
 #endif
-			case CSpecialItemGroup::MOB_GROUP:
-				{
-					int sx = GetX() - number(300, 500);
-					int sy = GetY() - number(300, 500);
-					int ex = GetX() + number(300, 500);
-					int ey = GetY() + number(300, 500);
-					CHARACTER_MANAGER::instance().SpawnGroup(dwCount, GetMapIndex(), sx, sy, ex, ey, NULL, true);
+		case CSpecialItemGroup::MOB_GROUP:
+		{
+			int sx = GetX() - number(300, 500);
+			int sy = GetY() - number(300, 500);
+			int ex = GetX() + number(300, 500);
+			int ey = GetY() + number(300, 500);
+			CHARACTER_MANAGER::instance().SpawnGroup(dwCount, GetMapIndex(), sx, sy, ex, ey, NULL, true);
 
-					bSuccess = true;
-				}
-				break;
-			default:
-				{
-					item_get = AutoGiveItem(dwVnum, dwCount, iRarePct);
+			bSuccess = true;
+		}
+		break;
 
-					if (item_get)
+		default:
+		{
+			item = ITEM_MANAGER::instance().CreateItem(dwVnum, dwCount);
+
+			if (item)
+			{
+				if (item->IsStackable() && !IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_STACK))
+				{
+					BYTE bCount = item->GetCount();
+					bool bDestroyed = false;
+
+					for (int i = 0; i < INVENTORY_MAX_NUM; ++i)
 					{
-						bSuccess = true;
+						LPITEM item2 = GetInventoryItem(i);
+
+						if (!item2)
+							continue;
+
+						if (item2->GetVnum() == item->GetVnum())
+						{
+							int j;
+
+							for (j = 0; j < ITEM_SOCKET_MAX_NUM; ++j)
+								if (item2->GetSocket(j) != item->GetSocket(j))
+									break;
+
+							if (j != ITEM_SOCKET_MAX_NUM)
+								continue;
+
+							BYTE bCount2 = MIN(g_bItemCountLimit - item2->GetCount(), bCount);
+							bCount -= bCount2;
+
+							item2->SetCount(item2->GetCount() + bCount2);
+
+							if (bCount == 0)
+							{
+								M2_DESTROY_ITEM(item);
+								goto success;
+							}
+						}
 					}
+
+					item->SetCount(bCount);
 				}
-				break;
+
+				int iEmptyCell;
+				if ((iEmptyCell = GetEmptyInventory(item->GetSize())) == -1)
+				{
+					sys_log(0, "No empty inventory pid %u size %ud itemid %u", GetPlayerID(), item->GetSize(), item->GetID());
+					return false;
+				}
+
+				item->AddToCharacter(this, TItemPos(INVENTORY, iEmptyCell));
+
+				success:
+					bSuccess = true;
+			}
+		}
+		break;
 		}
 
 		if (bSuccess)
 		{
 			dwItemVnums.push_back(dwVnum);
 			dwItemCounts.push_back(dwCount);
-			item_gets.push_back(item_get);
+			item_gets.push_back(item);
 			count++;
-
 		}
 		else
 		{
