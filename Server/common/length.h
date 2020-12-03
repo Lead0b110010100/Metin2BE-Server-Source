@@ -34,7 +34,7 @@ enum EMisc
 	MOBILE_MAX_LEN			= 32,
 	SOCIAL_ID_MAX_LEN		= 18,
 
-	GUILD_NAME_MAX_LEN		= 12,
+	GUILD_NAME_MAX_LEN		= 24,
 
 	SHOP_HOST_ITEM_MAX_NUM	= 40,	/* 호스트의 최대 아이템 개수 */
 	SHOP_GUEST_ITEM_MAX_NUM = 18,	/* 게스트의 최대 아이템 개수 */
