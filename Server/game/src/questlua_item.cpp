@@ -149,6 +149,19 @@ namespace quest
 		return 1;
 	}
 
+	ALUA(item_get_flags)
+	{
+		CQuestManager& q = CQuestManager::instance();
+		LPITEM item = q.GetCurrentItem();
+
+		if (item)
+			lua_pushnumber(L, item->GetFlag());
+		else
+			lua_pushnumber(L, 0);
+
+		return 1;
+	}
+
 	ALUA(item_has_flag)
 	{
 		CQuestManager& q = CQuestManager::instance();
@@ -335,6 +348,40 @@ namespace quest
 
 		if (item)
 			lua_pushnumber(L, item->GetRefineLevel());
+		else
+			lua_pushnumber(L, 0);
+
+		return 1;
+	}
+
+	ALUA(item_get_attr_type)
+	{
+		DWORD slot = 0;
+		if (lua_isnumber(L, 1))
+			slot = (DWORD) lua_tonumber(L, 1);
+
+		CQuestManager& q = CQuestManager::instance();
+		LPITEM item = q.GetCurrentItem();
+
+		if (item)
+			lua_pushnumber(L, item->GetAttribute(slot).bType);
+		else
+			lua_pushnumber(L, 0);
+
+		return 1;
+	}
+
+	ALUA(item_get_attr_value)
+	{
+		DWORD slot = 0;
+		if (lua_isnumber(L, 1))
+			slot = (DWORD) lua_tonumber(L, 1);
+
+		CQuestManager& q = CQuestManager::instance();
+		LPITEM item = q.GetCurrentItem();
+
+		if (item)
+			lua_pushnumber(L, item->GetAttribute(slot).sValue);
 		else
 			lua_pushnumber(L, 0);
 
@@ -773,6 +820,7 @@ namespace quest
 			{ "get_socket",		item_get_socket		},
 			{ "set_socket",		item_set_socket		},
 			{ "get_vnum",		item_get_vnum		},
+			{ "get_flags",		item_get_flags		},
 			{ "has_flag",		item_has_flag		},
 			{ "get_value",		item_get_value		},
 			{ "set_value",		item_set_value		},
@@ -783,6 +831,8 @@ namespace quest
 			{ "get_sub_type",	item_get_sub_type	},
 			{ "get_refine_vnum",	item_get_refine_vnum	},
 			{ "get_level",		item_get_level		},
+			{ "get_attr_type",			item_get_attr_type},
+			{ "get_attr_value",			item_get_attr_value},
 			{ "next_refine_vnum",	item_next_refine_vnum	},
 			{ "can_over9refine",	item_can_over9refine	},
 			{ "change_to_over9",		item_change_to_over9	},
