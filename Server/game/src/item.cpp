@@ -504,7 +504,11 @@ int CItem::FindEquipCell(LPCHARACTER ch, int iCandidateCell)
 	if ((0 == GetWearFlag() || ITEM_TOTEM == GetType()) && ITEM_COSTUME != GetType() && ITEM_RING != GetType())
 		return -1;
 
-	if (GetType() == ITEM_COSTUME)
+	if (GetVnum() == 71012 || GetVnum() == 70003)
+	{
+		return WEAR_SPECIAL;
+	}
+	else if (GetType() == ITEM_COSTUME)
 	{
 		if (GetSubType() == COSTUME_BODY)
 			return WEAR_COSTUME_BODY;
