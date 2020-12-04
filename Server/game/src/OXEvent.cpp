@@ -159,7 +159,7 @@ bool COXEventManager::ShowQuizList(LPCHARACTER pkChar)
 		}
 	}
 
-	pkChar->ChatPacketTrans(CHAT_TYPE_INFO, "ÃÑ ÄûÁî ¼ö: %d", c);
+	pkChar->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("ÃÑ ÄûÁî ¼ö: %d"), c);
 	return true;
 }
 
@@ -305,7 +305,7 @@ bool COXEventManager::CheckAnswer(bool answer)
 			}
 			else
 			{
-				pkChar->ChatPacketTrans(CHAT_TYPE_INFO, "Á¤´äÀÔ´Ï´Ù!");
+				pkChar->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Á¤´äÀÔ´Ï´Ù!"));
 				// pkChar->CreateFly(number(FLY_FIREWORK1, FLY_FIREWORK6), pkChar);
 				char chatbuf[256];
 				int len = snprintf(chatbuf, sizeof(chatbuf),

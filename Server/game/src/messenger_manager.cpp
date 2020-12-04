@@ -130,7 +130,7 @@ void MessengerManager::RequestToAdd(LPCHARACTER ch, LPCHARACTER target)
 
 	if (quest::CQuestManager::instance().GetPCForce(ch->GetPlayerID())->IsRunning() == true)
 	{
-	    ch->ChatPacketTrans(CHAT_TYPE_INFO, "상대방이 친구 추가를 받을 수 없는 상태입니다.");
+	    ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("상대방이 친구 추가를 받을 수 없는 상태입니다."));
 	    return;
 	}
 
@@ -185,7 +185,7 @@ void MessengerManager::__AddToList(MessengerManager::keyA account, MessengerMana
 
 	if (d)
 	{
-		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<메신져> %s 님을 친구로 추가하였습니다.", companion.c_str());
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<메신져> %s 님을 친구로 추가하였습니다."), companion.c_str());
 	}
 
 	LPCHARACTER tch = CHARACTER_MANAGER::instance().FindPC(companion.c_str());
@@ -234,7 +234,7 @@ void MessengerManager::__RemoveFromList(MessengerManager::keyA account, Messenge
 	LPDESC d = ch ? ch->GetDesc() : NULL;
 
 	if (d)
-		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<메신져> %s 님을 메신저에서 삭제하였습니다.", companion.c_str());
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<메신져> %s 님을 메신저에서 삭제하였습니다."), companion.c_str());
 }
 
 void MessengerManager::RemoveFromList(MessengerManager::keyA account, MessengerManager::keyA companion)

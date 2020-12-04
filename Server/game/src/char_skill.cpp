@@ -288,7 +288,7 @@ bool CHARACTER::LearnGrandMasterSkill(DWORD dwSkillVnum)
 
 	if (!IsLearnableSkill(dwSkillVnum))
 	{
-		ChatPacketTrans(CHAT_TYPE_INFO, "수련할 수 없는 스킬입니다.");
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("수련할 수 없는 스킬입니다."));
 		return false;
 	}
 
@@ -303,7 +303,7 @@ bool CHARACTER::LearnGrandMasterSkill(DWORD dwSkillVnum)
 	   {
 	// 주안술서 사용중에는 시간 제한 무시
 	RemoveAffect(AFFECT_SKILL_NO_BOOK_DELAY);
-	ChatPacketTrans(CHAT_TYPE_INFO, "주안술서를 통해 주화입마에서 빠져나왔습니다.");
+	ChatPacket(CHAT_TYPE_INFO, LC_TEXT("주안술서를 통해 주화입마에서 빠져나왔습니다."));
 	}
 	else
 	{
@@ -317,16 +317,16 @@ bool CHARACTER::LearnGrandMasterSkill(DWORD dwSkillVnum)
 	// bType이 0이면 처음부터 책으로 수련 가능
 	if (pkSk->dwType == 0)
 	{
-		ChatPacketTrans(CHAT_TYPE_INFO, "그랜드 마스터 수련을 할 수 없는 스킬입니다.");
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("그랜드 마스터 수련을 할 수 없는 스킬입니다."));
 		return false;
 	}
 
 	if (GetSkillMasterType(dwSkillVnum) != SKILL_GRAND_MASTER)
 	{
 		if (GetSkillMasterType(dwSkillVnum) > SKILL_GRAND_MASTER)
-			ChatPacketTrans(CHAT_TYPE_INFO, "퍼펙트 마스터된 스킬입니다. 더 이상 수련 할 수 없습니다.");
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("퍼펙트 마스터된 스킬입니다. 더 이상 수련 할 수 없습니다."));
 		else
-			ChatPacketTrans(CHAT_TYPE_INFO, "이 스킬은 아직 그랜드 마스터 수련을 할 경지에 이르지 않았습니다.");
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("이 스킬은 아직 그랜드 마스터 수련을 할 경지에 이르지 않았습니다."));
 		return false;
 	}
 
@@ -386,14 +386,14 @@ bool CHARACTER::LearnGrandMasterSkill(DWORD dwSkillVnum)
 	if (bLastLevel == GetSkillLevel(dwSkillVnum))
 	{
 		ChatPacket(CHAT_TYPE_TALKING, LC_TEXT("크윽, 기가 역류하고 있어! 이거 설마 주화입마인가!? 젠장!"));
-		ChatPacketTrans(CHAT_TYPE_INFO, "수련이 실패로 끝났습니다. 다시 도전해주시기 바랍니다.");
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("수련이 실패로 끝났습니다. 다시 도전해주시기 바랍니다."));
 		LogManager::instance().CharLog(this, dwSkillVnum, "GM_READ_FAIL", "");
 		return false;
 	}
 
 	ChatPacket(CHAT_TYPE_TALKING, LC_TEXT("몸에서 뭔가 힘이 터져 나오는 기분이야!"));
 	ChatPacket(CHAT_TYPE_TALKING, LC_TEXT("뜨거운 무엇이 계속 용솟음치고 있어! 이건, 이것은!"));
-	ChatPacketTrans(CHAT_TYPE_INFO, "더 높은 경지의 수련을 성공적으로 끝내셨습니다.");
+	ChatPacket(CHAT_TYPE_INFO, LC_TEXT("더 높은 경지의 수련을 성공적으로 끝내셨습니다."));
 	LogManager::instance().CharLog(this, dwSkillVnum, "GM_READ_SUCCESS", "");
 	return true;
 }
@@ -415,7 +415,7 @@ bool CHARACTER::LearnSkillByBook(DWORD dwSkillVnum, BYTE bProb)
 
 	if (!IsLearnableSkill(dwSkillVnum))
 	{
-		ChatPacketTrans(CHAT_TYPE_INFO, "수련할 수 없는 스킬입니다.");
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("수련할 수 없는 스킬입니다."));
 		return false;
 	}
 
@@ -427,7 +427,7 @@ bool CHARACTER::LearnSkillByBook(DWORD dwSkillVnum, BYTE bProb)
 
 		if ( GetExp() < need_exp )
 		{
-			ChatPacketTrans(CHAT_TYPE_INFO, "경험치가 부족하여 책을 읽을 수 없습니다.");
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("경험치가 부족하여 책을 읽을 수 없습니다."));
 			return false;
 		}
 	}
@@ -438,9 +438,9 @@ bool CHARACTER::LearnSkillByBook(DWORD dwSkillVnum, BYTE bProb)
 		if (GetSkillMasterType(dwSkillVnum) != SKILL_MASTER)
 		{
 			if (GetSkillMasterType(dwSkillVnum) > SKILL_MASTER)
-				ChatPacketTrans(CHAT_TYPE_INFO, "이 스킬은 책으로 더이상 수련할 수 없습니다.");
+				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("이 스킬은 책으로 더이상 수련할 수 없습니다."));
 			else
-				ChatPacketTrans(CHAT_TYPE_INFO, "이 스킬은 아직 책으로 수련할 경지에 이르지 않았습니다.");
+				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("이 스킬은 아직 책으로 수련할 경지에 이르지 않았습니다."));
 			return false;
 		}
 	}
@@ -453,7 +453,7 @@ bool CHARACTER::LearnSkillByBook(DWORD dwSkillVnum, BYTE bProb)
 			{
 				// 주안술서 사용중에는 시간 제한 무시
 				RemoveAffect(AFFECT_SKILL_NO_BOOK_DELAY);
-				ChatPacketTrans(CHAT_TYPE_INFO, "주안술서를 통해 주화입마에서 빠져나왔습니다.");
+				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("주안술서를 통해 주화입마에서 빠져나왔습니다."));
 			}
 			else
 			{
@@ -532,7 +532,7 @@ bool CHARACTER::LearnSkillByBook(DWORD dwSkillVnum, BYTE bProb)
 						SkillLevelUp(dwSkillVnum, SKILL_UP_BY_BOOK);
 						pPC->SetFlag(flag, 0);
 
-						ChatPacketTrans(CHAT_TYPE_INFO, "책으로 더 높은 경지의 수련을 성공적으로 끝내셨습니다.");
+						ChatPacket(CHAT_TYPE_INFO, LC_TEXT("책으로 더 높은 경지의 수련을 성공적으로 끝내셨습니다."));
 						LogManager::instance().CharLog(this, dwSkillVnum, "READ_SUCCESS", "");
 						return true;
 					}
@@ -556,7 +556,7 @@ bool CHARACTER::LearnSkillByBook(DWORD dwSkillVnum, BYTE bProb)
 								break;
 						}
 
-						ChatPacketTrans(CHAT_TYPE_INFO, "%d 권을 더 읽어야 수련을 완료 할 수 있습니다.", need_bookcount - read_count);
+						ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%d 권을 더 읽어야 수련을 완료 할 수 있습니다."), need_bookcount - read_count);
 						return true;
 					}
 				}
@@ -572,13 +572,13 @@ bool CHARACTER::LearnSkillByBook(DWORD dwSkillVnum, BYTE bProb)
 	{
 		ChatPacket(CHAT_TYPE_TALKING, LC_TEXT("몸에서 뭔가 힘이 터져 나오는 기분이야!"));
 		ChatPacket(CHAT_TYPE_TALKING, LC_TEXT("뜨거운 무엇이 계속 용솟음치고 있어! 이건, 이것은!"));
-		ChatPacketTrans(CHAT_TYPE_INFO, "책으로 더 높은 경지의 수련을 성공적으로 끝내셨습니다.");
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("책으로 더 높은 경지의 수련을 성공적으로 끝내셨습니다."));
 		LogManager::instance().CharLog(this, dwSkillVnum, "READ_SUCCESS", "");
 	}
 	else
 	{
 		ChatPacket(CHAT_TYPE_TALKING, LC_TEXT("크윽, 기가 역류하고 있어! 이거 설마 주화입마인가!? 젠장!"));
-		ChatPacketTrans(CHAT_TYPE_INFO, "수련이 실패로 끝났습니다. 다시 도전해주시기 바랍니다.");
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("수련이 실패로 끝났습니다. 다시 도전해주시기 바랍니다."));
 		LogManager::instance().CharLog(this, dwSkillVnum, "READ_FAIL", "");
 	}
 
@@ -665,7 +665,7 @@ void CHARACTER::SkillLevelUp(DWORD dwVnum, BYTE bMethod)
 
 	if (IsPolymorphed())
 	{
-		ChatPacketTrans(CHAT_TYPE_INFO, "둔갑 중에는 능력을 올릴 수 없습니다.");
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("둔갑 중에는 능력을 올릴 수 없습니다."));
 		return;
 	}
 
@@ -1662,7 +1662,7 @@ EVENTFUNC(skill_gwihwan_event)
 	else
 	{
 		//실패
-		ch->ChatPacketTrans(CHAT_TYPE_INFO, "귀환에 실패하였습니다.");
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("귀환에 실패하였습니다."));
 	}
 	return 0;
 }
@@ -2494,7 +2494,7 @@ bool CHARACTER::UseSkill(DWORD dwVnum, LPCHARACTER pkVictim, bool bUseGrandMaste
 		if (GetSkillLevel(dwVnum) == 0)
 			return false;
 
-		ChatPacketTrans(CHAT_TYPE_INFO, "말 소환 아이템을 사용하세요.");
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("말 소환 아이템을 사용하세요."));
 		return true;
 	}
 
@@ -2630,7 +2630,7 @@ bool CHARACTER::UseSkill(DWORD dwVnum, LPCHARACTER pkVictim, bool bUseGrandMaste
 			return false;
 
 		if (test_server)
-			ChatPacketTrans(CHAT_TYPE_INFO, "%s SP소모: %d", pkSk->szName, iNeededSP);
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s SP소모: %d"), pkSk->szName, iNeededSP);
 
 		PointChange(POINT_SP, -iNeededSP);
 	}

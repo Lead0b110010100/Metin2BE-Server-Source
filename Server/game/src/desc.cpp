@@ -891,7 +891,7 @@ void DESC::DisconnectOfSameLogin()
 		if (m_pkDisconnectEvent)
 			return;
 
-		GetCharacter()->ChatPacketTrans(CHAT_TYPE_INFO, "다른 컴퓨터에서 로그인 하여 접속을 종료 합니다.");
+		GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("다른 컴퓨터에서 로그인 하여 접속을 종료 합니다."));
 		DelayedDisconnect(5);
 	}
 	else

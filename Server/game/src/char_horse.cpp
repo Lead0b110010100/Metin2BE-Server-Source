@@ -27,13 +27,13 @@ bool CHARACTER::StartRiding()
 #endif
 	if (IsDead() == true)
 	{
-		ChatPacketTrans(CHAT_TYPE_INFO, "쓰러진 상태에서는 말에 탈 수 없습니다.");
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("쓰러진 상태에서는 말에 탈 수 없습니다."));
 		return false;
 	}
 
 	if (IsPolymorphed())
 	{
-		ChatPacketTrans(CHAT_TYPE_INFO, "변신 상태에서는 말에 탈 수 없습니다.");
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("변신 상태에서는 말에 탈 수 없습니다."));
 		return false;
 	}
 
@@ -42,7 +42,7 @@ bool CHARACTER::StartRiding()
 
 	if (armor && (armor->GetVnum() >= 11901 && armor->GetVnum() <= 11904))
 	{
-		ChatPacketTrans(CHAT_TYPE_INFO, "예복을 입은 상태에서 말을 탈 수 없습니다.");
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("예복을 입은 상태에서 말을 탈 수 없습니다."));
 		return false;
 	}
 
@@ -62,9 +62,9 @@ bool CHARACTER::StartRiding()
 	if (false == CHorseRider::StartRiding())
 	{
 		if (GetHorseHealth() <= 0)
-			ChatPacketTrans(CHAT_TYPE_INFO, "말이 죽어있는 상태 입니다.");
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("말이 죽어있는 상태 입니다."));
 		else if (GetHorseStamina() <= 0)
-			ChatPacketTrans(CHAT_TYPE_INFO, "말의 스테미너가 부족하여 말을 탈 수 없습니다.");
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("말의 스테미너가 부족하여 말을 탈 수 없습니다."));
 
 		return false;
 	}
@@ -187,7 +187,7 @@ void CHARACTER::HorseSummon(bool bSummon, bool bFromFar, DWORD dwVnum, const cha
 
 		if (!m_chHorse)
 		{
-			ChatPacketTrans(CHAT_TYPE_INFO, "말 소환에 실패하였습니다.");
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("말 소환에 실패하였습니다."));
 			return;
 		}
 

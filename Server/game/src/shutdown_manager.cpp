@@ -58,7 +58,7 @@ void CShutdownManager::Update()
 			{
 				if((*i) != NULL)
 				{
-					(*i)->ChatPacketTrans(CHAT_TYPE_INFO, "셧다운제 시행으로 10분 뒤 종료됩니다.");
+					(*i)->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("셧다운제 시행으로 10분 뒤 종료됩니다."));
 				}
 			}
 

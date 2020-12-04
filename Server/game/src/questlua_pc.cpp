@@ -463,12 +463,12 @@ namespace quest
 			{
 				if (dwVnums[i] == 1)
 				{
-					ch->ChatPacketTrans(CHAT_TYPE_INFO, "돈 %d 냥을 획득했습니다.", dwCounts[i]);
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("돈 %d 냥을 획득했습니다."), dwCounts[i]);
 				}
 				else if (dwVnums[i] == 2)
 				{
-					ch->ChatPacketTrans(CHAT_TYPE_INFO, "나무에서 부터 신비한 빛이 나옵니다.");
-					ch->ChatPacketTrans(CHAT_TYPE_INFO, "%d의 경험치를 획득했습니다.", dwCounts[i]);
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("나무에서 부터 신비한 빛이 나옵니다."));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%d의 경험치를 획득했습니다."), dwCounts[i]);
 				}
 			}
 		}
@@ -3435,7 +3435,7 @@ teleport_area:
 		//PREVENT_TRADE_WINDOW
 		if (ch->IsOpenSafebox() || ch->GetExchange() || ch->GetMyShop() || ch->IsCubeOpen())
 		{
-			ch->ChatPacketTrans(CHAT_TYPE_INFO, "다른 거래창이 열린상태에서는 상점거래를 할수 가 없습니다.");
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("다른 거래창이 열린상태에서는 상점거래를 할수 가 없습니다."));
 			return 0;
 		}
 		//END_PREVENT_TRADE_WINDOW

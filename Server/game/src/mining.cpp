@@ -278,10 +278,10 @@ namespace mining
 
 #ifdef ENABLE_PICKAXE_RENEWAL
 			{
-				// if (test_server) ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Pickax> PRE %u", Pick_GetCurExp(*item));
+				// if (test_server) ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Pickax> PRE %u"), Pick_GetCurExp(*item));
 				Pick_SetPenaltyExp(*item);
-				// if (test_server) ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Pickax> POST %u", Pick_GetCurExp(*item));
-				// ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Pickax> The upgrade has failed, and the pickax has lost 10%% of its mastery points.");
+				// if (test_server) ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Pickax> POST %u"), Pick_GetCurExp(*item));
+				// ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Pickax> The upgrade has failed, and the pickax has lost 10%% of its mastery points."));
 				rkLogMgr.ItemLog(ch, item, "REFINE PICK FAIL", item->GetName());
 				return 0;
 			}
@@ -312,7 +312,7 @@ namespace mining
 		CItem& pick = *item;
 		Pick_MaxCurExp(pick);
 
-		ch->ChatPacketTrans(CHAT_TYPE_INFO, "곡괭이 수련도가 최대(%d)가 되었습니다.", Pick_GetCurExp(pick));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("곡괭이 수련도가 최대(%d)가 되었습니다."), Pick_GetCurExp(pick));
 	}
 
 	void PracticePick(LPCHARACTER ch, LPITEM item)
@@ -332,20 +332,20 @@ namespace mining
 
 			if (Pick_Refinable(pick))
 			{
-				ch->ChatPacketTrans(CHAT_TYPE_INFO, "곡괭이가 최대 수련도에 도달하였습니다.");
-				ch->ChatPacketTrans(CHAT_TYPE_INFO, "나무꾼를 통해 다음 레벨의 곡괭이로 업그레이드 할 수 있습니다.");
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("곡괭이가 최대 수련도에 도달하였습니다."));
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("나무꾼를 통해 다음 레벨의 곡괭이로 업그레이드 할 수 있습니다."));
 			}
 			else
 			{
 				Pick_IncCurExp(pick);
 
-				ch->ChatPacketTrans(CHAT_TYPE_INFO, "곡괭이의 수련도가 증가하였습니다! (%d/%d)",
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("곡괭이의 수련도가 증가하였습니다! (%d/%d)"),
 						Pick_GetCurExp(pick), Pick_GetMaxExp(pick));
 
 				if (Pick_Refinable(pick))
 				{
-					ch->ChatPacketTrans(CHAT_TYPE_INFO, "곡괭이가 최대 수련도에 도달하였습니다.");
-					ch->ChatPacketTrans(CHAT_TYPE_INFO, "나무꾼를 통해 다음 레벨의 곡괭이로 업그레이드 할 수 있습니다.");
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("곡괭이가 최대 수련도에 도달하였습니다."));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("나무꾼를 통해 다음 레벨의 곡괭이로 업그레이드 할 수 있습니다."));
 				}
 			}
 		}
@@ -375,14 +375,14 @@ namespace mining
 		// REFINE_PICK
 		if (!pick || !Pick_Check(*pick))
 		{
-			ch->ChatPacketTrans(CHAT_TYPE_INFO, "곡괭이를 들고 있지 않아서 캘 수 없습니다.");
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("곡괭이를 들고 있지 않아서 캘 수 없습니다."));
 			return 0;
 		}
 		// END_OF_REFINE_PICK
 
 		if (!load)
 		{
-			ch->ChatPacketTrans(CHAT_TYPE_INFO, "더이상 캐낼 수 없습니다.");
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("더이상 캐낼 수 없습니다."));
 			return 0;
 		}
 
@@ -391,11 +391,11 @@ namespace mining
 		if (number(1, 100) <= iPct)
 		{
 			OreDrop(ch, load->GetRaceNum());
-			ch->ChatPacketTrans(CHAT_TYPE_INFO, "채광에 성공하였습니다.");
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("채광에 성공하였습니다."));
 		}
 		else
 		{
-			ch->ChatPacketTrans(CHAT_TYPE_INFO, "채광에 실패하였습니다.");
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("채광에 실패하였습니다."));
 		}
 
 		PracticePick(ch, pick);
