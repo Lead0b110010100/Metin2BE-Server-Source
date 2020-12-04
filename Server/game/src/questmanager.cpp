@@ -673,7 +673,7 @@ namespace quest
 				LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pc);
 
 				if (ch)
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("퀘스트를 로드하는 중입니다. 잠시만 기다려 주십시오."));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your request is loading. Please be patient."));
 
 				return;
 			}
@@ -700,7 +700,7 @@ namespace quest
 				LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pc);
 				if (ch)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("퀘스트를 로드하는 중입니다. 잠시만 기다려 주십시오."));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your request is loading. Please be patient."));
 				}
 				return;
 			}
@@ -725,7 +725,7 @@ namespace quest
 				LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pc);
 				if (ch)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("퀘스트를 로드하는 중입니다. 잠시만 기다려 주십시오."));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your request is loading. Please be patient."));
 				}
 				return false;
 			}
@@ -753,7 +753,7 @@ namespace quest
 				LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pc);
 				if (ch)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("퀘스트를 로드하는 중입니다. 잠시만 기다려 주십시오."));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your request is loading. Please be patient."));
 				}
 				return false;
 			}
@@ -798,7 +798,7 @@ namespace quest
 
 				if (ch)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("퀘스트를 로드하는 중입니다. 잠시만 기다려 주십시오."));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your request is loading. Please be patient."));
 				}
 				return false;
 			}
@@ -831,7 +831,7 @@ namespace quest
 				LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pc);
 				if (ch)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("퀘스트를 로드하는 중입니다. 잠시만 기다려 주십시오."));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your request is loading. Please be patient."));
 				}
 				return false;
 			}
@@ -885,7 +885,7 @@ namespace quest
 				LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pc);
 
 				if (ch)
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("퀘스트를 로드하는 중입니다. 잠시만 기다려 주십시오."));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your request is loading. Please be patient."));
 
 				return false;
 			}
@@ -1948,7 +1948,7 @@ namespace quest
 				LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pc);
 				if (ch)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("퀘스트를 로드하는 중입니다. 잠시만 기다려 주십시오."));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your request is loading. Please be patient."));
 				}
 				return false;
 			}

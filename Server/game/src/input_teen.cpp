@@ -96,32 +96,32 @@ static void __proc_teen_notice(char *login, int hour)
 		case 1:
 		case 2:
 			{
-				ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("당신의 누적 온라인 시간이 이미 %d시간이 지났습니다."), hour);
+				ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("Your total online hour has passed %d hours already."), hour);
 				SET_OVER_TIME(ch, OT_NONE);
 			}
 			break;
 		case 3:
 			{
-				ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("당신의 누적 온라인 시간이 이미 %d시간이 되었습니다,"), hour);
-				ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("조속히 접속을 종료하신 후 건강을 위해 휴식을 취해주시기바랍니다."));
+				ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("Your total online hour is already %d hours."), hour);
+				ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("Please disconnect inmediately for your health."));
 				SET_OVER_TIME(ch, OT_3HOUR);
 			}
 			break;
 		case 4:
 			{
-				ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("당신은 이미 게임 피로 상태에 들어섰으며,"));
-				ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("게임 내의 수익이 정상치의 50%로 하향됩니다."));
-				ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("당신의 건강을 위해 조속히 접속을 종료하시고"));
-				ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("휴식 및 학업에 열중해주십시오."));
+				ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("You have already played too long to have severe fatigue,"));
+				ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("In-game profit is set down to 50% of normal."));
+				ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("Please disconnect immediately for your health"));
+				ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("Please concentrate on your studies."));
 				SET_OVER_TIME(ch, OT_3HOUR);
 			}
 			break;
 		default:
 			{
-				ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("당신은 이미 온전하지 못한 게임 시간에 들어섰습니다."));
-				ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("건강을 위해 조속히 접속을 종료하신 후 휴식을 취해주십시오,"));
-				ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("그렇지 않으면 건강 상에 피해를 입을 수 있으며 게임 내의 수치는 0이 됩니다."));
-				ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("누적 오프라인 시간이 5시간이 되면 정상으로 돌아옵니다."));
+				ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("Your game play hour is too long."));
+				ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("For your health, Disconnect immediately and take a rest, please."));
+				ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("If not, all the stat will become 0 and may harm your health."));
+				ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("After 5 hours of log off, it will be back to normal."));
 				SET_OVER_TIME(ch, OT_5HOUR);
 			}
 			break;
@@ -134,9 +134,9 @@ static inline void __sec_to_timestring(int sec, char *buf, size_t buflen)
 	int min		= (sec/60);
 
 	if (hour>0)
-		snprintf(buf, buflen, LC_TEXT("%d시간"), hour);
+		snprintf(buf, buflen, LC_TEXT("%d hour"), hour);
 	else
-		snprintf(buf, buflen, LC_TEXT("%d분"), min);
+		snprintf(buf, buflen, LC_TEXT("%d min"), min);
 }
 
 static void __proc_login_notice(char *login, int on_time, int off_time)
@@ -157,13 +157,13 @@ static void __proc_login_notice(char *login, int on_time, int off_time)
 
 	if (0==on_time)
 	{
-		ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("당신의 누적 오프라인 시간은 %s입니다."), off_time_string);
-		ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("당신의 누적 온라인 시간은 0이 되었습니다. 100% 효과를 얻으실 수 있습니다."));
+		ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("Your total off line hour is %s."), off_time_string);
+		ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("Your total online hour is 0. You can have 100% effect."));
 		return;
 	}
 	else
 	{
-		ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("당신의 누적 오프라인 시간은 %s이며, 누적 온라인 시간은 %s입니다."),
+		ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("Your total off line hour is %s, Your total online hour is %s."),
 				off_time_string, on_time_string);
 	}
 }

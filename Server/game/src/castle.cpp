@@ -250,7 +250,7 @@ EVENTFUNC(castle_siege_event)
 	// 공성 시작후 30분 이내라면 안내만 하자
 	if (info->pulse < PASSES_PER_SEC(30*60))
 	{
-		snprintf(buf, sizeof(buf), LC_TEXT("%s에서 봉화를 둘러싸고 전투가 진행중입니다."),
+		snprintf(buf, sizeof(buf), LC_TEXT("%s is under siege! Protect the castle!"),
 				EMPIRE_NAME(GET_SIEGE_EMPIRE()));
 		BroadcastNotice(buf);
 
@@ -264,10 +264,10 @@ EVENTFUNC(castle_siege_event)
 
 		case CASTLE_SIEGE_STRUGGLE:
 			{
-				snprintf(buf, sizeof(buf), LC_TEXT("%s이 수성에 성공했습니다."), EMPIRE_NAME(GET_SIEGE_EMPIRE()));
+				snprintf(buf, sizeof(buf), LC_TEXT("%s has been successful in defending the castle."), EMPIRE_NAME(GET_SIEGE_EMPIRE()));
 				BroadcastNotice(buf);
 
-				snprintf(buf, sizeof(buf), LC_TEXT("지금부터 %s은 30분간 봉화를 파괴하여 보상을 획득 할 수 있습니다."), EMPIRE_NAME(GET_SIEGE_EMPIRE()));
+				snprintf(buf, sizeof(buf), LC_TEXT("%s can gain rewards by destroying the Fire Signals for 30 min."), EMPIRE_NAME(GET_SIEGE_EMPIRE()));
 				BroadcastNotice(buf);
 
 				GET_SIEGE_STATE() = CASTLE_SIEGE_END;
@@ -276,7 +276,7 @@ EVENTFUNC(castle_siege_event)
 			}
 			break;
 		case CASTLE_SIEGE_END:
-			BroadcastNotice(LC_TEXT("30분이 경과했습니다.. 봉화가 사라집니다."));
+			BroadcastNotice(LC_TEXT("30 minutes have elapsed... The Fire Signals disappear."));
 			castle_end_siege();
 			break;
 	}
@@ -796,7 +796,7 @@ bool castle_spawn_tower(int empire, int tower_count)
 	// broad cast
 	{
 		char buf[1024];
-		snprintf(buf, sizeof(buf), LC_TEXT("%s에 전쟁의 시작을 알리는 봉화가 나타났습니다."), EMPIRE_NAME(empire));
+		snprintf(buf, sizeof(buf), LC_TEXT("A Fire Signal that presages the start of a war appears at %s."), EMPIRE_NAME(empire));
 		BroadcastNotice(buf);
 	}
 	return true;
@@ -864,7 +864,7 @@ void castle_tower_die(LPCHARACTER ch, LPCHARACTER killer)
 		case CASTLE_SIEGE_END:
 			{
 				int	siege_end = true;
-				snprintf(buf, sizeof(buf), LC_TEXT("%s이 봉화를 파괴했습니다."), EMPIRE_NAME(killer_empire));
+				snprintf(buf, sizeof(buf), LC_TEXT("%s fighters have destroyed a Fire Signal!"), EMPIRE_NAME(killer_empire));
 				BroadcastNotice(buf);
 
 				LogManager::instance().CharLog(killer, 0, "CASTLE_TORCH_KILL", "");
@@ -885,12 +885,12 @@ void castle_tower_die(LPCHARACTER ch, LPCHARACTER killer)
 				{
 					if (GET_SIEGE_STATE() == CASTLE_SIEGE_STRUGGLE)
 					{
-						snprintf(buf, sizeof(buf), LC_TEXT("%s이 수성에 실패하여 전쟁에 패배하였습니다.."), EMPIRE_NAME(GET_SIEGE_EMPIRE()));
+						snprintf(buf, sizeof(buf), LC_TEXT("%s was defeated in the war by failing to defend the castle."), EMPIRE_NAME(GET_SIEGE_EMPIRE()));
 						BroadcastNotice(buf);
 					}
 					else
 					{
-						snprintf(buf, sizeof(buf), LC_TEXT("%s이 모든 봉화를 파괴하였습니다."), EMPIRE_NAME(GET_SIEGE_EMPIRE()));
+						snprintf(buf, sizeof(buf), LC_TEXT("%s has destroyed all the Fire Signals!"), EMPIRE_NAME(GET_SIEGE_EMPIRE()));
 						BroadcastNotice(buf);
 					}
 					castle_end_siege();

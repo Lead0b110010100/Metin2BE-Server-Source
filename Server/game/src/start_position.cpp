@@ -5,14 +5,14 @@
 char g_nation_name[4][32] =
 {
 	"",
-	"신수국",
-	"천조국",
-	"진노국",
+	"Pandemonia Kingdom",
+	"Asmodia Kingdom",
+	"Elgoria Kingdom",
 };
 
-//	LC_TEXT("신수국")
-//	LC_TEXT("천조국")
-//	LC_TEXT("진노국")
+//	LC_TEXT("Pandemonia Kingdom")
+//	LC_TEXT("Asmodia Kingdom")
+//	LC_TEXT("Elgoria Kingdom")
 
 long g_start_map[4] =
 {

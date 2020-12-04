@@ -78,8 +78,8 @@ namespace marriage
 
 		m_pEndEvent = event_create(wedding_end_event, info, PASSES_PER_SEC(5));
 
-		Notice(LC_TEXT("결혼식이 종료됩니다."));
-		Notice(LC_TEXT("자동으로 나가게됩니다."));
+		Notice(LC_TEXT("The Wedding will soon end."));
+		Notice(LC_TEXT("Players will be teleported to town now."));
 
 		for (itertype(m_set_pkChr) it = m_set_pkChr.begin(); it != m_set_pkChr.end(); ++it)
 		{

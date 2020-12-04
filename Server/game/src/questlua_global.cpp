@@ -1075,7 +1075,7 @@ namespace quest
 
 		event_create(warp_all_to_village_event, info, PASSES_PER_SEC(iSec));
 
-		SendNoticeMap(LC_TEXT("잠시후 모두 마을로 이동됩니다."), iMapIndex, false);
+		SendNoticeMap(LC_TEXT("All people will be soon teleported into the city."), iMapIndex, false);
 
 		return 0;
 	}

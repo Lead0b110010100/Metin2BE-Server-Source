@@ -19,16 +19,16 @@ ACMD(do_oxevent_log)
 {
 	if ( COXEventManager::instance().LogWinner() == false )
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("OX이벤트의 나머지 인원을 기록하였습니다."));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("OX The other participants in the Event are listed."));
 	}
 	else
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("OX이벤트의 나머지 인원 기록을 실패했습니다."));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("OX The other participants in the Event are not listed."));
 	}
 }
 
 ACMD(do_oxevent_get_attender)
 {
-	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("현재 남은 참가자수 : %d"), COXEventManager::instance().GetAttenderCount());
+	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Number of the other participants : %d "), COXEventManager::instance().GetAttenderCount());
 }
 

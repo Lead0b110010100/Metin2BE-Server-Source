@@ -69,14 +69,14 @@ bool CPolymorphUtils::PolymorphCharacter(LPCHARACTER pChar, LPITEM pItem, const 
 
 	if (iPolyPercent <= 0)
 	{
-		pChar->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("둔갑에 실패 하였습니다"));
+		pChar->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You have failed to transform."));
 		return false;
 	}
 	else
 	{
 		if (number(1, 100) > iPolyPercent)
 		{
-			pChar->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("둔갑에 실패 하였습니다"));
+			pChar->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You have failed to transform."));
 			return false;
 		}
 	}
@@ -116,7 +116,7 @@ bool CPolymorphUtils::UpdateBookPracticeGrade(LPCHARACTER pChar, LPITEM pItem)
 	if (pItem->GetSocket(1) > 0)
 		pItem->SetSocket(1, pItem->GetSocket(1) - 1);
 	else
-		pChar->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("둔갑서 수련을 마첬습니다. 신선에게 찾아가세요."));
+		pChar->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You have finished your training. Please get it from your master."));
 
 	return true;
 }

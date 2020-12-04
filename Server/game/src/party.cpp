@@ -323,7 +323,7 @@ void CParty::Destroy()
 				p.header = HEADER_GC_PARTY_REMOVE;
 				p.pid = rMember.pCharacter->GetPlayerID();
 				rMember.pCharacter->GetDesc()->Packet(&p, sizeof(p));
-				rMember.pCharacter->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<파티> 파티가 해산 되었습니다."));
+				rMember.pCharacter->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> The Group is deleted."));
 			}
 			else
 			{
@@ -1123,7 +1123,7 @@ void CParty::SummonToLeader(DWORD pid)
 
 	if (m_memberMap.find(pid) == m_memberMap.end())
 	{
-		l->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<파티> 소환하려는 대상을 찾을 수 없습니다."));
+		l->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> The target was not found."));
 		return;
 	}
 
@@ -1131,13 +1131,13 @@ void CParty::SummonToLeader(DWORD pid)
 
 	if (!ch)
 	{
-		l->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<파티> 소환하려는 대상을 찾을 수 없습니다."));
+		l->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> The target was not found."));
 		return;
 	}
 
 	if (!ch->CanSummon(m_iLeadership))
 	{
-		l->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<파티> 대상을 소환할 수 없습니다."));
+		l->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot call the target."));
 		return;
 	}
 
@@ -1154,7 +1154,7 @@ void CParty::SummonToLeader(DWORD pid)
 	}
 
 	if (n == 0)
-		l->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<파티> 파티원을 현재 위치로 소환할 수 없습니다."));
+		l->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot call Group members to your current position."));
 	else
 	{
 		int i = number(0, n - 1);
@@ -1377,7 +1377,7 @@ void CParty::Update()
 			continue;
 
 		if (bLongTimeExpBonusChanged && ch->GetDesc())
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("파티의 협동력이 높아져 지금부터 추가 경험치 보너스를 받습니다."));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your Group cooperates and received an Experience Bonus."));
 
 		bool bNear = it->second.bNear;
 

@@ -246,7 +246,7 @@ namespace quest
 		int iPulse = thecore_pulse();
 		if ( pkChr->GetExchange() || pkChr->GetMyShop() || pkChr->GetShopOwner() || pkChr->IsOpenSafebox() )
 		{
-			pkChr->ChatPacket( CHAT_TYPE_INFO, LC_TEXT("거래창,창고 등을 연 상태에서는 다른곳으로 이동할수 없습니다" ));
+			pkChr->ChatPacket( CHAT_TYPE_INFO, LC_TEXT("You cannot go elsewhere for a while after a trade." ));
 
 			return;
 		}
@@ -254,7 +254,7 @@ namespace quest
 		//교환 후 시간체크
 		if ( iPulse - pkChr->GetExchangeTime()  < PASSES_PER_SEC(60) )
 		{
-			pkChr->ChatPacket( CHAT_TYPE_INFO, LC_TEXT("거래 후 1분 이내에는 다른지역으로 이동 할 수 없습니다." ) );
+			pkChr->ChatPacket( CHAT_TYPE_INFO, LC_TEXT("Within 1 minute after a trade, you can not move to other area." ) );
 			return;
 		}
 		//END_PREVENT_PORTAL_AFTER_EXCHANGE
@@ -262,7 +262,7 @@ namespace quest
 		{
 			if ( iPulse - pkChr->GetMyShopTime() < PASSES_PER_SEC(60) )
 			{
-				pkChr->ChatPacket( CHAT_TYPE_INFO, LC_TEXT("거래 후 1분 이내에는 다른지역으로 이동 할 수 없습니다." ) );
+				pkChr->ChatPacket( CHAT_TYPE_INFO, LC_TEXT("Within 1 minute after a trade, you can not move to other area." ) );
 				return;
 			}
 
@@ -463,12 +463,12 @@ namespace quest
 			{
 				if (dwVnums[i] == 1)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("돈 %d 냥을 획득했습니다."), dwCounts[i]);
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You received %d Yang."), dwCounts[i]);
 				}
 				else if (dwVnums[i] == 2)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("나무에서 부터 신비한 빛이 나옵니다."));
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%d의 경험치를 획득했습니다."), dwCounts[i]);
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("A mysterious light appears from the tree."));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You received %d Experience Points."), dwCounts[i]);
 				}
 			}
 		}
@@ -3435,7 +3435,7 @@ teleport_area:
 		//PREVENT_TRADE_WINDOW
 		if (ch->IsOpenSafebox() || ch->GetExchange() || ch->GetMyShop() || ch->IsCubeOpen())
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("다른 거래창이 열린상태에서는 상점거래를 할수 가 없습니다."));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot trade in the Warehouse if another Trade Window is open."));
 			return 0;
 		}
 		//END_PREVENT_TRADE_WINDOW

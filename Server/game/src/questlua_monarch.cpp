@@ -145,7 +145,7 @@ namespace quest
 		{
 			if (!ch->IsGM())
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO ,LC_TEXT("군주의 자격을 가지고 있지 않습니다"));
+				ch->ChatPacket(CHAT_TYPE_INFO ,LC_TEXT("Does not have the Qualification to be Emperor."));
 				sys_err("No Monarch pid %d ", ch->GetPlayerID());
 				return 0;
 			}
@@ -159,10 +159,10 @@ namespace quest
 		{
 			char szNotice[256];
 			snprintf(szNotice, sizeof(szNotice),
-					LC_TEXT("군주의 축복으로 이지역 %s 유저는 HP,SP가 모두 채워집니다."), EMPIRE_NAME(ch->GetEmpire()));
+					LC_TEXT("King's Blessing restored HP and SP of %s's players."), EMPIRE_NAME(ch->GetEmpire()));
 			SendNoticeMap(szNotice, ch->GetMapIndex(), false);
 
-			ch->ChatPacket(CHAT_TYPE_INFO ,LC_TEXT("군주의 축복을 사용하였습니다."));
+			ch->ChatPacket(CHAT_TYPE_INFO ,LC_TEXT("The Emperor Blessing is active."));
 		}
 
 		return 1;
@@ -181,7 +181,7 @@ namespace quest
 		{
 			if (!ch->IsGM())
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO ,LC_TEXT("군주의 자격을 가지고 있지 않습니다"));
+				ch->ChatPacket(CHAT_TYPE_INFO ,LC_TEXT("Does not have the Qualification to be Emperor."));
 				sys_err("No Monarch pid %d ", ch->GetPlayerID());
 				return 0;
 			}
@@ -192,14 +192,14 @@ namespace quest
 		if (!CMonarch::instance().IsMoneyOk(money_need, ch->GetEmpire()))
 		{
 			int NationMoney = CMonarch::instance().GetMoney(ch->GetEmpire());
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("국고에 돈이 부족합니다. 현재 : %u 필요금액 : %u"), NationMoney, money_need);
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Lack of Taxes. Current Capital : %u Needed Capital : %u"), NationMoney, money_need);
 			return 0;
 		}
 
 		if (!CMonarch::instance().CheckPowerUpCT(ch->GetEmpire()))
 		{
 			int	next_sec = CMonarch::instance().GetPowerUpCT(ch->GetEmpire()) / passes_per_sec;
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("쿨타임 적용중  %d 후 사용가능"), next_sec);
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Cooldown time remaining: %d minutes"), next_sec);
 			return 0;
 		}
 
@@ -218,7 +218,7 @@ namespace quest
 		CMonarch::instance().SendtoDBDecMoney(5000000, ch->GetEmpire(), ch);
 
 		char szNotice[256];
-		snprintf(szNotice, sizeof(szNotice), LC_TEXT("군주의 사자후 영향으로 이지역 %s 유저는 3분간 10 %% 의 공격력이  증가됩니다"), EMPIRE_NAME(ch->GetEmpire()));
+		snprintf(szNotice, sizeof(szNotice), LC_TEXT("%s gained 10%% Damage Bonus for 3 minutes because the King used Lion Roar."), EMPIRE_NAME(ch->GetEmpire()));
 
 		SendNoticeMap(szNotice, ch->GetMapIndex(), false);
 
@@ -239,7 +239,7 @@ namespace quest
 		{
 			if (!ch->IsGM())
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO ,LC_TEXT("군주의 자격을 가지고 있지 않습니다"));
+				ch->ChatPacket(CHAT_TYPE_INFO ,LC_TEXT("Does not have the Qualification to be Emperor."));
 				sys_err("No Monarch pid %d ", ch->GetPlayerID());
 				return 0;
 			}
@@ -249,14 +249,14 @@ namespace quest
 		if (!CMonarch::instance().IsMoneyOk(money_need, ch->GetEmpire()))
 		{
 			int NationMoney = CMonarch::instance().GetMoney(ch->GetEmpire());
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("국고에 돈이 부족합니다. 현재 : %u 필요금액 : %u"), NationMoney, money_need);
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Lack of Taxes. Current Capital : %u Needed Capital : %u"), NationMoney, money_need);
 			return 0;
 		}
 
 		if (!CMonarch::instance().CheckDefenseUpCT(ch->GetEmpire()))
 		{
 			int	next_sec = CMonarch::instance().GetDefenseUpCT(ch->GetEmpire()) / passes_per_sec;
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("쿨타임 적용중  %d 후 사용가능"), next_sec);
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Cooldown time remaining: %d minutes"), next_sec);
 			return 0;
 		}
 
@@ -275,7 +275,7 @@ namespace quest
 		CMonarch::instance().SendtoDBDecMoney(5000000, ch->GetEmpire(), ch);
 
 		char szNotice[256];
-		snprintf(szNotice, sizeof(szNotice), LC_TEXT("군주의 금강권 영향으로 이지역 %s 유저는 3분간 10 %% 의 방어력이  증가됩니다"), EMPIRE_NAME(ch->GetEmpire()));
+		snprintf(szNotice, sizeof(szNotice), LC_TEXT("%s gained 10%% Defence Bonus for 3 minutes because the King used Diamond Skin."), EMPIRE_NAME(ch->GetEmpire()));
 
 		SendNoticeMap(szNotice, ch->GetMapIndex(), false);
 
@@ -319,7 +319,7 @@ namespace quest
 		{
 			if (!ch->IsGM())
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO ,LC_TEXT("군주의 자격을 가지고 있지 않습니다"));
+				ch->ChatPacket(CHAT_TYPE_INFO ,LC_TEXT("Does not have the Qualification to be Emperor."));
 				sys_err("No Monarch pid %d ", ch->GetPlayerID());
 				return 0;
 			}
@@ -340,7 +340,7 @@ namespace quest
 				if (!CMonarch::instance().IsMoneyOk(CASTLE_FROG_PRICE, ch->GetEmpire()))
 				{
 					int NationMoney = CMonarch::instance().GetMoney(ch->GetEmpire());
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("국고에 돈이 부족합니다. 현재 : %u 필요금액 : %u"), NationMoney, CASTLE_FROG_PRICE);
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Lack of Taxes. Current Capital : %u Needed Capital : %u"), NationMoney, CASTLE_FROG_PRICE);
 					return 0;
 				}
 
@@ -407,7 +407,7 @@ namespace quest
 		{
 			if (!ch->IsGM())
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO ,LC_TEXT("군주의 자격을 가지고 있지 않습니다"));
+				ch->ChatPacket(CHAT_TYPE_INFO ,LC_TEXT("Does not have the Qualification to be Emperor."));
 				sys_err("No Monarch pid %d ", ch->GetPlayerID());
 				return 0;
 			}
@@ -415,7 +415,7 @@ namespace quest
 
 		if (false==castle_is_my_castle(ch->GetEmpire(), ch->GetMapIndex()))
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("성에서만 사용할 수 있는 기능입니다."));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can only use this skill in the castle."));
 			return 0;
 		}
 
@@ -429,7 +429,7 @@ namespace quest
 			if (!CMonarch::instance().IsMoneyOk(money_need, ch->GetEmpire()))
 			{
 				int NationMoney = CMonarch::instance().GetMoney(ch->GetEmpire());
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("국고에 돈이 부족합니다. 현재 : %u 필요금액 : %u"), NationMoney, money_need);
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Lack of Taxes. Current Capital : %u Needed Capital : %u"), NationMoney, money_need);
 				return 0;
 			}
 			guard_leader = castle_spawn_guard(ch->GetEmpire(), group_vnum, region_index);
@@ -456,7 +456,7 @@ namespace quest
 		{
 			if (!ch->IsGM())
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO ,LC_TEXT("군주의 자격을 가지고 있지 않습니다"));
+				ch->ChatPacket(CHAT_TYPE_INFO ,LC_TEXT("Does not have the Qualification to be Emperor."));
 				sys_err("No Monarch pid %d ", ch->GetPlayerID());
 				return 0;
 			}
@@ -465,14 +465,14 @@ namespace quest
 		if (castle_frog_to_empire_money(ch))
 		{
 			int empire_money = CMonarch::instance().GetMoney(ch->GetEmpire());
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("TEST : 황금두꺼비가 국고로 환원되었습니다."));
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("TEST : 현재 국고 : %d"), empire_money);
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("TEST: The Golden Toad has been restored to the national treasury."));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("TEST: Current Kingdom capital: %d"), empire_money);
 			castle_save();
 			return 1;
 		}
 		else
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("TEST : 황금두꺼비를 국고로 환원할 수 없습니다."));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("TEST: The golden toad can not be restored to the national treasury."));
 			return 0;
 		}
 	}
@@ -495,14 +495,14 @@ namespace quest
 
 		if (!CMonarch::instance().IsMonarch(ch->GetPlayerID(), ch->GetEmpire()))
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("군주만이 사용 가능한 기능입니다"));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Only the Emperor can use this."));
 			return 0;
 		}
 
 		//군주 쿨타임 검사
 		if (!ch->IsMCOK(CHARACTER::MI_WARP))
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%d 초간 쿨타임이 적용중입니다."), ch->GetMCLTime(CHARACTER::MI_WARP));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Cool Down Time roughly %d seconds."), ch->GetMCLTime(CHARACTER::MI_WARP));
 			return 0;
 		}
 
@@ -514,7 +514,7 @@ namespace quest
 		if (!CMonarch::instance().IsMoneyOk(WarpPrice, ch->GetEmpire()))
 		{
 			int NationMoney = CMonarch::instance().GetMoney(ch->GetEmpire());
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("국고에 돈이 부족합니다. 현재 : %u 필요금액 : %u"), NationMoney, WarpPrice);
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Lack of Taxes. Current Capital : %u Needed Capital : %u"), NationMoney, WarpPrice);
 			return 0;
 		}
 
@@ -530,12 +530,12 @@ namespace quest
 			{
 				if (pkCCI->bEmpire != ch->GetEmpire())
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("타제국 유저에게는 이동할수 없습니다"));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot teleport to an enemy player."));
 					return 0;
 				}
 				if (pkCCI->bChannel != g_bChannel)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("해당 유저는 %d 채널에 있습니다. (현재 채널 %d)"), pkCCI->bChannel, g_bChannel);
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Adding of player %d into the Channel. (Present Channel %d)"), pkCCI->bChannel, g_bChannel);
 					return 0;
 				}
 
@@ -552,7 +552,7 @@ namespace quest
 				else
 				{
 					//ch->ChatPacket(CHAT_TYPE_INFO, "You warp to (%d, %d)", pos.x, pos.y);
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s 에게로 이동합니다"), name.c_str());
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Transport to %s."), name.c_str());
 					ch->WarpSet(pos.x, pos.y);
 
 					//군주 돈 삭감
@@ -574,7 +574,7 @@ namespace quest
 		{
 			if (tch->GetEmpire() != ch->GetEmpire())
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("타제국 유저에게는 이동할수 없습니다"));
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot teleport to an enemy player."));
 				return 0;
 			}
 
@@ -588,7 +588,7 @@ namespace quest
 			y = tch->GetY();
 		}
 
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s 에게로 이동합니다"), name.c_str());
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Transport to %s."), name.c_str());
 		ch->WarpSet(x,y);
 		ch->Stop();
 
@@ -612,22 +612,22 @@ namespace quest
 
 		if (CMonarch::instance().IsMonarch(ch->GetPlayerID(), ch->GetEmpire()))
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO,LC_TEXT("나의 군주 정보"));
+			ch->ChatPacket(CHAT_TYPE_INFO,LC_TEXT("My Emperor Information"));
 
 			for (int n = 1; n < 4; ++n)
 			{
 				if (n == ch->GetEmpire())
-					ch->ChatPacket(CHAT_TYPE_INFO,LC_TEXT("[%s군주] : %s  보유금액 %lld "), EMPIRE_NAME(n), p->name[n], p->money[n]);
+					ch->ChatPacket(CHAT_TYPE_INFO,LC_TEXT("[%s] Monarch : %s Vault : %lld Yang"), EMPIRE_NAME(n), p->name[n], p->money[n]);
 				else
-					ch->ChatPacket(CHAT_TYPE_INFO,LC_TEXT("[%s군주] : %s  "), EMPIRE_NAME(n), p->name[n]);
+					ch->ChatPacket(CHAT_TYPE_INFO,LC_TEXT("[%sLord] : %s "), EMPIRE_NAME(n), p->name[n]);
 			}
 		}
 		else
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO,LC_TEXT("군주 정보"));
+			ch->ChatPacket(CHAT_TYPE_INFO,LC_TEXT("Emperor Information"));
 
 			for (int n = 1; n < 4; ++n)
-				ch->ChatPacket(CHAT_TYPE_INFO,LC_TEXT("[%s군주] : %s  "), EMPIRE_NAME(n), p->name[n]);
+				ch->ChatPacket(CHAT_TYPE_INFO,LC_TEXT("[%sLord] : %s "), EMPIRE_NAME(n), p->name[n]);
 		}
 
 		return 0;
@@ -650,14 +650,14 @@ namespace quest
 
 		if (!CMonarch::instance().IsMonarch(ch->GetPlayerID(), ch->GetEmpire()))
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("군주만이 사용 가능한 기능입니다"));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Only the Emperor can use this."));
 			return 0;
 		}
 
 		// 군주 쿨타임 검사
 		if (!ch->IsMCOK(CHARACTER::MI_TRANSFER))
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%d 초간 쿨타임이 적용중입니다."), ch->GetMCLTime(CHARACTER::MI_TRANSFER));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Cool Down Time roughly %d seconds."), ch->GetMCLTime(CHARACTER::MI_TRANSFER));
 			return 0;
 		}
 
@@ -668,7 +668,7 @@ namespace quest
 		if (!CMonarch::instance().IsMoneyOk(WarpPrice, ch->GetEmpire()))
 		{
 			int NationMoney = CMonarch::instance().GetMoney(ch->GetEmpire());
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("국고에 돈이 부족합니다. 현재 : %u 필요금액 : %u"), NationMoney, WarpPrice);
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Lack of Taxes. Current Capital : %u Needed Capital : %u"), NationMoney, WarpPrice);
 			return 0;
 		}
 
@@ -682,13 +682,13 @@ namespace quest
 			{
 				if (pkCCI->bEmpire != ch->GetEmpire())
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("다른 제국 유저는 소환할 수 없습니다."));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot call players from other kingdoms."));
 					return 0;
 				}
 
 				if (pkCCI->bChannel != g_bChannel)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s 님은 %d 채널에 접속 중 입니다. (현재 채널: %d)"), name.c_str(), pkCCI->bChannel, g_bChannel);
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s is connecting %d channel. (current channel:%d)"), name.c_str(), pkCCI->bChannel, g_bChannel);
 					return 0;
 				}
 
@@ -711,7 +711,7 @@ namespace quest
 				pgg.lY = ch->GetY();
 
 				P2P_MANAGER::instance().Send(&pgg, sizeof(TPacketGGTransfer));
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s 님을 소환하였습니다."), name.c_str());
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s is called."), name.c_str());
 
 				// 군주 돈 삭감
 				CMonarch::instance().SendtoDBDecMoney(WarpPrice, ch->GetEmpire(), ch);
@@ -721,7 +721,7 @@ namespace quest
 			}
 			else
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("입력하신 이름을 가진 사용자가 없습니다."));
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Cannot find the player."));
 			}
 
 			return 0;
@@ -729,13 +729,13 @@ namespace quest
 
 		if (ch == tch)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("자신을 소환할 수 없습니다."));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot call yourself."));
 			return 0;
 		}
 
 		if (tch->GetEmpire() != ch->GetEmpire())
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("다른 제국 유저는 소환할 수 없습니다."));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot call players from other kingdoms."));
 			return 0;
 		}
 
@@ -770,7 +770,7 @@ namespace quest
 
 		if (ch->IsMonarch() == false)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("군주만이 사용 가능한 기능입니다"));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Only the Emperor can use this."));
 			return 0;
 		}
 
@@ -834,13 +834,13 @@ namespace quest
 
 		if (CMonarch::instance().IsMonarch(ch->GetPlayerID(), ch->GetEmpire()) == false)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("군주만이 사용 가능한 기능입니다"));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Only the Emperor can use this."));
 			return 0;
 		}
 
 		if (ch->IsMCOK(CHARACTER::MI_TRANSFER) == false)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%d 초간 쿨타임이 적용중입니다."), ch->GetMCLTime(CHARACTER::MI_TRANSFER));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Cool Down Time roughly %d seconds."), ch->GetMCLTime(CHARACTER::MI_TRANSFER));
 			return 0;
 		}
 
@@ -849,7 +849,7 @@ namespace quest
 		if (CMonarch::instance().IsMoneyOk(ciTransferCost, ch->GetEmpire()) == false)
 		{
 			int NationMoney = CMonarch::instance().GetMoney(ch->GetEmpire());
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("국고에 돈이 부족합니다. 현재 : %u 필요금액 : %u"), NationMoney, ciTransferCost);
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Lack of Taxes. Current Capital : %u Needed Capital : %u"), NationMoney, ciTransferCost);
 			return 0;
 		}
 
@@ -865,13 +865,13 @@ namespace quest
 			{
 				if (pCCI->bEmpire != ch->GetEmpire())
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("다른 제국 유저는 소환할 수 없습니다."));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot call players from other kingdoms."));
 					return 0;
 				}
 
 				if (pCCI->bChannel != g_bChannel)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s 님은 %d 채널에 접속중입니다. (현재 채널: %d)"),
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s is connected on %d channel. (current channel:%d)"),
 						   strTargetName.c_str(), pCCI->bChannel, g_bChannel);
 					return 0;
 				}
@@ -894,14 +894,14 @@ namespace quest
 				packet.y = ch->GetY();
 
 				P2P_MANAGER::instance().Send(&packet, sizeof(TPacketMonarchGGTransfer));
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("소환 요청을 보냈습니다"));
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Summon request has been sent."));
 
 				CMonarch::instance().SendtoDBDecMoney(ciTransferCost, ch->GetEmpire(), ch);
 				ch->SetMC(CHARACTER::MI_TRANSFER);
 			}
 			else
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("입력하신 이름을 가진 사용자가 없습니다."));
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Cannot find the player."));
 				return 0;
 			}
 		}
@@ -909,19 +909,19 @@ namespace quest
 		{
 			if (pTargetChar == ch)
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("자신을 소환할 수 없습니다."));
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot call yourself."));
 				return 0;
 			}
 
 			if (pTargetChar->GetEmpire() != ch->GetEmpire())
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("다른 제국 유저는 소환할 수 없습니다."));
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot call players from other kingdoms."));
 				return 0;
 			}
 
 			if (DISTANCE_APPROX(pTargetChar->GetX() - ch->GetX(), pTargetChar->GetY() - ch->GetY()) <= 5000)
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s 님은 근처에 있습니다"), pTargetChar->GetName());
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s is near you."), pTargetChar->GetName());
 				return 0;
 			}
 
@@ -945,7 +945,7 @@ namespace quest
 
 			event_create(monarch_transfer2_event, info, 1);
 
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("소환 요청을 보냈습니다"));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Summon request has been sent."));
 
 			CMonarch::instance().SendtoDBDecMoney(ciTransferCost, ch->GetEmpire(), ch);
 			ch->SetMC(CHARACTER::MI_TRANSFER);

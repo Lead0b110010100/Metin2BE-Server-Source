@@ -100,14 +100,14 @@ EVENTFUNC(battle_arena_event)
 			case 0:
 				{
 					++pInfo->state;
-					BroadcastNotice(LC_TEXT("몬스터들의 공격까지 5분 남았습니다!!!"));
+					BroadcastNotice(LC_TEXT("5 min left before the monsters attack."));
 				}
 				return test_server ? PASSES_PER_SEC(60) : PASSES_PER_SEC(60*4);
 
 			case 1:
 				{
 					++pInfo->state;
-					BroadcastNotice(LC_TEXT("몬스터들의 공격까지 1분 남았습니다!!!"));
+					BroadcastNotice(LC_TEXT("1 min left before the monsters attack."));
 				}
 				return test_server ? PASSES_PER_SEC(10) : PASSES_PER_SEC(60);
 
@@ -117,7 +117,7 @@ EVENTFUNC(battle_arena_event)
 					pInfo->wait_count = 0;
 
 					quest::CQuestManager::instance().RequestSetEventFlag("battle_arena", 0);
-					BroadcastNotice(LC_TEXT("몬스터들이 성을 공격하기 시작했습니다."));
+					BroadcastNotice(LC_TEXT("The monsters start attacking the castle."));
 
 					LPSECTREE_MAP sectree = SECTREE_MANAGER::instance().GetMap(pInfo->nMapIndex);
 
@@ -139,7 +139,7 @@ EVENTFUNC(battle_arena_event)
 					if ( SECTREE_MANAGER::instance().GetMonsterCountInMap(pInfo->nMapIndex) <= 0 )
 					{
 						pInfo->state = 6;
-						SendNoticeMap(LC_TEXT("중앙 제단에 악의 기운이 모여듭니다."), pInfo->nMapIndex, false);
+						SendNoticeMap(LC_TEXT("Evil spirit gathers into the altar."), pInfo->nMapIndex, false);
 					}
 					else
 					{
@@ -148,7 +148,7 @@ EVENTFUNC(battle_arena_event)
 						if ( pInfo->wait_count >= 5 )
 						{
 							pInfo->state++;
-							SendNoticeMap(LC_TEXT("몬스터들이 물러갈 조짐을 보입니다."), pInfo->nMapIndex, false);
+							SendNoticeMap(LC_TEXT("Some of the monsters start retreating."), pInfo->nMapIndex, false);
 						}
 						else
 						{
@@ -161,8 +161,8 @@ EVENTFUNC(battle_arena_event)
 			case 4 :
 				{
 					pInfo->state++;
-					SendNoticeMap(LC_TEXT("몬스터들이 물러가기 시작했습니다."), pInfo->nMapIndex, false);
-					SendNoticeMap(LC_TEXT("잠시 후 마을로 돌아갑니다."), pInfo->nMapIndex, false);
+					SendNoticeMap(LC_TEXT("The monsters start retreating."), pInfo->nMapIndex, false);
+					SendNoticeMap(LC_TEXT("You will be teleported into the city soon."), pInfo->nMapIndex, false);
 
 					SECTREE_MANAGER::instance().PurgeMonstersInMap(pInfo->nMapIndex);
 				}
@@ -187,8 +187,8 @@ EVENTFUNC(battle_arena_event)
 					pInfo->state++;
 					pInfo->wait_count = 0;
 
-					SendNoticeMap(LC_TEXT("몬스터들의 대장이 나타났습니다."), pInfo->nMapIndex, false);
-					SendNoticeMap(LC_TEXT("30분 내로 귀목령주를 물리쳐주세요."), pInfo->nMapIndex, false);
+					SendNoticeMap(LC_TEXT("The leader of the monsters has appeared."), pInfo->nMapIndex, false);
+					SendNoticeMap(LC_TEXT("Eliminate the demon lord in 30 minutes."), pInfo->nMapIndex, false);
 
 					CBattleArena::instance().SpawnLastBoss();
 				}
@@ -198,8 +198,8 @@ EVENTFUNC(battle_arena_event)
 				{
 					if ( SECTREE_MANAGER::instance().GetMonsterCountInMap(pInfo->nMapIndex) <= 0 )
 					{
-						SendNoticeMap(LC_TEXT("귀목령주와 그의 부하들을 모두 물리쳤습니다."), pInfo->nMapIndex, false);
-						SendNoticeMap(LC_TEXT("잠시 후 마을로 돌아갑니다."), pInfo->nMapIndex, false);
+						SendNoticeMap(LC_TEXT("Demon lord and his minions are defeated."), pInfo->nMapIndex, false);
+						SendNoticeMap(LC_TEXT("You will be teleported into the city soon."), pInfo->nMapIndex, false);
 
 						pInfo->state = 5;
 
@@ -210,8 +210,8 @@ EVENTFUNC(battle_arena_event)
 
 					if ( pInfo->wait_count >= 6 )
 					{
-						SendNoticeMap(LC_TEXT("귀목령주가 퇴각하였습니다."), pInfo->nMapIndex, false);
-						SendNoticeMap(LC_TEXT("잠시 후 마을로 돌아갑니다."), pInfo->nMapIndex, false);
+						SendNoticeMap(LC_TEXT("Demon lord have retreated."), pInfo->nMapIndex, false);
+						SendNoticeMap(LC_TEXT("You will be teleported into the city soon."), pInfo->nMapIndex, false);
 
 						SECTREE_MANAGER::instance().PurgeMonstersInMap(pInfo->nMapIndex);
 						SECTREE_MANAGER::instance().PurgeStonesInMap(pInfo->nMapIndex);
@@ -241,9 +241,9 @@ bool CBattleArena::Start(int nEmpire)
 	m_nEmpire = nEmpire;
 
 	char szBuf[1024];
-	snprintf(szBuf, sizeof(szBuf), LC_TEXT("%s의 성으로 몬스터들이 진군하고 있습니다."), EMPIRE_NAME(m_nEmpire));
+	snprintf(szBuf, sizeof(szBuf), LC_TEXT("Monsters are marching to the castle of %s."), EMPIRE_NAME(m_nEmpire));
 	BroadcastNotice(szBuf);
-	BroadcastNotice(LC_TEXT("10분 뒤 성을 공격할 예정입니다."));
+	BroadcastNotice(LC_TEXT("The attack to the castle will begin in 10 minutes."));
 
 	if (m_pEvent != NULL) {
 		event_cancel(&m_pEvent);
