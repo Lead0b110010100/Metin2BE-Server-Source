@@ -1095,7 +1095,7 @@ void DBManager::AnalyzeReturnQuery(SQLMsg * pMsg)
 						if (pkItem)
 						{
 							sys_log(0, "GIVE LOTTO SUCCESS TO %s (pid %u)", ch->GetName(), qi->dwIdent);
-							//ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("아이템 획득: %s"), pkItem->GetName());
+							//ch->ChatPacketTrans(CHAT_TYPE_INFO, "아이템 획득: %s", pkItem->GetName());
 
 							pkItem->SetSocket(0, pMsg->Get()->uiInsertID);
 							pkItem->SetSocket(1, pdw[2]);
@@ -1332,7 +1332,7 @@ void VCardUse(LPCHARACTER CardOwner, LPCHARACTER CardTaker, LPITEM item)
 
 	db_clientdesc->DBPacket(HEADER_GD_VCARD, 0, &p, sizeof(TPacketGDVCard));
 
-	CardTaker->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%d분의 결제시간이 추가 되었습니다. (결제번호 %d)"), item->GetSocket(1) / 60, item->GetSocket(0));
+	CardTaker->ChatPacketTrans(CHAT_TYPE_INFO, "%d분의 결제시간이 추가 되었습니다. (결제번호 %d)", item->GetSocket(1) / 60, item->GetSocket(0));
 
 	LogManager::instance().VCardLog(p.dwID, CardTaker->GetX(), CardTaker->GetY(), g_stHostname.c_str(),
 			CardOwner->GetName(), CardOwner->GetDesc()->GetHostName(),

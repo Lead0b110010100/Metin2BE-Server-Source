@@ -183,8 +183,8 @@ void CPVPManager::Insert(LPCHARACTER pkChr, LPCHARACTER pkVictim)
 		// 복수할 수 있으면 바로 싸움!
 		if (pkPVP->Agree(pkChr->GetPlayerID()))
 		{
-			pkVictim->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s님과의 대결 시작!"), pkChr->GetName());
-			pkChr->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s님과의 대결 시작!"), pkVictim->GetName());
+			pkVictim->ChatPacketTrans(CHAT_TYPE_INFO, "%s님과의 대결 시작!", pkChr->GetName());
+			pkChr->ChatPacketTrans(CHAT_TYPE_INFO, "%s님과의 대결 시작!", pkVictim->GetName());
 		}
 		return;
 	}
@@ -205,7 +205,7 @@ void CPVPManager::Insert(LPCHARACTER pkChr, LPCHARACTER pkVictim)
 	snprintf(msg, sizeof(msg), LC_TEXT("%s님이 대결신청을 했습니다. 승낙하려면 대결동의를 하세요."), pkChr->GetName());
 
 	pkVictim->ChatPacket(CHAT_TYPE_INFO, msg);
-	pkChr->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s에게 대결신청을 했습니다."), pkVictim->GetName());
+	pkChr->ChatPacketTrans(CHAT_TYPE_INFO, "%s에게 대결신청을 했습니다.", pkVictim->GetName());
 
 	// NOTIFY_PVP_MESSAGE
 	LPDESC pkVictimDesc = pkVictim->GetDesc();

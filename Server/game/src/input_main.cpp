@@ -120,7 +120,7 @@ void SendBlockChatInfo(LPCHARACTER ch, int sec)
 {
 	if (sec <= 0)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("채팅 금지 상태입니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "채팅 금지 상태입니다.");
 		return;
 	}
 
@@ -362,7 +362,7 @@ int CInputMain::Whisper(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 	if (ch->FindAffect(AFFECT_BLOCK_CHAT))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("채팅 금지 상태입니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "채팅 금지 상태입니다.");
 		return (iExtraLen);
 	}
 
@@ -788,9 +788,9 @@ int CInputMain::Chat(LPCHARACTER ch, const char * data, size_t uiBytes)
 		if (NULL != pTable)
 		{
 			if (3==processReturn) //교환중
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("사용할수 없습니다."), pTable->szLocaleName);
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "사용할수 없습니다.", pTable->szLocaleName);
 			else
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s이 필요합니다."), pTable->szLocaleName);
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "%s이 필요합니다.", pTable->szLocaleName);
 
 		}
 
@@ -827,7 +827,7 @@ int CInputMain::Chat(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 		if (ch->GetLevel() < g_iShoutLimitLevel)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("외치기는 레벨 %d 이상만 사용 가능 합니다."), g_iShoutLimitLevel);
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "외치기는 레벨 %d 이상만 사용 가능 합니다.", g_iShoutLimitLevel);
 			return (iExtraLen);
 		}
 
@@ -898,7 +898,7 @@ int CInputMain::Chat(LPCHARACTER ch, const char * data, size_t uiBytes)
 		case CHAT_TYPE_PARTY:
 			{
 				if (!ch->GetParty())
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("파티 중이 아닙니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "파티 중이 아닙니다.");
 				else
 				{
 					TEMP_BUFFER tbuf;
@@ -922,7 +922,7 @@ int CInputMain::Chat(LPCHARACTER ch, const char * data, size_t uiBytes)
 		case CHAT_TYPE_GUILD:
 			{
 				if (!ch->GetGuild())
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("길드에 가입하지 않았습니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "길드에 가입하지 않았습니다.");
 				else
 				{
 					ch->GetGuild()->Chat(chatbuf);
@@ -1055,7 +1055,7 @@ int CInputMain::Messenger(LPCHARACTER ch, const char* c_pData, size_t uiBytes)
 
 				if (ch_companion->IsBlockMode(BLOCK_MESSENGER_INVITE))
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("상대방이 메신져 추가 거부 상태입니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "상대방이 메신져 추가 거부 상태입니다.");
 					return sizeof(TPacketCGMessengerAddByVID);
 				}
 
@@ -1066,7 +1066,7 @@ int CInputMain::Messenger(LPCHARACTER ch, const char* c_pData, size_t uiBytes)
 
 				if (ch->GetGMLevel() == GM_PLAYER && ch_companion->GetGMLevel() != GM_PLAYER)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<메신져> 운영자는 메신져에 추가할 수 없습니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<메신져> 운영자는 메신져에 추가할 수 없습니다.");
 					return sizeof(TPacketCGMessengerAddByVID);
 				}
 
@@ -1088,14 +1088,14 @@ int CInputMain::Messenger(LPCHARACTER ch, const char* c_pData, size_t uiBytes)
 
 				if (ch->GetGMLevel() == GM_PLAYER && gm_get_level(name) != GM_PLAYER)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<메신져> 운영자는 메신져에 추가할 수 없습니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<메신져> 운영자는 메신져에 추가할 수 없습니다.");
 					return CHARACTER_NAME_MAX_LEN;
 				}
 
 				LPCHARACTER tch = CHARACTER_MANAGER::instance().FindPC(name);
 
 				if (!tch)
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s 님은 접속되 있지 않습니다."), name);
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "%s 님은 접속되 있지 않습니다.", name);
 				else
 				{
 					if (tch == ch) // 자신은 추가할 수 없다.
@@ -1103,7 +1103,7 @@ int CInputMain::Messenger(LPCHARACTER ch, const char* c_pData, size_t uiBytes)
 
 					if (tch->IsBlockMode(BLOCK_MESSENGER_INVITE) == true)
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("상대방이 메신져 추가 거부 상태입니다."));
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "상대방이 메신져 추가 거부 상태입니다.");
 					}
 					else
 					{
@@ -1225,7 +1225,7 @@ void CInputMain::Exchange(LPCHARACTER ch, const char * data)
 	{
 		if (iPulse - to_ch->GetSafeboxLoadTime() < PASSES_PER_SEC(g_nPortalLimitTime))
 		{
-			to_ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("거래 후 %d초 이내에 창고를 열수 없습니다."), g_nPortalLimitTime);
+			to_ch->ChatPacketTrans(CHAT_TYPE_INFO, "거래 후 %d초 이내에 창고를 열수 없습니다.", g_nPortalLimitTime);
 			return;
 		}
 
@@ -1239,7 +1239,7 @@ void CInputMain::Exchange(LPCHARACTER ch, const char * data)
 
 	if (iPulse - ch->GetSafeboxLoadTime() < PASSES_PER_SEC(g_nPortalLimitTime))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("거래 후 %d초 이내에 창고를 열수 없습니다."), g_nPortalLimitTime);
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "거래 후 %d초 이내에 창고를 열수 없습니다.", g_nPortalLimitTime);
 		return;
 	}
 
@@ -1255,14 +1255,14 @@ void CInputMain::Exchange(LPCHARACTER ch, const char * data)
 					/*
 					if (to_ch->IsMonarch() || ch->IsMonarch())
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("군주와는 거래를 할수가 없습니다"), g_nPortalLimitTime);
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "군주와는 거래를 할수가 없습니다", g_nPortalLimitTime);
 						return;
 					}
 					//END_MONARCH_LIMIT
 					*/
 					if (iPulse - ch->GetSafeboxLoadTime() < PASSES_PER_SEC(g_nPortalLimitTime))
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("창고를 연후 %d초 이내에는 거래를 할수 없습니다."), g_nPortalLimitTime);
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "창고를 연후 %d초 이내에는 거래를 할수 없습니다.", g_nPortalLimitTime);
 
 						if (test_server)
 							ch->ChatPacket(CHAT_TYPE_INFO, "[TestOnly][Safebox]Pulse %d LoadTime %d PASS %d", iPulse, ch->GetSafeboxLoadTime(), PASSES_PER_SEC(g_nPortalLimitTime));
@@ -1271,7 +1271,7 @@ void CInputMain::Exchange(LPCHARACTER ch, const char * data)
 
 					if (iPulse - to_ch->GetSafeboxLoadTime() < PASSES_PER_SEC(g_nPortalLimitTime))
 					{
-						to_ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("창고를 연후 %d초 이내에는 거래를 할수 없습니다."), g_nPortalLimitTime);
+						to_ch->ChatPacketTrans(CHAT_TYPE_INFO, "창고를 연후 %d초 이내에는 거래를 할수 없습니다.", g_nPortalLimitTime);
 
 
 						if (test_server)
@@ -1281,7 +1281,7 @@ void CInputMain::Exchange(LPCHARACTER ch, const char * data)
 
 					if (ch->GetGold() >= GOLD_MAX)
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("액수가 20억 냥을 초과하여 거래를 할수가 없습니다.."));
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "액수가 20억 냥을 초과하여 거래를 할수가 없습니다..");
 
 						sys_err("[OVERFLOG_GOLD] START (%u) id %u name %s ", ch->GetGold(), ch->GetPlayerID(), ch->GetName());
 						return;
@@ -1299,7 +1299,7 @@ void CInputMain::Exchange(LPCHARACTER ch, const char * data)
 
 					if (ch->GetMyShop() || ch->IsOpenSafebox() || ch->GetShopOwner() || ch->IsCubeOpen())
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("다른 거래중일경우 개인상점을 열수가 없습니다."));
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "다른 거래중일경우 개인상점을 열수가 없습니다.");
 						return;
 					}
 
@@ -1331,7 +1331,7 @@ void CInputMain::Exchange(LPCHARACTER ch, const char * data)
 
 				if (GOLD_MAX <= nTotalGold)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("상대방의 총금액이 20억 냥을 초과하여 거래를 할수가 없습니다.."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "상대방의 총금액이 20억 냥을 초과하여 거래를 할수가 없습니다..");
 
 					sys_err("[OVERFLOW_GOLD] ELK_ADD (%lld) id %u name %s ",
 							ch->GetExchange()->GetCompany()->GetOwner()->GetGold(),
@@ -1817,7 +1817,7 @@ void CInputMain::Attack(LPCHARACTER ch, const BYTE header, const char* data)
 				if (HEADER_CG_SHOOT != type->header)
 				{
 					if (test_server)
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Attack :name[%s] Vnum[%d] can't use skill by attack(warning)"), type->type);
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "Attack :name[%s] Vnum[%d] can't use skill by attack(warning)", type->type);
 					return;
 				}
 				break;
@@ -2164,31 +2164,31 @@ void CInputMain::SafeboxCheckin(LPCHARACTER ch, const char * c_pData)
 
 	if (pkItem->GetCell() >= INVENTORY_MAX_NUM && IS_SET(pkItem->GetFlag(), ITEM_FLAG_IRREMOVABLE))
 	{
-	    ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<창고> 창고로 옮길 수 없는 아이템 입니다."));
+	    ch->ChatPacketTrans(CHAT_TYPE_INFO, "<창고> 창고로 옮길 수 없는 아이템 입니다.");
 	    return;
 	}
 
 	if (!pkSafebox->IsEmpty(p->bSafePos, pkItem->GetSize()))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<창고> 옮길 수 없는 위치입니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<창고> 옮길 수 없는 위치입니다.");
 		return;
 	}
 
 	if (pkItem->GetVnum() == UNIQUE_ITEM_SAFEBOX_EXPAND)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<창고> 이 아이템은 넣을 수 없습니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<창고> 이 아이템은 넣을 수 없습니다.");
 		return;
 	}
 
 	if( IS_SET(pkItem->GetAntiFlag(), ITEM_ANTIFLAG_SAFEBOX) )
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<창고> 이 아이템은 넣을 수 없습니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<창고> 이 아이템은 넣을 수 없습니다.");
 		return;
 	}
 
 	if (true == pkItem->isLocked())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<창고> 이 아이템은 넣을 수 없습니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<창고> 이 아이템은 넣을 수 없습니다.");
 		return;
 	}
 
@@ -2201,7 +2201,7 @@ void CInputMain::SafeboxCheckin(LPCHARACTER ch, const char * c_pData)
 			LPITEM costumeWeapon = ch->GetWear(WEAR_COSTUME_WEAPON);
 			if (costumeWeapon && !ch->UnequipItem(costumeWeapon))
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot unequip the costume weapon. Not enough space."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot unequip the costume weapon. Not enough space.");
 				return;
 			}
 		}
@@ -2284,7 +2284,7 @@ void CInputMain::PartyInvite(LPCHARACTER ch, const char * c_pData)
 {
 	if (ch->GetArena())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("대련장에서 사용하실 수 없습니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "대련장에서 사용하실 수 없습니다.");
 		return;
 	}
 
@@ -2305,7 +2305,7 @@ void CInputMain::PartyInviteAnswer(LPCHARACTER ch, const char * c_pData)
 {
 	if (ch->GetArena())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("대련장에서 사용하실 수 없습니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "대련장에서 사용하실 수 없습니다.");
 		return;
 	}
 
@@ -2316,7 +2316,7 @@ void CInputMain::PartyInviteAnswer(LPCHARACTER ch, const char * c_pData)
 	// pInviter 가 ch 에게 파티 요청을 했었다.
 
 	if (!pInviter)
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<파티> 파티요청을 한 캐릭터를 찾을수 없습니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<파티> 파티요청을 한 캐릭터를 찾을수 없습니다.");
 	else if (!p->accept)
 		pInviter->PartyInviteDeny(ch->GetPlayerID());
 	else
@@ -2328,7 +2328,7 @@ void CInputMain::PartySetState(LPCHARACTER ch, const char* c_pData)
 {
 	if (!CPartyManager::instance().IsEnablePCParty())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<파티> 서버 문제로 파티 관련 처리를 할 수 없습니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<파티> 서버 문제로 파티 관련 처리를 할 수 없습니다.");
 		return;
 	}
 
@@ -2339,13 +2339,13 @@ void CInputMain::PartySetState(LPCHARACTER ch, const char* c_pData)
 
 	if (ch->GetParty()->GetLeaderPID() != ch->GetPlayerID())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<파티> 리더만 변경할 수 있습니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<파티> 리더만 변경할 수 있습니다.");
 		return;
 	}
 
 	if (!ch->GetParty()->IsMember(p->pid))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<파티> 상태를 변경하려는 사람이 파티원이 아닙니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<파티> 상태를 변경하려는 사람이 파티원이 아닙니다.");
 		return;
 	}
 
@@ -2373,7 +2373,7 @@ void CInputMain::PartySetState(LPCHARACTER ch, const char* c_pData)
 				db_clientdesc->DBPacket(HEADER_GD_PARTY_STATE_CHANGE, 0, &pack, sizeof(pack));
 			}
 			/* else
-			   ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<파티> 어태커 설정에 실패하였습니다.")); */
+			   ch->ChatPacketTrans(CHAT_TYPE_INFO, "<파티> 어태커 설정에 실패하였습니다."); */
 			break;
 
 		default:
@@ -2386,19 +2386,19 @@ void CInputMain::PartyRemove(LPCHARACTER ch, const char* c_pData)
 {
 	if (ch->GetArena())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("대련장에서 사용하실 수 없습니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "대련장에서 사용하실 수 없습니다.");
 		return;
 	}
 
 	if (!CPartyManager::instance().IsEnablePCParty())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<파티> 서버 문제로 파티 관련 처리를 할 수 없습니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<파티> 서버 문제로 파티 관련 처리를 할 수 없습니다.");
 		return;
 	}
 
 	if (ch->GetDungeon())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<파티> 던전 안에서는 파티에서 추방할 수 없습니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<파티> 던전 안에서는 파티에서 추방할 수 없습니다.");
 		return;
 	}
 
@@ -2412,14 +2412,14 @@ void CInputMain::PartyRemove(LPCHARACTER ch, const char* c_pData)
 	{
 		if (ch->GetDungeon())
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<파티> 던젼내에서는 파티원을 추방할 수 없습니다."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "<파티> 던젼내에서는 파티원을 추방할 수 없습니다.");
 		}
 		else
 		{
 			// 적룡성에서 파티장이 던젼 밖에서 파티 해산 못하게 막자
 			if(pParty->IsPartyInDungeon(351))
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<파티>던전 안에 파티원이 있어 파티를 해산 할 수 없습니다."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "<파티>던전 안에 파티원이 있어 파티를 해산 할 수 없습니다.");
 				return;
 			}
 
@@ -2435,7 +2435,7 @@ void CInputMain::PartyRemove(LPCHARACTER ch, const char* c_pData)
 				if (B)
 				{
 					//pParty->SendPartyRemoveOneToAll(B);
-					B->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<파티> 파티에서 추방당하셨습니다."));
+					B->ChatPacketTrans(CHAT_TYPE_INFO, "<파티> 파티에서 추방당하셨습니다.");
 					//pParty->Unlink(B);
 					//CPartyManager::instance().SetPartyMember(B->GetPlayerID(), NULL);
 				}
@@ -2450,7 +2450,7 @@ void CInputMain::PartyRemove(LPCHARACTER ch, const char* c_pData)
 		{
 			if (ch->GetDungeon())
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<파티> 던젼내에서는 파티를 나갈 수 없습니다."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "<파티> 던젼내에서는 파티를 나갈 수 없습니다.");
 			}
 			else
 			{
@@ -2461,7 +2461,7 @@ void CInputMain::PartyRemove(LPCHARACTER ch, const char* c_pData)
 				}
 				else
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<파티> 파티에서 나가셨습니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<파티> 파티에서 나가셨습니다.");
 					//pParty->SendPartyRemoveOneToAll(ch);
 					pParty->Quit(ch->GetPlayerID());
 					//pParty->SendPartyRemoveAllToOne(ch);
@@ -2471,7 +2471,7 @@ void CInputMain::PartyRemove(LPCHARACTER ch, const char* c_pData)
 		}
 		else
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<파티> 다른 파티원을 탈퇴시킬 수 없습니다."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "<파티> 다른 파티원을 탈퇴시킬 수 없습니다.");
 		}
 	}
 }
@@ -2486,7 +2486,7 @@ void CInputMain::AnswerMakeGuild(LPCHARACTER ch, const char* c_pData)
 	/* if (get_global_time() - ch->GetQuestFlag("guild_manage.new_disband_time") <
 			CGuildManager::instance().GetDisbandDelay())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 해산한 후 %d일 이내에는 길드를 만들 수 없습니다."),
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 해산한 후 %d일 이내에는 길드를 만들 수 없습니다.",
 				quest::CQuestManager::instance().GetEventFlag("guild_disband_delay"));
 		return;
 	} */
@@ -2504,7 +2504,7 @@ void CInputMain::AnswerMakeGuild(LPCHARACTER ch, const char* c_pData)
 
 	if (cp.name[0] == 0 || !check_name(cp.name))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("적합하지 않은 길드 이름 입니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "적합하지 않은 길드 이름 입니다.");
 		return;
 	}
 
@@ -2512,7 +2512,7 @@ void CInputMain::AnswerMakeGuild(LPCHARACTER ch, const char* c_pData)
 
 	if (dwGuildID)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> [%s] 길드가 생성되었습니다."), cp.name);
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> [%s] 길드가 생성되었습니다.", cp.name);
 
 		int GuildCreateFee = 10000000;
 
@@ -2527,7 +2527,7 @@ void CInputMain::AnswerMakeGuild(LPCHARACTER ch, const char* c_pData)
 		//ch->SendGuildName(dwGuildID);
 	}
 	else
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 길드 생성에 실패하였습니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 길드 생성에 실패하였습니다.");
 }
 
 void CInputMain::PartyUseSkill(LPCHARACTER ch, const char* c_pData)
@@ -2538,7 +2538,7 @@ void CInputMain::PartyUseSkill(LPCHARACTER ch, const char* c_pData)
 
 	if (ch->GetPlayerID() != ch->GetParty()->GetLeaderPID())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<파티> 파티 기술은 파티장만 사용할 수 있습니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<파티> 파티 기술은 파티장만 사용할 수 있습니다.");
 		return;
 	}
 
@@ -2553,7 +2553,7 @@ void CInputMain::PartyUseSkill(LPCHARACTER ch, const char* c_pData)
 				if (pch)
 					ch->GetParty()->SummonToLeader(pch->GetPlayerID());
 				else
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<파티> 소환하려는 대상을 찾을 수 없습니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<파티> 소환하려는 대상을 찾을 수 없습니다.");
 			}
 			break;
 	}
@@ -2615,7 +2615,7 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 	{
 		if (SubHeader != GUILD_SUBHEADER_CG_GUILD_INVITE_ANSWER)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 길드에 속해있지 않습니다."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 길드에 속해있지 않습니다.");
 			return SubPacketLen;
 		}
 	}
@@ -2631,13 +2631,13 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 				if (gold < 0)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 잘못된 금액입니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 잘못된 금액입니다.");
 					return SubPacketLen;
 				}
 
 				if (ch->GetGold() < gold)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 가지고 있는 돈이 부족합니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 가지고 있는 돈이 부족합니다.");
 					return SubPacketLen;
 				}
 
@@ -2654,7 +2654,7 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 				if (gold < 0)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 잘못된 금액입니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 잘못된 금액입니다.");
 					return SubPacketLen;
 				}
 
@@ -2669,7 +2669,7 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 				if (!newmember)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 그러한 사람을 찾을 수 없습니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 그러한 사람을 찾을 수 없습니다.");
 					return SubPacketLen;
 				}
 
@@ -2686,7 +2686,7 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 			{
 				if (pGuild->UnderAnyWar() != 0)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 길드전 중에는 길드원을 탈퇴시킬 수 없습니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 길드전 중에는 길드원을 탈퇴시킬 수 없습니다.");
 					return SubPacketLen;
 				}
 
@@ -2702,13 +2702,13 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 				{
 					if (member->GetGuild() != pGuild)
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 상대방이 같은 길드가 아닙니다."));
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 상대방이 같은 길드가 아닙니다.");
 						return SubPacketLen;
 					}
 
 					if (!pGuild->HasGradeAuth(m->grade, GUILD_AUTH_REMOVE_MEMBER))
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 길드원을 강제 탈퇴 시킬 권한이 없습니다."));
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 길드원을 강제 탈퇴 시킬 권한이 없습니다.");
 						return SubPacketLen;
 					}
 
@@ -2723,14 +2723,14 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 				{
 					if (!pGuild->HasGradeAuth(m->grade, GUILD_AUTH_REMOVE_MEMBER))
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 길드원을 강제 탈퇴 시킬 권한이 없습니다."));
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 길드원을 강제 탈퇴 시킬 권한이 없습니다.");
 						return SubPacketLen;
 					}
 
 					if (pGuild->RequestRemoveMember(pid))
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 길드원을 강제 탈퇴 시켰습니다."));
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 길드원을 강제 탈퇴 시켰습니다.");
 					else
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 그러한 사람을 찾을 수 없습니다."));
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 그러한 사람을 찾을 수 없습니다.");
 				}
 			}
 			return SubPacketLen;
@@ -2747,15 +2747,15 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 				if (m->grade != GUILD_LEADER_GRADE)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 직위 이름을 변경할 권한이 없습니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 직위 이름을 변경할 권한이 없습니다.");
 				}
 				else if (*c_pData == GUILD_LEADER_GRADE)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 길드장의 직위 이름은 변경할 수 없습니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 길드장의 직위 이름은 변경할 수 없습니다.");
 				}
 				else if (!check_name(gradename))
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 적합하지 않은 직위 이름 입니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 적합하지 않은 직위 이름 입니다.");
 				}
 				else
 				{
@@ -2773,11 +2773,11 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 				if (m->grade != GUILD_LEADER_GRADE)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 직위 권한을 변경할 권한이 없습니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 직위 권한을 변경할 권한이 없습니다.");
 				}
 				else if (*c_pData == GUILD_LEADER_GRADE)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 길드장의 권한은 변경할 수 없습니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 길드장의 권한은 변경할 수 없습니다.");
 				}
 				else
 				{
@@ -2795,7 +2795,7 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 				if (pGuild->GetLevel() >= GUILD_MAX_LEVEL)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 길드가 이미 최고 레벨입니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 길드가 이미 최고 레벨입니다.");
 				}
 				else
 				{
@@ -2804,11 +2804,11 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 					if (pGuild->OfferExp(ch, offer))
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> %u의 경험치를 투자하였습니다."), offer);
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> %u의 경험치를 투자하였습니다.", offer);
 					}
 					else
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 경험치 투자에 실패하였습니다."));
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 경험치 투자에 실패하였습니다.");
 					}
 				}
 			}
@@ -2821,13 +2821,13 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 				if (offer < 0 || gold < offer || gold < 0 || ch->GetGold() < gold)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 돈이 부족합니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 돈이 부족합니다.");
 					return SubPacketLen;
 				}
 
 				if (!pGuild->ChargeSP(ch, offer))
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 용신력 회복에 실패하였습니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 용신력 회복에 실패하였습니다.");
 				}
 			}
 			return SubPacketLen;
@@ -2854,7 +2854,7 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 				if (length && !pGuild->HasGradeAuth(m->grade, GUILD_AUTH_NOTICE) && *(c_pData + 1) == '!')
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 공지글을 작성할 권한이 없습니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 공지글을 작성할 권한이 없습니다.");
 				}
 				else
 				{
@@ -2887,11 +2887,11 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 					return -1;
 
 				if (m->grade != GUILD_LEADER_GRADE)
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 직위를 변경할 권한이 없습니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 직위를 변경할 권한이 없습니다.");
 				else if (ch->GetPlayerID() == pid)
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 길드장의 직위는 변경할 수 없습니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 길드장의 직위는 변경할 수 없습니다.");
 				else if (grade == 1)
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 길드장으로 직위를 변경할 수 없습니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 길드장으로 직위를 변경할 수 없습니다.");
 				else
 					pGuild->ChangeMemberGrade(pid, grade);
 			}
@@ -2916,13 +2916,13 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 				if (m->grade != GUILD_LEADER_GRADE)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 장군을 지정할 권한이 없습니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 장군을 지정할 권한이 없습니다.");
 				}
 				else
 				{
 					if (!pGuild->ChangeMemberGeneral(pid, is_general))
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 더이상 장수를 지정할 수 없습니다."));
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 더이상 장수를 지정할 수 없습니다.");
 					}
 				}
 			}
@@ -2966,7 +2966,7 @@ void CInputMain::ItemGive(LPCHARACTER ch, const char* c_pData)
 	if (to_ch)
 		ch->GiveItem(to_ch, p->ItemPos);
 	else
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("아이템을 건네줄 수 없습니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "아이템을 건네줄 수 없습니다.");
 }
 
 void CInputMain::Hack(LPCHARACTER ch, const char * c_pData)
@@ -2992,7 +2992,7 @@ int CInputMain::MyShop(LPCHARACTER ch, const char * c_pData, size_t uiBytes)
 
 	if (ch->GetGold() >= GOLD_MAX)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("소유 돈이 20억냥을 넘어 거래를 핼수가 없습니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "소유 돈이 20억냥을 넘어 거래를 핼수가 없습니다.");
 		sys_log(0, "MyShop ==> OverFlow Gold id %u name %s ", ch->GetPlayerID(), ch->GetName());
 		return (iExtraLen);
 	}
@@ -3002,7 +3002,7 @@ int CInputMain::MyShop(LPCHARACTER ch, const char * c_pData, size_t uiBytes)
 
 	if (ch->GetExchange() || ch->IsOpenSafebox() || ch->GetShopOwner() || ch->IsCubeOpen())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("다른 거래중일경우 개인상점을 열수가 없습니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "다른 거래중일경우 개인상점을 열수가 없습니다.");
 		return (iExtraLen);
 	}
 

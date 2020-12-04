@@ -630,7 +630,7 @@ namespace quest
 	{
 		if (m_bIsGivenReward)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<퀘스트> 이전에 같은 보상을 받은 적이 있어 다시 받지 않습니다."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "<퀘스트> 이전에 같은 보상을 받은 적이 있어 다시 받지 않습니다.");
 			m_bIsGivenReward = false;
 		}
 

@@ -382,8 +382,8 @@ void CWarMap::IncMember(LPCHARACTER ch)
 		++m_iObserverCount;
 		sys_log(0, "WarMap +o %d", m_iObserverCount);
 		ch->SetObserverMode(true);
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("관전 모드로 길드전에 참가하셨습니다."));
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("자신을 선택하시면 밖으로 나갈 수 있는 <관람 종료> 버튼이 나옵니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "관전 모드로 길드전에 참가하셨습니다.");
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "자신을 선택하시면 밖으로 나갈 수 있는 <관람 종료> 버튼이 나옵니다.");
 	}
 
 	UpdateUserCount();

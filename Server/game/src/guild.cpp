@@ -920,7 +920,7 @@ bool CGuild::OfferExp(LPCHARACTER ch, int amount)
 
 	if (ch->GetExp() < (DWORD) amount)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 제공하고자 하는 경험치가 남은 경험치보다 많습니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 제공하고자 하는 경험치가 남은 경험치보다 많습니다.");
 		return false;
 	}
 
@@ -1032,7 +1032,7 @@ void CGuild::DeleteComment(LPCHARACTER ch, DWORD comment_id)
 		pmsg = DBManager::instance().DirectQuery("DELETE FROM guild_comment%s WHERE id = %u AND guild_id = %u AND name = '%s'",get_table_postfix(), comment_id, m_data.guild_id, ch->GetName());
 
 	if (pmsg->Get()->uiAffectedRows == 0 || pmsg->Get()->uiAffectedRows == (uint32_t)-1)
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 삭제할 수 없는 글입니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 삭제할 수 없는 글입니다.");
 	else
 		RefreshCommentForce(ch->GetPlayerID());
 
@@ -1291,7 +1291,7 @@ void CGuild::UseSkill(DWORD dwVnum, LPCHARACTER ch, DWORD pid)
 
 	if (GetSP() < iNeededSP)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 용신력이 부족합니다. (%d, %d)"), GetSP(), iNeededSP);
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 용신력이 부족합니다. (%d, %d)", GetSP(), iNeededSP);
 		return;
 	}
 
@@ -1300,7 +1300,7 @@ void CGuild::UseSkill(DWORD dwVnum, LPCHARACTER ch, DWORD pid)
 
 	if (!abSkillUsable[dwRealVnum])
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 쿨타임이 끝나지 않아 길드 스킬을 사용할 수 없습니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 쿨타임이 끝나지 않아 길드 스킬을 사용할 수 없습니다.");
 		return;
 	}
 
@@ -1319,7 +1319,7 @@ void CGuild::UseSkill(DWORD dwVnum, LPCHARACTER ch, DWORD pid)
 	//GuildPointChange(POINT_SP, -iNeededSP);
 
 	if (test_server)
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> %d 스킬을 사용함 (%d, %d) to %u"), dwVnum, GetSP(), iNeededSP, pid);
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> %d 스킬을 사용함 (%d, %d) to %u", dwVnum, GetSP(), iNeededSP, pid);
 
 	switch (dwVnum)
 	{
@@ -1340,7 +1340,7 @@ void CGuild::UseSkill(DWORD dwVnum, LPCHARACTER ch, DWORD pid)
 
 					if (pcci->bChannel != g_bChannel)
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 상대가 %d 채널에 있습니다. (현재 채널 %d)"), pcci->bChannel, g_bChannel);
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 상대가 %d 채널에 있습니다. (현재 채널 %d)", pcci->bChannel, g_bChannel);
 					}
 					else
 					{
@@ -1353,7 +1353,7 @@ void CGuild::UseSkill(DWORD dwVnum, LPCHARACTER ch, DWORD pid)
 					}
 				}
 				else
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 상대가 온라인 상태가 아닙니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 상대가 온라인 상태가 아닙니다.");
 			}
 			break;
 
@@ -1367,13 +1367,13 @@ void CGuild::UseSkill(DWORD dwVnum, LPCHARACTER ch, DWORD pid)
 			{
 				/*if (ch->GetPlayerID() != GetMasterPID())
 				  {
-				  ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 길드장만 길드 스킬을 사용할 수 있습니다."));
+				  ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 길드장만 길드 스킬을 사용할 수 있습니다.");
 				  return;
 				  }*/
 
 				if (!UnderAnyWar())
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 길드 스킬은 길드전 중에만 사용할 수 있습니다."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 길드 스킬은 길드전 중에만 사용할 수 있습니다.");
 					return;
 				}
 
@@ -1733,7 +1733,7 @@ bool CGuild::ChargeSP(LPCHARACTER ch, int iSP)
 
 	SendDBSkillUpdate(iSP);
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> %u의 용신력을 회복하였습니다."), iSP);
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> %u의 용신력을 회복하였습니다.", iSP);
 	}
 	return true;
 }
@@ -1804,7 +1804,7 @@ void CGuild::RequestDepositMoney(LPCHARACTER ch, GoldType iGold)
 {
 	if (false==ch->CanDeposit())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 잠시후에 이용해주십시오"));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 잠시후에 이용해주십시오");
 		return;
 	}
 
@@ -1831,19 +1831,19 @@ void CGuild::RequestWithdrawMoney(LPCHARACTER ch, GoldType iGold)
 {
 	if (false==ch->CanDeposit())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 잠시후에 이용해주십시오"));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 잠시후에 이용해주십시오");
 		return;
 	}
 
 	if (ch->GetPlayerID() != GetMasterPID())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 길드 금고에선 길드장만 출금할 수 있습니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 길드 금고에선 길드장만 출금할 수 있습니다.");
 		return;
 	}
 
 	if (m_data.gold < iGold)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 가지고 있는 돈이 부족합니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 가지고 있는 돈이 부족합니다.");
 		return;
 	}
 
@@ -1938,7 +1938,7 @@ void CGuild::Invite( LPCHARACTER pchInviter, LPCHARACTER pchInvitee )
 {
 	if (quest::CQuestManager::instance().GetPCForce(pchInviter->GetPlayerID())->IsRunning() == true)
 	{
-	    pchInviter->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 상대방이 초대 신청을 받을 수 없는 상태입니다."));
+	    pchInviter->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 상대방이 초대 신청을 받을 수 없는 상태입니다.");
 	    return;
 	}
 
@@ -1971,8 +1971,8 @@ void CGuild::Invite( LPCHARACTER pchInviter, LPCHARACTER pchInvitee )
 								LC_TEXT("<길드> 길드를 해산한 지 %d일이 지나지 않은 사람은 길드에 초대할 수 없습니다."),
 								quest::CQuestManager::instance().GetEventFlag( "guild_disband_delay") );
 						return;
-		case GERR_ALREADYJOIN:	pchInviter->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 상대방이 이미 다른 길드에 속해있습니다.")); return;
-		case GERR_GUILDISFULL:	pchInviter->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 최대 길드원 수를 초과했습니다.")); return;
+		case GERR_ALREADYJOIN:	pchInviter->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 상대방이 이미 다른 길드에 속해있습니다."); return;
+		case GERR_GUILDISFULL:	pchInviter->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 최대 길드원 수를 초과했습니다."); return;
 		case GERR_GUILD_IS_IN_WAR : pchInviter->ChatPacket( CHAT_TYPE_INFO, LC_TEXT("<길드> 현재 길드가 전쟁 중 입니다.") ); return;
 		case GERR_INVITE_LIMIT : pchInviter->ChatPacket( CHAT_TYPE_INFO, LC_TEXT("<길드> 현재 신규 가입 제한 상태 입니다.") ); return;
 
@@ -2031,8 +2031,8 @@ void CGuild::InviteAccept( LPCHARACTER pchInvitee )
 								LC_TEXT("<길드> 길드를 해산한 지 %d일이 지나지 않은 사람은 길드에 초대할 수 없습니다."),
 								quest::CQuestManager::instance().GetEventFlag( "guild_disband_delay") );
 						return;
-		case GERR_ALREADYJOIN:	pchInvitee->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 상대방이 이미 다른 길드에 속해있습니다.")); return;
-		case GERR_GUILDISFULL:	pchInvitee->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 최대 길드원 수를 초과했습니다.")); return;
+		case GERR_ALREADYJOIN:	pchInvitee->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 상대방이 이미 다른 길드에 속해있습니다."); return;
+		case GERR_GUILDISFULL:	pchInvitee->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 최대 길드원 수를 초과했습니다."); return;
 		case GERR_GUILD_IS_IN_WAR : pchInvitee->ChatPacket( CHAT_TYPE_INFO, LC_TEXT("<길드> 현재 길드가 전쟁 중 입니다.") ); return;
 		case GERR_INVITE_LIMIT : pchInvitee->ChatPacket( CHAT_TYPE_INFO, LC_TEXT("<길드> 현재 신규 가입 제한 상태 입니다.") ); return;
 

@@ -1317,11 +1317,11 @@ void CInputDB::SafeboxChangePasswordAnswer(LPDESC d, const char* c_pData)
 	TSafeboxChangePasswordPacketAnswer* p = (TSafeboxChangePasswordPacketAnswer*) c_pData;
 	if (p->flag)
 	{
-		d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<창고> 창고 비밀번호가 변경되었습니다."));
+		d->GetCharacter()->ChatPacketTrans(CHAT_TYPE_INFO, "<창고> 창고 비밀번호가 변경되었습니다.");
 	}
 	else
 	{
-		d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<창고> 기존 비밀번호가 틀렸습니다."));
+		d->GetCharacter()->ChatPacketTrans(CHAT_TYPE_INFO, "<창고> 기존 비밀번호가 틀렸습니다.");
 	}
 }
 
@@ -2017,7 +2017,7 @@ void CInputDB::BillingExpire(const char * c_pData)
 			d->SetBillingExpireSecond(p->dwRemainSeconds);
 
 			if (ch)
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("결재기간이 %d분 후 만료 됩니다."), (p->dwRemainSeconds / 60));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "결재기간이 %d분 후 만료 됩니다.", (p->dwRemainSeconds / 60));
 		}
 	}
 }
@@ -2676,7 +2676,7 @@ void CInputDB::AddMonarchMoney(LPDESC d, const char * data )
 	if (ch)
 	{
 		if (number(1, 100) > 95)
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("현재 %s 국고에는 %u 의 돈이 있습니다"), EMPIRE_NAME(Empire), CMonarch::instance().GetMoney(Empire));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "현재 %s 국고에는 %u 의 돈이 있습니다", EMPIRE_NAME(Empire), CMonarch::instance().GetMoney(Empire));
 	}
 }
 
@@ -2696,7 +2696,7 @@ void CInputDB::DecMonarchMoney(LPDESC d, const char * data)
 
 	if (ch)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("현재 %s 국고에는 %d 의 돈이 있습니다"), EMPIRE_NAME(Empire), CMonarch::instance().GetMoney(Empire));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "현재 %s 국고에는 %d 의 돈이 있습니다", EMPIRE_NAME(Empire), CMonarch::instance().GetMoney(Empire));
 	}
 }
 
@@ -2717,7 +2717,7 @@ void CInputDB::TakeMonarchMoney(LPDESC d, const char * data)
 			return;
 
 		LPCHARACTER ch = d->GetCharacter();
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("국고에 돈이 부족하거나 돈을 가져올수 없는 상황입니다"));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "국고에 돈이 부족하거나 돈을 가져올수 없는 상황입니다");
 	}
 }
 

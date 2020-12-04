@@ -435,11 +435,11 @@ void FishingPractice(LPCHARACTER ch)
 		if ( rod->GetRefinedVnum()>0 && rod->GetSocket(0) < rod->GetValue(2) && number(1,rod->GetValue(1))==1 )
 		{
 			rod->SetSocket(0, rod->GetSocket(0) + 1);
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("낚시대의 수련도가 증가하였습니다! (%d/%d)"),rod->GetSocket(0), rod->GetValue(2));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "낚시대의 수련도가 증가하였습니다! (%d/%d)",rod->GetSocket(0), rod->GetValue(2));
 			if (rod->GetSocket(0) == rod->GetValue(2))
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("낚시대가 최대 수련도에 도달하였습니다."));
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("어부를 통해 다음 레벨의 낚시대로 업그레이드 할 수 있습니다."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "낚시대가 최대 수련도에 도달하였습니다.");
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "어부를 통해 다음 레벨의 낚시대로 업그레이드 할 수 있습니다.");
 			}
 		}
 	}
@@ -608,7 +608,7 @@ void Take(fishing_event_info* info, LPCHARACTER ch)
 			case -2: // 잡히지 않은 경우
 			case -3: // 난이도 때문에 실패
 			case -1: // 시간 확률 때문에 실패
-				//ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("고기가 미끼만 빼먹고 잽싸게 도망칩니다."));
+				//ch->ChatPacketTrans(CHAT_TYPE_INFO, "고기가 미끼만 빼먹고 잽싸게 도망칩니다.");
 				{
 					int map_idx = ch->GetMapIndex();
 					int prob_idx = GetProbIndexByMapIndex(map_idx);
@@ -624,7 +624,7 @@ void Take(fishing_event_info* info, LPCHARACTER ch)
 				break;
 
 			case 0:
-				//ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("고기가 잡혔습니다! (%s)"), fish_info[info->fish_id].name);
+				//ch->ChatPacketTrans(CHAT_TYPE_INFO, "고기가 잡혔습니다! (%s)", fish_info[info->fish_id].name);
 				if (item_vnum)
 				{
 					FishingSuccess(ch);
@@ -641,7 +641,7 @@ void Take(fishing_event_info* info, LPCHARACTER ch)
 						item->SetSocket(0,GetFishLength(info->fish_id));
 						if (test_server)
 						{
-							ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("이번에 잡은 물고기의 길이는 %.2fcm"), item->GetSocket(0)/100.f);
+							ch->ChatPacketTrans(CHAT_TYPE_INFO, "이번에 잡은 물고기의 길이는 %.2fcm", item->GetSocket(0)/100.f);
 						}
 
 						if (quest::CQuestManager::instance().GetEventFlag("fishevent") > 0 && (info->fish_id == 5 || info->fish_id == 6))
@@ -705,7 +705,7 @@ void Take(fishing_event_info* info, LPCHARACTER ch)
 				info->fish_id,
 				GetFishingLevel(ch),
 				7000);
-		//ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("고기가 미끼만 빼먹고 잽싸게 도망칩니다."));
+		//ch->ChatPacketTrans(CHAT_TYPE_INFO, "고기가 미끼만 빼먹고 잽싸게 도망칩니다.");
 		FishingFail(ch);
 	}
 	else
@@ -743,9 +743,9 @@ void Simulation(int level, int count, int prob_idx, LPCHARACTER ch)
 	}
 
 	for (std::map<std::string,int>::iterator it = fished.begin(); it != fished.end(); ++it)
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s : %d 마리"), it->first.c_str(), it->second);
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "%s : %d 마리", it->first.c_str(), it->second);
 
-	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%d 종류 %d 마리 낚음"), fished.size(), total_count);
+	ch->ChatPacketTrans(CHAT_TYPE_INFO, "%d 종류 %d 마리 낚음", fished.size(), total_count);
 }
 
 void UseFish(LPCHARACTER ch, LPITEM item)
@@ -782,16 +782,16 @@ void UseFish(LPCHARACTER ch, LPITEM item)
 			case USED_TREASURE_MAP:	// 3
 			case USED_NONE:		// 0
 			case USED_WATER_STONE:	// 2
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("고기가 흔적도 없이 사라집니다."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "고기가 흔적도 없이 사라집니다.");
 				break;
 
 			case USED_SHELLFISH:	// 1
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("배 속에서 조개가 나왔습니다."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "배 속에서 조개가 나왔습니다.");
 				ch->AutoGiveItem(SHELLFISH_VNUM);
 				break;
 
 			case USED_EARTHWARM:	// 4
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("배 속에서 지렁이가 나왔습니다."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "배 속에서 지렁이가 나왔습니다.");
 				ch->AutoGiveItem(EARTHWORM_VNUM);
 				break;
 
@@ -822,7 +822,7 @@ void Grill(LPCHARACTER ch, LPITEM item)
 
 	int count = item->GetCount();
 
-	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s를 구웠습니다."), item->GetName());
+	ch->ChatPacketTrans(CHAT_TYPE_INFO, "%s를 구웠습니다.", item->GetName());
 	item->SetCount(0);
 	ch->AutoGiveItem(fish_info[idx].grill_vnum, count);
 }
@@ -883,11 +883,11 @@ int RealRefineRod(LPCHARACTER ch, LPITEM item)
 
 #ifdef ENABLE_FISHINGROD_RENEWAL
 		{
-			// if (test_server) ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<FishRod> PRE %u"), rod->GetSocket(0));
+			// if (test_server) ch->ChatPacketTrans(CHAT_TYPE_INFO, "<FishRod> PRE %u", rod->GetSocket(0));
 			int cur = rod->GetSocket(0);
 			rod->SetSocket(0, (cur > 0) ? (cur - (cur * 10 / 100)) : 0);
-			// if (test_server) ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<FishRod> POST %u"), rod->GetSocket(0));
-			// ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<FishRod> The upgrade has failed, and the fishrod has lost 10%% of its mastery points."));
+			// if (test_server) ch->ChatPacketTrans(CHAT_TYPE_INFO, "<FishRod> POST %u", rod->GetSocket(0));
+			// ch->ChatPacketTrans(CHAT_TYPE_INFO, "<FishRod> The upgrade has failed, and the fishrod has lost 10%% of its mastery points.");
 			LogManager::instance().ItemLog(ch, rod, "REFINE FISH_ROD FAIL", rod->GetName());
 			return 0;
 		}
