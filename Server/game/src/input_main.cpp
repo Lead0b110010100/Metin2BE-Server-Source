@@ -3337,6 +3337,10 @@ int CInputMain::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 			break;
 #endif
 
+		case HEADER_CG_WHISPER_DETAILS:
+			WhisperDetails(ch, c_pData);
+			break;
+
 		case HEADER_CG_HS_ACK:
 			if (isHackShieldEnable)
 			{
@@ -3397,5 +3401,43 @@ int CInputDead::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 	}
 
 	return (iExtraLen);
+}
+
+void CInputMain::WhisperDetails(LPCHARACTER ch, const char *c_pData)
+{
+	TPacketCGWhisperDetails *p = (TPacketCGWhisperDetails *)c_pData;
+
+	if (!p || !*p->name)
+		return;
+
+	LPDESC d = ch->GetDesc();
+
+	if (!d)
+		return;
+
+	LPCHARACTER tch = CHARACTER_MANAGER::Instance().FindPC(p->name);
+	CCI *pkCCI = P2P_MANAGER::instance().Find(p->name);
+
+	if (tch)
+	{
+		uint8_t language = tch->GetLanguage();
+		uint8_t empire = tch->GetEmpire();
+
+		TPacketGCWhisperDetails tp;
+		strlcpy(tp.name, p->name, sizeof(tp.name));
+		tp.language = language;
+		tp.empire = empire;
+		d->Packet(&tp, sizeof(TPacketGCWhisperDetails));
+	}
+	else
+	{
+		if (pkCCI) // Check: Is the player online?
+		{
+			TPacketGGCheckWhisperDetails pgg;
+			strlcpy(pgg.sender_name, ch->GetName(), sizeof(pgg.sender_name));
+			strlcpy(pgg.target_name, p->name, sizeof(pgg.target_name));
+			P2P_MANAGER::instance().Send(&pgg, sizeof(TPacketGGCheckWhisperDetails));
+		}
+	}
 }
 

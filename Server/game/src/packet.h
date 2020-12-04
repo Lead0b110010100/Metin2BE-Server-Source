@@ -111,6 +111,7 @@ enum
 	HEADER_CG_XTRAP_ACK				= 204,
 
 	HEADER_CG_STATE_CHECKER					= 206,
+	HEADER_CG_WHISPER_DETAILS = 220,
 
 	HEADER_CG_CLIENT_VERSION			= 0xfd,
 	HEADER_CG_CLIENT_VERSION2			= 0xf1,
@@ -308,6 +309,7 @@ enum
 
 	HEADER_GC_CHARACTER_DRAGON_POINT = 222,
 	HEADER_GC_CHARACTER_DRAGON_POINT_CHANGE = 223,
+	HEADER_GC_WHISPER_DETAILS = 225,
 
 
 	/////////////////////////////////////////////////////////////////////////////
@@ -348,6 +350,8 @@ enum
 
 	HEADER_GG_REFRESH_GM_STATE = 31,
 	HEADER_GG_GIVE_ITEM = 40,
+	HEADER_GG_CHECK_WHISPER_DETAILS = 48,
+	HEADER_GG_RECV_WHISPER_DETAILS = 49,
 };
 
 #pragma pack(1)
@@ -2509,6 +2513,36 @@ typedef struct SPacketGCDragonPointChange
 	int iDR;
 	int iDM;
 } TPacketGCDragonPointChange;
+
+typedef struct SPacketCGWhisperDetails
+{
+	BYTE header = HEADER_CG_WHISPER_DETAILS;
+	char name[CHARACTER_NAME_MAX_LEN + 1];
+} TPacketCGWhisperDetails;
+
+typedef struct SPacketGCWhisperDetails
+{
+	BYTE header = HEADER_GC_WHISPER_DETAILS;
+	char name[CHARACTER_NAME_MAX_LEN + 1];
+	uint8_t language;
+	uint8_t empire;
+} TPacketGCWhisperDetails;
+
+typedef struct SPacketGGCheckWhisperDetails
+{
+	BYTE header = HEADER_GG_CHECK_WHISPER_DETAILS;
+	char sender_name[CHARACTER_NAME_MAX_LEN + 1];
+	char target_name[CHARACTER_NAME_MAX_LEN + 1];
+} TPacketGGCheckWhisperDetails;
+
+typedef struct SPacketGGRecvWhisperDetails
+{
+	BYTE header = HEADER_GG_RECV_WHISPER_DETAILS;
+	char sender_name[CHARACTER_NAME_MAX_LEN + 1];
+	char target_name[CHARACTER_NAME_MAX_LEN + 1];
+	uint8_t language;
+	uint8_t empire;
+} TPacketGGRecvWhisperDetails;
 
 #pragma pack()
 #endif

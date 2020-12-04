@@ -236,6 +236,8 @@ CPacketInfoCG::CPacketInfoCG()
 	Set(HEADER_CG_TARGET_INFO_LOAD, sizeof(TPacketCGTargetInfoLoad), "TargetInfoLoad", true);
 #endif
 
+	Set(HEADER_CG_WHISPER_DETAILS, sizeof(TPacketCGWhisperDetails), "WhisperDetails", true);
+
 }
 
 CPacketInfoCG::~CPacketInfoCG()
@@ -282,6 +284,9 @@ CPacketInfoGG::CPacketInfoGG()
 	Set(HEADER_GG_CHECK_AWAKENESS,		sizeof(TPacketGGCheckAwakeness),	"CheckAwakeness",		false);
 	Set(HEADER_GG_REFRESH_GM_STATE, sizeof(TPacketGGRefreshGMState), "RefreshGMState", false);
 	Set(HEADER_GG_GIVE_ITEM, sizeof(TPacketGGGiveItem), "GiveItem", false);
+
+	Set(HEADER_GG_CHECK_WHISPER_DETAILS, sizeof(TPacketGGCheckWhisperDetails), "CheckWhisperDetails", false);
+	Set(HEADER_GG_RECV_WHISPER_DETAILS, sizeof(TPacketGGRecvWhisperDetails), "RecvWhisperDetails", false);
 }
 
 CPacketInfoGG::~CPacketInfoGG()

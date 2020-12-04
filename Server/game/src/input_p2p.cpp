@@ -581,6 +581,49 @@ int CInputP2P::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 		case HEADER_GG_GIVE_ITEM:
 			GiveItem(c_pData);
 			break;
+
+		case HEADER_GG_CHECK_WHISPER_DETAILS:
+		{
+			TPacketGGCheckWhisperDetails *data = (TPacketGGCheckWhisperDetails *)c_pData;
+			LPCHARACTER tch = CHARACTER_MANAGER::instance().FindPC(data->target_name);
+
+			if (tch)
+			{
+				CCI *pkCCI = P2P_MANAGER::instance().Find(data->sender_name);
+
+				if (pkCCI) // Check: Is the player online?
+				{
+					TPacketGGRecvWhisperDetails p;
+					strlcpy(p.target_name, data->target_name, sizeof(p.target_name));
+					strlcpy(p.sender_name, data->sender_name, sizeof(p.sender_name));
+					p.language = tch->GetLanguage();
+					p.empire = tch->GetEmpire();
+					pkCCI->pkDesc->Packet(&p, sizeof(TPacketGGRecvWhisperDetails));
+				}
+			}
+		}
+		break;
+
+		case HEADER_GG_RECV_WHISPER_DETAILS:
+		{
+			TPacketGGRecvWhisperDetails *data = (TPacketGGRecvWhisperDetails *)c_pData;
+			LPCHARACTER tch = CHARACTER_MANAGER::instance().FindPC(data->sender_name);
+
+			if (tch)
+			{
+				LPDESC d_sender = tch->GetDesc();
+
+				if (!d_sender)
+					return (iExtraLen);
+
+				TPacketGCWhisperDetails tp;
+				strlcpy(tp.name, data->target_name, sizeof(tp.name));
+				tp.language = data->language;
+				tp.empire = data->empire;
+				d_sender->Packet(&tp, sizeof(TPacketGCWhisperDetails));
+			}
+		}
+		break;
 	}
 
 	return (iExtraLen);
