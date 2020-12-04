@@ -59,7 +59,12 @@ extern void BroadcastNotice(const char * c_pszBuf, bool bBigFont=false);
 extern void SendNotice(const char * c_pszBuf);		// 이 게임서버에만 공지
 extern void BroadcastNotice(const char * c_pszBuf);	// 전 서버에 공지
 #endif
-extern void SendNoticeMap(const char* c_pszBuf, int nMapIndex, bool bBigFont); // 지정 맵에만 공지
+#ifdef ENABLE_LANG_SYSTEM
+extern void SendNoticeMap(const char *c_pszBuf, int nMapIndex, bool bBigFont, bool bLanguage = false);
+extern void SendNoticeMapTrans(const char *c_pszBuf, int nMapIndex, bool bBigFont);
+#else
+extern void SendNoticeMap(const char* c_pszBuf, int nMapIndex, bool bBigFont);
+#endif
 extern void SendMonarchNotice(BYTE bEmpire, const char * c_pszBuf);		// 같은 제국에게 공지
 
 // LUA_ADD_BGM_INFO

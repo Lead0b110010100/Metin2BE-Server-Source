@@ -1242,6 +1242,29 @@ void SendMonarchNotice(BYTE bEmpire, const char* c_pszBuf)
 	std::for_each(c_ref_set.begin(), c_ref_set.end(), monarch_notice_packet_func(bEmpire, c_pszBuf));
 }
 
+#ifdef ENABLE_LANG_SYSTEM
+struct notice_map_packet_func
+{
+	const char *m_str;
+	int m_mapIndex;
+	bool m_bBigFont;
+	bool m_bLanguage;
+
+	notice_map_packet_func(const char *str, int idx, bool bBigFont, bool bLanguage) : m_str(str), m_mapIndex(idx), m_bBigFont(bBigFont), m_bLanguage(bLanguage)
+	{
+	}
+
+	void operator()(LPDESC d)
+	{
+		LPCHARACTER ch = d->GetCharacter();
+
+		if (!ch || ch->GetMapIndex() != m_mapIndex)
+			return;
+
+		ch->ChatPacket(m_bBigFont ? CHAT_TYPE_BIG_NOTICE : CHAT_TYPE_NOTICE, "%s", m_bLanguage ? LC_TEXT_TRANS(m_str, ch->GetLanguage()) : m_str);
+	}
+};
+#else
 struct notice_map_packet_func
 {
 	const char* m_str;
@@ -1260,12 +1283,24 @@ struct notice_map_packet_func
 		d->GetCharacter()->ChatPacket(m_bBigFont == true ? CHAT_TYPE_BIG_NOTICE : CHAT_TYPE_NOTICE, "%s", m_str);
 	}
 };
+#endif
 
-void SendNoticeMap(const char* c_pszBuf, int nMapIndex, bool bBigFont)
+#ifdef ENABLE_LANG_SYSTEM
+void SendNoticeMap(const char *c_pszBuf, int nMapIndex, bool bBigFont, bool bLanguage)
+#else
+void SendNoticeMap(const char *c_pszBuf, int nMapIndex, bool bBigFont)
+#endif
 {
-	const DESC_MANAGER::DESC_SET & c_ref_set = DESC_MANAGER::instance().GetClientSet();
-	std::for_each(c_ref_set.begin(), c_ref_set.end(), notice_map_packet_func(c_pszBuf, nMapIndex, bBigFont));
+	const DESC_MANAGER::DESC_SET &c_ref_set = DESC_MANAGER::instance().GetClientSet();
+	std::for_each(c_ref_set.begin(), c_ref_set.end(), notice_map_packet_func(c_pszBuf, nMapIndex, bBigFont, bLanguage));
 }
+
+#ifdef ENABLE_LANG_SYSTEM
+void SendNoticeMapTrans(const char *c_pszBuf, int nMapIndex, bool bBigFont)
+{
+	SendNoticeMap(c_pszBuf, nMapIndex, bBigFont, true);
+}
+#endif
 
 struct log_packet_func
 {

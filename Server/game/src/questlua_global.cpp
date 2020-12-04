@@ -646,6 +646,8 @@ namespace quest
 	{
 		if (lua_isnumber(L,1))
 		{
+			DWORD dwVnum = (DWORD)lua_tonumber(L, 1);
+
 #ifdef ENABLE_LANG_SYSTEM
 			LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
 
@@ -723,6 +725,8 @@ namespace quest
 	{
 		if (lua_isnumber(L, 1))
 		{
+			DWORD dwVnum = (DWORD)lua_tonumber(L, 1);
+
 #ifdef ENABLE_LANG_SYSTEM
 			LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
 

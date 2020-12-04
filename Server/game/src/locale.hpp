@@ -6,6 +6,7 @@ extern "C"
 #ifdef ENABLE_LANG_SYSTEM
 	void locale_init(const char* filename, BYTE lang);
 
+	extern int g_iUseLocale;
 	const char* locale_find(const char* string);
 	const char* locale_find_trans(const char* string, BYTE lang = 0);
 
