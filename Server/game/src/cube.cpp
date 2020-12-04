@@ -312,12 +312,12 @@ void Cube_open (LPCHARACTER ch)
 
 	if (ch->IsCubeOpen())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The creation screen is already open."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "The creation screen is already open.");
 		return;
 	}
 	if ( ch->GetExchange() || ch->GetMyShop() || ch->GetShopOwner() || ch->IsOpenSafebox() || ch->IsCubeOpen() )
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use now."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You can't use now.");
 		return;
 	}
 
@@ -521,7 +521,7 @@ bool Cube_make (LPCHARACTER ch)
 
 	if (!(ch)->IsCubeOpen())
 	{
-		(ch)->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The creation screen is not open."));
+		(ch)->ChatPacketTrans(CHAT_TYPE_INFO, "The creation screen is not open.");
 		return false;
 	}
 
@@ -536,7 +536,7 @@ bool Cube_make (LPCHARACTER ch)
 
 	if (NULL == cube_proto)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Not enough ingredient."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Not enough ingredient.");
 		return false;
 	}
 
@@ -544,7 +544,7 @@ bool Cube_make (LPCHARACTER ch)
 
 	if (cube_gold < 0 || ch->GetGold() < cube_gold)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Not enough Yang or no space in the inventory."));	// 이 텍스트는 이미 널리 쓰이는거라 추가번역 필요 없음
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Not enough Yang or no space in the inventory.");	// 이 텍스트는 이미 널리 쓰이는거라 추가번역 필요 없음
 		return false;
 	}
 
@@ -571,7 +571,7 @@ bool Cube_make (LPCHARACTER ch)
 	else
 	{
 		// 실패
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("제조에 실패하였습니다."));	// 2012.11.12 새로 추가된 메세지 (locale_string.txt 에 추가해야 함)
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "제조에 실패하였습니다.");	// 2012.11.12 새로 추가된 메세지 (locale_string.txt 에 추가해야 함)
 		ch->ChatPacket(CHAT_TYPE_COMMAND, "cube fail");
 		LogManager::instance().CubeLog(ch->GetPlayerID(), ch->GetX(), ch->GetY(),
 				reward_value->vnum, 0, 0, 0);

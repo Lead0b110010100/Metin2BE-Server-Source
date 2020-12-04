@@ -1541,7 +1541,7 @@ void CItem::SetAccessorySocketDownGradeTime(DWORD time)
 	SetSocket(2, time);
 
 	if (test_server && GetOwner())
-		GetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Time remaining %d seconds."), GetName(), time);
+		GetOwner()->ChatPacketTrans(CHAT_TYPE_INFO, "Time remaining %d seconds.", GetName(), time);
 }
 
 EVENTFUNC(accessory_socket_expire_event)
@@ -1693,7 +1693,7 @@ void CItem::AccessorySocketDegrade()
 
 		if (ch)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The Gems of %s vanish."), GetName());
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "The Gems of %s vanish.", GetName());
 		}
 
 		ModifyPoints(false);

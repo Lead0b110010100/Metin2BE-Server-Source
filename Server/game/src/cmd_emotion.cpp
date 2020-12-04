@@ -92,7 +92,7 @@ ACMD(do_emotion_allow)
 {
 	if ( ch->GetArena() )
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this in the arena."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this in the arena.");
 		return;
 	}
 
@@ -136,7 +136,7 @@ ACMD(do_emotion)
 	{
 		if (ch->IsRiding())
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("you cannot exchange emotions on a horse."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "you cannot exchange emotions on a horse.");
 			return;
 		}
 	}
@@ -158,13 +158,13 @@ ACMD(do_emotion)
 
 	if (!CHARACTER_CanEmotion(*ch))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can do this when you wear an Emotion Mask."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You can do this when you wear an Emotion Mask.");
 		return;
 	}
 
 	if (IS_SET(emotion_types[i].flag, WOMAN_ONLY) && SEX_MALE==GET_SEX(ch))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Only women can do this."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Only women can do this.");
 		return;
 	}
 
@@ -180,7 +180,7 @@ ACMD(do_emotion)
 	{
 		if (!victim)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This person doesn't exist."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "This person doesn't exist.");
 			return;
 		}
 	}
@@ -192,7 +192,7 @@ ACMD(do_emotion)
 
 		if (victim->IsRiding())
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot exchange emotions with someone on a horse."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot exchange emotions with someone on a horse.");
 			return;
 		}
 
@@ -200,13 +200,13 @@ ACMD(do_emotion)
 
 		if (distance < 10)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You are too near."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "You are too near.");
 			return;
 		}
 
 		if (distance > 500)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You are too far away."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "You are too far away.");
 			return;
 		}
 
@@ -214,7 +214,7 @@ ACMD(do_emotion)
 		{
 			if (GET_SEX(ch)==GET_SEX(victim))
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This can only be done with another gender."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "This can only be done with another gender.");
 				return;
 			}
 		}
@@ -231,13 +231,13 @@ ACMD(do_emotion)
 
 					if (0 == other || other != victim->GetPlayerID())
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You must have the acknowledgement of your partner."));
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "You must have the acknowledgement of your partner.");
 						return;
 					}
 				}
 				else
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You must have the acknowledgement of your partner."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "You must have the acknowledgement of your partner.");
 					return;
 				}
 			}

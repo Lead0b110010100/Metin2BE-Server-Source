@@ -19,16 +19,16 @@ ACMD(do_oxevent_log)
 {
 	if ( COXEventManager::instance().LogWinner() == false )
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("OX The other participants in the Event are listed."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "OX The other participants in the Event are listed.");
 	}
 	else
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("OX The other participants in the Event are not listed."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "OX The other participants in the Event are not listed.");
 	}
 }
 
 ACMD(do_oxevent_get_attender)
 {
-	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Number of the other participants : %d "), COXEventManager::instance().GetAttenderCount());
+	ch->ChatPacketTrans(CHAT_TYPE_INFO, "Number of the other participants : %d ", COXEventManager::instance().GetAttenderCount());
 }
 

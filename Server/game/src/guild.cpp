@@ -920,7 +920,7 @@ bool CGuild::OfferExp(LPCHARACTER ch, int amount)
 
 	if (ch->GetExp() < (DWORD) amount)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> Provided Experience is larger then left Experience."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> Provided Experience is larger then left Experience.");
 		return false;
 	}
 
@@ -1032,7 +1032,7 @@ void CGuild::DeleteComment(LPCHARACTER ch, DWORD comment_id)
 		pmsg = DBManager::instance().DirectQuery("DELETE FROM guild_comment%s WHERE id = %u AND guild_id = %u AND name = '%s'",get_table_postfix(), comment_id, m_data.guild_id, ch->GetName());
 
 	if (pmsg->Get()->uiAffectedRows == 0 || pmsg->Get()->uiAffectedRows == (uint32_t)-1)
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> The message cannot be deleted."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> The message cannot be deleted.");
 	else
 		RefreshCommentForce(ch->GetPlayerID());
 
@@ -1291,7 +1291,7 @@ void CGuild::UseSkill(DWORD dwVnum, LPCHARACTER ch, DWORD pid)
 
 	if (GetSP() < iNeededSP)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> Not enough Dragon ghost. (%d, %d)"), GetSP(), iNeededSP);
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> Not enough Dragon ghost. (%d, %d)", GetSP(), iNeededSP);
 		return;
 	}
 
@@ -1300,7 +1300,7 @@ void CGuild::UseSkill(DWORD dwVnum, LPCHARACTER ch, DWORD pid)
 
 	if (!abSkillUsable[dwRealVnum])
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> You cannot use Guild Skills yet."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> You cannot use Guild Skills yet.");
 		return;
 	}
 
@@ -1319,7 +1319,7 @@ void CGuild::UseSkill(DWORD dwVnum, LPCHARACTER ch, DWORD pid)
 	//GuildPointChange(POINT_SP, -iNeededSP);
 
 	if (test_server)
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> %d Skills used (%d, %d) to %u"), dwVnum, GetSP(), iNeededSP, pid);
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> %d Skills used (%d, %d) to %u", dwVnum, GetSP(), iNeededSP, pid);
 
 	switch (dwVnum)
 	{
@@ -1340,7 +1340,7 @@ void CGuild::UseSkill(DWORD dwVnum, LPCHARACTER ch, DWORD pid)
 
 					if (pcci->bChannel != g_bChannel)
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> The player is in channel %d. (Current channel: %d)"), pcci->bChannel, g_bChannel);
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> The player is in channel %d. (Current channel: %d)", pcci->bChannel, g_bChannel);
 					}
 					else
 					{
@@ -1353,7 +1353,7 @@ void CGuild::UseSkill(DWORD dwVnum, LPCHARACTER ch, DWORD pid)
 					}
 				}
 				else
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> The player is not online."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> The player is not online.");
 			}
 			break;
 
@@ -1367,13 +1367,13 @@ void CGuild::UseSkill(DWORD dwVnum, LPCHARACTER ch, DWORD pid)
 			{
 				/*if (ch->GetPlayerID() != GetMasterPID())
 				  {
-				  ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> Only the guild master can use the guild skill."));
+				  ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> Only the guild master can use the guild skill.");
 				  return;
 				  }*/
 
 				if (!UnderAnyWar())
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> This Guild Skill can be used in war only."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> This Guild Skill can be used in war only.");
 					return;
 				}
 
@@ -1733,7 +1733,7 @@ bool CGuild::ChargeSP(LPCHARACTER ch, int iSP)
 
 	SendDBSkillUpdate(iSP);
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> %u Dragon ghost restored."), iSP);
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> %u Dragon ghost restored.", iSP);
 	}
 	return true;
 }
@@ -1804,7 +1804,7 @@ void CGuild::RequestDepositMoney(LPCHARACTER ch, GoldType iGold)
 {
 	if (false==ch->CanDeposit())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> Please use after a while."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> Please use after a while.");
 		return;
 	}
 
@@ -1831,19 +1831,19 @@ void CGuild::RequestWithdrawMoney(LPCHARACTER ch, GoldType iGold)
 {
 	if (false==ch->CanDeposit())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> Please use after a while."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> Please use after a while.");
 		return;
 	}
 
 	if (ch->GetPlayerID() != GetMasterPID())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> Only the Guild master can take out Yang."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> Only the Guild master can take out Yang.");
 		return;
 	}
 
 	if (m_data.gold < iGold)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> You do not have enough Yang."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> You do not have enough Yang.");
 		return;
 	}
 
@@ -1938,7 +1938,7 @@ void CGuild::Invite( LPCHARACTER pchInviter, LPCHARACTER pchInvitee )
 {
 	if (quest::CQuestManager::instance().GetPCForce(pchInviter->GetPlayerID())->IsRunning() == true)
 	{
-	    pchInviter->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 상대방이 초대 신청을 받을 수 없는 상태입니다."));
+	    pchInviter->ChatPacketTrans(CHAT_TYPE_INFO, "<길드> 상대방이 초대 신청을 받을 수 없는 상태입니다.");
 	    return;
 	}
 
@@ -1971,8 +1971,8 @@ void CGuild::Invite( LPCHARACTER pchInviter, LPCHARACTER pchInvitee )
 								LC_TEXT("<Guild> After the rearrangement you can invite members again after %d days."),
 								quest::CQuestManager::instance().GetEventFlag( "guild_disband_delay") );
 						return;
-		case GERR_ALREADYJOIN:	pchInviter->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> This person is already a member of another Guild.")); return;
-		case GERR_GUILDISFULL:	pchInviter->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> The Guild capacity reached its upper limit.")); return;
+		case GERR_ALREADYJOIN:	pchInviter->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> This person is already a member of another Guild."); return;
+		case GERR_GUILDISFULL:	pchInviter->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> The Guild capacity reached its upper limit."); return;
 		case GERR_GUILD_IS_IN_WAR : pchInviter->ChatPacket( CHAT_TYPE_INFO, LC_TEXT("<Guild> The Guild is at war.") ); return;
 		case GERR_INVITE_LIMIT : pchInviter->ChatPacket( CHAT_TYPE_INFO, LC_TEXT("<길드> 현재 신규 가입 제한 상태 입니다.") ); return;
 
@@ -2031,8 +2031,8 @@ void CGuild::InviteAccept( LPCHARACTER pchInvitee )
 								LC_TEXT("<Guild> After the rearrangement you can invite members again after %d days."),
 								quest::CQuestManager::instance().GetEventFlag( "guild_disband_delay") );
 						return;
-		case GERR_ALREADYJOIN:	pchInvitee->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> This person is already a member of another Guild.")); return;
-		case GERR_GUILDISFULL:	pchInvitee->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> The Guild capacity reached its upper limit.")); return;
+		case GERR_ALREADYJOIN:	pchInvitee->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> This person is already a member of another Guild."); return;
+		case GERR_GUILDISFULL:	pchInvitee->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> The Guild capacity reached its upper limit."); return;
 		case GERR_GUILD_IS_IN_WAR : pchInvitee->ChatPacket( CHAT_TYPE_INFO, LC_TEXT("<Guild> The Guild is at war.") ); return;
 		case GERR_INVITE_LIMIT : pchInvitee->ChatPacket( CHAT_TYPE_INFO, LC_TEXT("<길드> 현재 신규 가입 제한 상태 입니다.") ); return;
 

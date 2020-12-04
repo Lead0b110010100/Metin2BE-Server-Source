@@ -288,7 +288,7 @@ bool CHARACTER::LearnGrandMasterSkill(DWORD dwSkillVnum)
 
 	if (!IsLearnableSkill(dwSkillVnum))
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot train this Skill."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You cannot train this Skill.");
 		return false;
 	}
 
@@ -303,7 +303,7 @@ bool CHARACTER::LearnGrandMasterSkill(DWORD dwSkillVnum)
 	   {
 	// 주안술서 사용중에는 시간 제한 무시
 	RemoveAffect(AFFECT_SKILL_NO_BOOK_DELAY);
-	ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You escaped the Evil Ghost Curse with the help of an Exorcism Scroll."));
+	ChatPacketTrans(CHAT_TYPE_INFO, "You escaped the Evil Ghost Curse with the help of an Exorcism Scroll.");
 	}
 	else
 	{
@@ -317,16 +317,16 @@ bool CHARACTER::LearnGrandMasterSkill(DWORD dwSkillVnum)
 	// bType이 0이면 처음부터 책으로 수련 가능
 	if (pkSk->dwType == 0)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot train this Skill up to Grand Master."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You cannot train this Skill up to Grand Master.");
 		return false;
 	}
 
 	if (GetSkillMasterType(dwSkillVnum) != SKILL_GRAND_MASTER)
 	{
 		if (GetSkillMasterType(dwSkillVnum) > SKILL_GRAND_MASTER)
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You are already a Master in this Skill. You cannot train it."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "You are already a Master in this Skill. You cannot train it.");
 		else
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your Skill is not high enough for becoming a Grand Master."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "Your Skill is not high enough for becoming a Grand Master.");
 		return false;
 	}
 
@@ -386,14 +386,14 @@ bool CHARACTER::LearnGrandMasterSkill(DWORD dwSkillVnum)
 	if (bLastLevel == GetSkillLevel(dwSkillVnum))
 	{
 		ChatPacket(CHAT_TYPE_TALKING, LC_TEXT("That did not work. Darn!"));
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Training failed. Please try again later."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "Training failed. Please try again later.");
 		LogManager::instance().CharLog(this, dwSkillVnum, "GM_READ_FAIL", "");
 		return false;
 	}
 
 	ChatPacket(CHAT_TYPE_TALKING, LC_TEXT("My body is full of power!"));
 	ChatPacket(CHAT_TYPE_TALKING, LC_TEXT("Something comes out there…"));
-	ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You have completed higher level of training successfully."));
+	ChatPacketTrans(CHAT_TYPE_INFO, "You have completed higher level of training successfully.");
 	LogManager::instance().CharLog(this, dwSkillVnum, "GM_READ_SUCCESS", "");
 	return true;
 }
@@ -415,7 +415,7 @@ bool CHARACTER::LearnSkillByBook(DWORD dwSkillVnum, BYTE bProb)
 
 	if (!IsLearnableSkill(dwSkillVnum))
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot train this Skill."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You cannot train this Skill.");
 		return false;
 	}
 
@@ -427,7 +427,7 @@ bool CHARACTER::LearnSkillByBook(DWORD dwSkillVnum, BYTE bProb)
 
 		if ( GetExp() < need_exp )
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot read this as you lack Experience."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "You cannot read this as you lack Experience.");
 			return false;
 		}
 	}
@@ -438,9 +438,9 @@ bool CHARACTER::LearnSkillByBook(DWORD dwSkillVnum, BYTE bProb)
 		if (GetSkillMasterType(dwSkillVnum) != SKILL_MASTER)
 		{
 			if (GetSkillMasterType(dwSkillVnum) > SKILL_MASTER)
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot train this Skill with a Book."));
+				ChatPacketTrans(CHAT_TYPE_INFO, "You cannot train this Skill with a Book.");
 			else
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This Skill is not high enough to be trained with a Book."));
+				ChatPacketTrans(CHAT_TYPE_INFO, "This Skill is not high enough to be trained with a Book.");
 			return false;
 		}
 	}
@@ -453,7 +453,7 @@ bool CHARACTER::LearnSkillByBook(DWORD dwSkillVnum, BYTE bProb)
 			{
 				// 주안술서 사용중에는 시간 제한 무시
 				RemoveAffect(AFFECT_SKILL_NO_BOOK_DELAY);
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You escaped the Evil Ghost Curse with the help of an Exorcism Scroll."));
+				ChatPacketTrans(CHAT_TYPE_INFO, "You escaped the Evil Ghost Curse with the help of an Exorcism Scroll.");
 			}
 			else
 			{
@@ -532,7 +532,7 @@ bool CHARACTER::LearnSkillByBook(DWORD dwSkillVnum, BYTE bProb)
 						SkillLevelUp(dwSkillVnum, SKILL_UP_BY_BOOK);
 						pPC->SetFlag(flag, 0);
 
-						ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You read the book and finished your training successfully."));
+						ChatPacketTrans(CHAT_TYPE_INFO, "You read the book and finished your training successfully.");
 						LogManager::instance().CharLog(this, dwSkillVnum, "READ_SUCCESS", "");
 						return true;
 					}
@@ -556,7 +556,7 @@ bool CHARACTER::LearnSkillByBook(DWORD dwSkillVnum, BYTE bProb)
 								break;
 						}
 
-						ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can complete your training after reading %d more books."), need_bookcount - read_count);
+						ChatPacketTrans(CHAT_TYPE_INFO, "You can complete your training after reading %d more books.", need_bookcount - read_count);
 						return true;
 					}
 				}
@@ -572,13 +572,13 @@ bool CHARACTER::LearnSkillByBook(DWORD dwSkillVnum, BYTE bProb)
 	{
 		ChatPacket(CHAT_TYPE_TALKING, LC_TEXT("My body is full of power!"));
 		ChatPacket(CHAT_TYPE_TALKING, LC_TEXT("Something comes out there…"));
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You read the book and finished your training successfully."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You read the book and finished your training successfully.");
 		LogManager::instance().CharLog(this, dwSkillVnum, "READ_SUCCESS", "");
 	}
 	else
 	{
 		ChatPacket(CHAT_TYPE_TALKING, LC_TEXT("That did not work. Darn!"));
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Training failed. Please try again later."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "Training failed. Please try again later.");
 		LogManager::instance().CharLog(this, dwSkillVnum, "READ_FAIL", "");
 	}
 
@@ -665,7 +665,7 @@ void CHARACTER::SkillLevelUp(DWORD dwVnum, BYTE bMethod)
 
 	if (IsPolymorphed())
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot change your state as long as you are transformed."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You cannot change your state as long as you are transformed.");
 		return;
 	}
 
@@ -1662,7 +1662,7 @@ EVENTFUNC(skill_gwihwan_event)
 	else
 	{
 		//실패
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Teleportation failed."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Teleportation failed.");
 	}
 	return 0;
 }
@@ -2494,7 +2494,7 @@ bool CHARACTER::UseSkill(DWORD dwVnum, LPCHARACTER pkVictim, bool bUseGrandMaste
 		if (GetSkillLevel(dwVnum) == 0)
 			return false;
 
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Please use an Item to call a Horse"));
+		ChatPacketTrans(CHAT_TYPE_INFO, "Please use an Item to call a Horse");
 		return true;
 	}
 
@@ -2630,7 +2630,7 @@ bool CHARACTER::UseSkill(DWORD dwVnum, LPCHARACTER pkVictim, bool bUseGrandMaste
 			return false;
 
 		if (test_server)
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s SP Usage: %d "), pkSk->szName, iNeededSP);
+			ChatPacketTrans(CHAT_TYPE_INFO, "%s SP Usage: %d ", pkSk->szName, iNeededSP);
 
 		PointChange(POINT_SP, -iNeededSP);
 	}

@@ -58,7 +58,7 @@ bool CHARACTER::ExchangeStart(LPCHARACTER victim)
 
 	if (IsObserverMode())
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot trade while observing."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You cannot trade while observing.");
 		return false;
 	}
 
@@ -95,7 +95,7 @@ bool CHARACTER::ExchangeStart(LPCHARACTER victim)
 
 	if (victim->IsBlockMode(BLOCK_EXCHANGE))
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The other person cancelled the Trade."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "The other person cancelled the Trade.");
 		return false;
 	}
 
@@ -162,7 +162,7 @@ bool CExchange::AddItem(TItemPos item_pos, BYTE display_pos)
 
 	if (IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_GIVE))
 	{
-		m_pOwner->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot trade this Item."));
+		m_pOwner->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot trade this Item.");
 		return false;
 	}
 
@@ -501,14 +501,14 @@ bool CExchange::Accept(bool bAccept)
 		// @fixme150 BEGIN
 		if (quest::CQuestManager::instance().GetPCForce(GetOwner()->GetPlayerID())->IsRunning() == true)
 		{
-			GetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot trade if you're using quests"));
-			victim->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot trade if the other part using quests"));
+			GetOwner()->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot trade if you're using quests");
+			victim->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot trade if the other part using quests");
 			goto EXCHANGE_END;
 		}
 		else if (quest::CQuestManager::instance().GetPCForce(victim->GetPlayerID())->IsRunning() == true)
 		{
-			victim->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot trade if you're using quests"));
-			GetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot trade if the other part using quests"));
+			victim->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot trade if you're using quests");
+			GetOwner()->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot trade if the other part using quests");
 			goto EXCHANGE_END;
 		}
 		// @fixme150 END
@@ -518,31 +518,31 @@ bool CExchange::Accept(bool bAccept)
 		// 를 리턴한다.
 		if (!Check(&iItemCount))
 		{
-			GetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Not enough Yang or no space in the inventory."));
-			victim->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The other person does not have enough Yang or no space in the inventory left."));
+			GetOwner()->ChatPacketTrans(CHAT_TYPE_INFO, "Not enough Yang or no space in the inventory.");
+			victim->ChatPacketTrans(CHAT_TYPE_INFO, "The other person does not have enough Yang or no space in the inventory left.");
 			goto EXCHANGE_END;
 		}
 
 		// 리턴 받은 아이템 개수로 상대방의 소지품에 남은 자리가 있나 확인한다.
 		if (!CheckSpace())
 		{
-			GetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The other person has no space in the inventory left."));
-			victim->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("There isn't enough space in the inventory."));
+			GetOwner()->ChatPacketTrans(CHAT_TYPE_INFO, "The other person has no space in the inventory left.");
+			victim->ChatPacketTrans(CHAT_TYPE_INFO, "There isn't enough space in the inventory.");
 			goto EXCHANGE_END;
 		}
 
 		// 상대방도 마찬가지로..
 		if (!GetCompany()->Check(&iItemCount))
 		{
-			victim->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Not enough Yang or no space in the inventory."));
-			GetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The other person does not have enough Yang or no space in the inventory left."));
+			victim->ChatPacketTrans(CHAT_TYPE_INFO, "Not enough Yang or no space in the inventory.");
+			GetOwner()->ChatPacketTrans(CHAT_TYPE_INFO, "The other person does not have enough Yang or no space in the inventory left.");
 			goto EXCHANGE_END;
 		}
 
 		if (!GetCompany()->CheckSpace())
 		{
-			victim->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The other person has no space in the inventory left."));
-			GetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("There isn't enough space in the inventory."));
+			victim->ChatPacketTrans(CHAT_TYPE_INFO, "The other person has no space in the inventory left.");
+			GetOwner()->ChatPacketTrans(CHAT_TYPE_INFO, "There isn't enough space in the inventory.");
 			goto EXCHANGE_END;
 		}
 
@@ -570,8 +570,8 @@ bool CExchange::Accept(bool bAccept)
 					victim->Save();
 
 				// INTERNATIONAL_VERSION
-				GetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The trade with %s was successful."), victim->GetName());
-				victim->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The trade with %s was successful."), GetOwner()->GetName());
+				GetOwner()->ChatPacketTrans(CHAT_TYPE_INFO, "The trade with %s was successful.", victim->GetName());
+				victim->ChatPacketTrans(CHAT_TYPE_INFO, "The trade with %s was successful.", GetOwner()->GetName());
 				// END_OF_INTERNATIONAL_VERSION
 			}
 		}

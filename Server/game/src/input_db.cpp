@@ -1317,11 +1317,11 @@ void CInputDB::SafeboxChangePasswordAnswer(LPDESC d, const char* c_pData)
 	TSafeboxChangePasswordPacketAnswer* p = (TSafeboxChangePasswordPacketAnswer*) c_pData;
 	if (p->flag)
 	{
-		d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Storages> Storage password changed."));
+		d->GetCharacter()->ChatPacketTrans(CHAT_TYPE_INFO, "<Storages> Storage password changed.");
 	}
 	else
 	{
-		d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Storages> You entered the wrong password."));
+		d->GetCharacter()->ChatPacketTrans(CHAT_TYPE_INFO, "<Storages> You entered the wrong password.");
 	}
 }
 
@@ -2017,7 +2017,7 @@ void CInputDB::BillingExpire(const char * c_pData)
 			d->SetBillingExpireSecond(p->dwRemainSeconds);
 
 			if (ch)
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your Playtime runs out in %d Minutes."), (p->dwRemainSeconds / 60));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "Your Playtime runs out in %d Minutes.", (p->dwRemainSeconds / 60));
 		}
 	}
 }
@@ -2676,7 +2676,7 @@ void CInputDB::AddMonarchMoney(LPDESC d, const char * data )
 	if (ch)
 	{
 		if (number(1, 100) > 95)
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s still has %u."), EMPIRE_NAME(Empire), CMonarch::instance().GetMoney(Empire));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "%s still has %u.", EMPIRE_NAME(Empire), CMonarch::instance().GetMoney(Empire));
 	}
 }
 
@@ -2696,7 +2696,7 @@ void CInputDB::DecMonarchMoney(LPDESC d, const char * data)
 
 	if (ch)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s's remaining fund is %d Yang."), EMPIRE_NAME(Empire), CMonarch::instance().GetMoney(Empire));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "%s's remaining fund is %d Yang.", EMPIRE_NAME(Empire), CMonarch::instance().GetMoney(Empire));
 	}
 }
 
@@ -2717,7 +2717,7 @@ void CInputDB::TakeMonarchMoney(LPDESC d, const char * data)
 			return;
 
 		LPCHARACTER ch = d->GetCharacter();
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You do not have enough Yang"));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You do not have enough Yang");
 	}
 }
 

@@ -27,13 +27,13 @@ bool CHARACTER::StartRiding()
 #endif
 	if (IsDead() == true)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot ride while falling."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You cannot ride while falling.");
 		return false;
 	}
 
 	if (IsPolymorphed())
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot ride a Horse as long as you are transformed."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You cannot ride a Horse as long as you are transformed.");
 		return false;
 	}
 
@@ -42,7 +42,7 @@ bool CHARACTER::StartRiding()
 
 	if (armor && (armor->GetVnum() >= 11901 && armor->GetVnum() <= 11904))
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot ride while wearing a Wedding Robe or a Smoking."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You cannot ride while wearing a Wedding Robe or a Smoking.");
 		return false;
 	}
 
@@ -62,9 +62,9 @@ bool CHARACTER::StartRiding()
 	if (false == CHorseRider::StartRiding())
 	{
 		if (GetHorseHealth() <= 0)
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your Horse is dead."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "Your Horse is dead.");
 		else if (GetHorseStamina() <= 0)
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The endurance of your Horse is too low."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "The endurance of your Horse is too low.");
 
 		return false;
 	}
@@ -187,7 +187,7 @@ void CHARACTER::HorseSummon(bool bSummon, bool bFromFar, DWORD dwVnum, const cha
 
 		if (!m_chHorse)
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Calling the Horse failed."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "Calling the Horse failed.");
 			return;
 		}
 

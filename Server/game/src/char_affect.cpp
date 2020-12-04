@@ -532,7 +532,7 @@ bool CHARACTER::AddAffect(DWORD dwType, BYTE bApplyOn, long lApplyValue, DWORD d
 	// CHAT_BLOCK
 	if (dwType == AFFECT_BLOCK_CHAT && lDuration > 1)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your chat was blocked by a GM."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "Your chat was blocked by a GM.");
 	}
 	// END_OF_CHAT_BLOCK
 
@@ -719,7 +719,7 @@ bool CHARACTER::RemoveAffect(DWORD dwType)
 	// CHAT_BLOCK
 	if (dwType == AFFECT_BLOCK_CHAT)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your chat block is lifted."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "Your chat block is lifted.");
 	}
 	// END_OF_CHAT_BLOCK
 

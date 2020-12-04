@@ -630,7 +630,7 @@ namespace quest
 	{
 		if (m_bIsGivenReward)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Quest> The reward was given out, you are too late."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Quest> The reward was given out, you are too late.");
 			m_bIsGivenReward = false;
 		}
 

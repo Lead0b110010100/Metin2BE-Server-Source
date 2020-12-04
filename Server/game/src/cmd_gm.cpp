@@ -1414,7 +1414,7 @@ ACMD(do_monarch_notice)
 	}
 	else
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Only the Emperor can use this."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Only the Emperor can use this.");
 	}
 }
 
@@ -1915,12 +1915,12 @@ ACMD(do_makeguild)
 
 	if (!check_name(cp.name))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This Guild name is invalid"));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "This Guild name is invalid");
 		return;
 	}
 
 	gm.CreateGuild(cp);
-	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("(%s) Guild created. [Temporary]"), cp.name);
+	ch->ChatPacketTrans(CHAT_TYPE_INFO, "(%s) Guild created. [Temporary]", cp.name);
 }
 
 ACMD(do_deleteguild)
@@ -2542,7 +2542,7 @@ ACMD(do_guild_state)
 	}
 	else
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s: This Guild does not exist."), arg1);
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "%s: This Guild does not exist.", arg1);
 	}
 }
 
@@ -2909,7 +2909,7 @@ ACMD(do_priv_guild)
 		}
 
 		if (!g)
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("A Guild with this name or number does not exist."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "A Guild with this name or number does not exist.");
 		else
 		{
 			char buf[1024+1];
@@ -3024,7 +3024,7 @@ ACMD(do_block_chat_list)
 	// GM이 아니거나 block_chat_privilege가 없는 사람은 명령어 사용 불가
 	if (!ch || (ch->GetGMLevel() < GM_HIGH_WIZARD && ch->GetQuestFlag("chat_privilege.block") <= 0))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This Order does not exist."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "This Order does not exist.");
 		return;
 	}
 
@@ -3090,7 +3090,7 @@ ACMD(do_block_chat)
 	// GM이 아니거나 block_chat_privilege가 없는 사람은 명령어 사용 불가
 	if (ch && (ch->GetGMLevel() < GM_HIGH_WIZARD && ch->GetQuestFlag("chat_privilege.block") <= 0))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This Order does not exist."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "This Order does not exist.");
 		return;
 	}
 
@@ -3221,7 +3221,7 @@ ACMD(do_build)
 				const TObjectProto * t = CManager::instance().GetObjectProto(dwVnum);
 				if (!t)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The Building does not exist."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "The Building does not exist.");
 					return;
 				}
 
@@ -3231,7 +3231,7 @@ ACMD(do_build)
 				{
 					if (pkLand->FindObjectByGroup(t->dwGroupVnum))
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This Type of Building can be erected only once."));
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "This Type of Building can be erected only once.");
 						return;
 					}
 				}
@@ -3245,7 +3245,7 @@ ACMD(do_build)
 						// 지어져있는가?
 						if (!pkLand->FindObjectByGroup(t->dwDependOnGroupVnum))
 						{
-							ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The Base Building has to be made first."));
+							ch->ChatPacketTrans(CHAT_TYPE_INFO, "The Base Building has to be made first.");
 							return;
 						}
 					}
@@ -3257,13 +3257,13 @@ ACMD(do_build)
 					// 건설 비용 체크
 					if (t->dwPrice > BUILDING_MAX_PRICE)
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Building failed because of an incorrect pricing."));
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "Building failed because of an incorrect pricing.");
 						return;
 					}
 
 					if (ch->GetGold() < (int)t->dwPrice)
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You do not have enough Yang to erect this Building."));
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "You do not have enough Yang to erect this Building.");
 						return;
 					}
 
@@ -3280,7 +3280,7 @@ ACMD(do_build)
 
 						if ((int) dwItemCount > ch->CountSpecifyItem(dwItemVnum))
 						{
-							ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You do not have enough resources for this Building."));
+							ch->ChatPacketTrans(CHAT_TYPE_INFO, "You do not have enough resources for this Building.");
 							return;
 						}
 					}
@@ -3313,7 +3313,7 @@ ACMD(do_build)
 
 				if (!isSuccess)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot erect a Building at this place."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot erect a Building at this place.");
 					return;
 				}
 				else
@@ -3493,7 +3493,7 @@ ACMD(do_horse_level)
 
 	if (NULL == victim)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This character does not exist."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "This character does not exist.");
 		return;
 	}
 
@@ -3693,17 +3693,17 @@ ACMD(do_end_duel)
 	LPCHARACTER pChar = CHARACTER_MANAGER::instance().FindPC(szName);
 	if (pChar == NULL)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This character does not exist."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "This character does not exist.");
 		return;
 	}
 
 	if (CArenaManager::instance().EndDuel(pChar->GetPlayerID()) == false)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Duel not cancelled."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Duel not cancelled.");
 	}
 	else
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Duel cancelled successfully."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Duel cancelled successfully.");
 	}
 }
 
@@ -3750,7 +3750,7 @@ ACMD(do_duel)
 			}
 			else
 			{
-				pChar1->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You left the Group."));
+				pChar1->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You left the Group.");
 				pParty->Quit(pChar1->GetPlayerID());
 			}
 		}
@@ -3764,23 +3764,23 @@ ACMD(do_duel)
 			}
 			else
 			{
-				pChar2->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You left the Group."));
+				pChar2->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You left the Group.");
 				pParty->Quit(pChar2->GetPlayerID());
 			}
 		}
 
 		if (CArenaManager::instance().StartDuel(pChar1, pChar2, set, minute) == true)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The start of the duel was successful."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "The start of the duel was successful.");
 		}
 		else
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Is a problem with the start of the duel."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "Is a problem with the start of the duel.");
 		}
 	}
 	else
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("No Combatants there."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "No Combatants there.");
 	}
 }
 
@@ -3796,7 +3796,7 @@ ACMD(do_stat_plus_amount)
 
 	if (ch->IsPolymorphed())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot change your state as long as you are transformed."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot change your state as long as you are transformed.");
 		return;
 	}
 
@@ -3804,7 +3804,7 @@ ACMD(do_stat_plus_amount)
 
 	if (nRemainPoint <= 0)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("No State Points left."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "No State Points left.");
 		return;
 	}
 
@@ -3813,13 +3813,13 @@ ACMD(do_stat_plus_amount)
 
 	if (nRemainPoint < nPoint)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Left State Points are too low."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Left State Points are too low.");
 		return;
 	}
 
 	if (nPoint < 0)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You entered a wrong value."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You entered a wrong value.");
 		return;
 	}
 
@@ -3855,7 +3855,7 @@ ACMD(do_stat_plus_amount)
 			break;
 
 		default :
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Suborder or the Order is incorrect."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "Suborder or the Order is incorrect.");
 			return;
 			break;
 	}
@@ -3889,7 +3889,7 @@ ACMD(do_break_marriage)
 	str_to_number(pids.pid1, arg1);
 	str_to_number(pids.pid2, arg2);
 
-	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Broken contract between player %d and player %d."), pids.pid1, pids.pid2);
+	ch->ChatPacketTrans(CHAT_TYPE_INFO, "Broken contract between player %d and player %d.", pids.pid1, pids.pid2);
 	db_clientdesc->DBPacket(HEADER_GD_BREAK_MARRIAGE, 0, &pids, sizeof(pids));
 }
 
@@ -3923,8 +3923,8 @@ struct FCountInMap
 
 ACMD(do_threeway_war_info)
 {
-	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Information for the Kingdoms"));
-	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Choose the Map Information of the Holy Land %d Entrance %d %d %d"), GetSungziMapIndex(), GetPassMapIndex(1), GetPassMapIndex(2), GetPassMapIndex(3));
+	ch->ChatPacketTrans(CHAT_TYPE_INFO, "Information for the Kingdoms");
+	ch->ChatPacketTrans(CHAT_TYPE_INFO, "Choose the Map Information of the Holy Land %d Entrance %d %d %d", GetSungziMapIndex(), GetPassMapIndex(1), GetPassMapIndex(2), GetPassMapIndex(3));
 	ch->ChatPacket(CHAT_TYPE_INFO, "ThreewayPhase %d", CThreeWayWar::instance().GetRegenFlag());
 
 	for (int n = 1; n < 4; ++n)
@@ -3947,7 +3947,7 @@ ACMD(do_threeway_war_info)
 
 ACMD(do_threeway_war_myinfo)
 {
-	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Information about the Kingdom Battle"));
+	ch->ChatPacketTrans(CHAT_TYPE_INFO, "Information about the Kingdom Battle");
 	ch->ChatPacket(CHAT_TYPE_INFO, "Deadcount %d",
 			CThreeWayWar::instance().GetReviveTokenForPlayer(ch->GetPlayerID()));
 }
@@ -4308,13 +4308,13 @@ ACMD(do_set_stat)
 	{
 		if (tch->IsPolymorphed())
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot change your state as long as you are transformed."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot change your state as long as you are transformed.");
 			return;
 		}
 
 		if (subcmd != POINT_HT && subcmd != POINT_IQ && subcmd != POINT_ST && subcmd != POINT_DX)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Suborder or the Order is incorrect."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "Suborder or the Order is incorrect.");
 			return;
 		}
 		int nRemainPoint = tch->GetPoint(POINT_STAT);
@@ -4329,7 +4329,7 @@ ACMD(do_set_stat)
 		case POINT_HT:
 			if (nPoint < JobInitialPoints[tch->GetJob()].ht)
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Cannot set stat under initial stat."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "Cannot set stat under initial stat.");
 				return;
 			}
 			n = 0;
@@ -4337,7 +4337,7 @@ ACMD(do_set_stat)
 		case POINT_IQ:
 			if (nPoint < JobInitialPoints[tch->GetJob()].iq)
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Cannot set stat under initial stat."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "Cannot set stat under initial stat.");
 				return;
 			}
 			n = 1;
@@ -4345,7 +4345,7 @@ ACMD(do_set_stat)
 		case POINT_ST:
 			if (nPoint < JobInitialPoints[tch->GetJob()].st)
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Cannot set stat under initial stat."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "Cannot set stat under initial stat.");
 				return;
 			}
 			n = 2;
@@ -4353,7 +4353,7 @@ ACMD(do_set_stat)
 		case POINT_DX:
 			if (nPoint < JobInitialPoints[tch->GetJob()].dx)
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Cannot set stat under initial stat."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "Cannot set stat under initial stat.");
 				return;
 			}
 			n = 3;
@@ -4368,7 +4368,7 @@ ACMD(do_set_stat)
 
 		if (nRemainPoint < nChangeAmount)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Left State Points are too low."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "Left State Points are too low.");
 			return;
 		}
 

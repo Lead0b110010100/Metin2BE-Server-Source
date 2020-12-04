@@ -183,8 +183,8 @@ void CPVPManager::Insert(LPCHARACTER pkChr, LPCHARACTER pkVictim)
 		// 복수할 수 있으면 바로 싸움!
 		if (pkPVP->Agree(pkChr->GetPlayerID()))
 		{
-			pkVictim->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The duel with %s has begin!"), pkChr->GetName());
-			pkChr->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The duel with %s has begin!"), pkVictim->GetName());
+			pkVictim->ChatPacketTrans(CHAT_TYPE_INFO, "The duel with %s has begin!", pkChr->GetName());
+			pkChr->ChatPacketTrans(CHAT_TYPE_INFO, "The duel with %s has begin!", pkVictim->GetName());
 		}
 		return;
 	}
@@ -205,7 +205,7 @@ void CPVPManager::Insert(LPCHARACTER pkChr, LPCHARACTER pkVictim)
 	snprintf(msg, sizeof(msg), LC_TEXT("%s challenged you for a duel!"), pkChr->GetName());
 
 	pkVictim->ChatPacket(CHAT_TYPE_INFO, msg);
-	pkChr->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You challenged %s for a duel."), pkVictim->GetName());
+	pkChr->ChatPacketTrans(CHAT_TYPE_INFO, "You challenged %s for a duel.", pkVictim->GetName());
 
 	// NOTIFY_PVP_MESSAGE
 	LPDESC pkVictimDesc = pkVictim->GetDesc();

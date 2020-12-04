@@ -159,7 +159,7 @@ bool COXEventManager::ShowQuizList(LPCHARACTER pkChar)
 		}
 	}
 
-	pkChar->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Total number of the Quiz: %d "), c);
+	pkChar->ChatPacketTrans(CHAT_TYPE_INFO, "Total number of the Quiz: %d ", c);
 	return true;
 }
 
@@ -305,7 +305,7 @@ bool COXEventManager::CheckAnswer(bool answer)
 			}
 			else
 			{
-				pkChar->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Correct!"));
+				pkChar->ChatPacketTrans(CHAT_TYPE_INFO, "Correct!");
 				// pkChar->CreateFly(number(FLY_FIREWORK1, FLY_FIREWORK6), pkChar);
 				char chatbuf[256];
 				int len = snprintf(chatbuf, sizeof(chatbuf),

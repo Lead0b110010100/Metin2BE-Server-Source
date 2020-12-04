@@ -120,7 +120,7 @@ void SendBlockChatInfo(LPCHARACTER ch, int sec)
 {
 	if (sec <= 0)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your Chat is blocked."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Your Chat is blocked.");
 		return;
 	}
 
@@ -362,7 +362,7 @@ int CInputMain::Whisper(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 	if (ch->FindAffect(AFFECT_BLOCK_CHAT))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your Chat is blocked."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Your Chat is blocked.");
 		return (iExtraLen);
 	}
 
@@ -788,9 +788,9 @@ int CInputMain::Chat(LPCHARACTER ch, const char * data, size_t uiBytes)
 		if (NULL != pTable)
 		{
 			if (3==processReturn) //교환중
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Cannot be used"), pTable->szLocaleName);
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "Cannot be used", pTable->szLocaleName);
 			else
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s is required."), pTable->szLocaleName);
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "%s is required.", pTable->szLocaleName);
 
 		}
 
@@ -827,7 +827,7 @@ int CInputMain::Chat(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 		if (ch->GetLevel() < g_iShoutLimitLevel)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You need Level %d to be able to call."), g_iShoutLimitLevel);
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "You need Level %d to be able to call.", g_iShoutLimitLevel);
 			return (iExtraLen);
 		}
 
@@ -898,7 +898,7 @@ int CInputMain::Chat(LPCHARACTER ch, const char * data, size_t uiBytes)
 		case CHAT_TYPE_PARTY:
 			{
 				if (!ch->GetParty())
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You are not in this Group."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "You are not in this Group.");
 				else
 				{
 					TEMP_BUFFER tbuf;
@@ -922,7 +922,7 @@ int CInputMain::Chat(LPCHARACTER ch, const char * data, size_t uiBytes)
 		case CHAT_TYPE_GUILD:
 			{
 				if (!ch->GetGuild())
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You did not join this Guild."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "You did not join this Guild.");
 				else
 				{
 					ch->GetGuild()->Chat(chatbuf);
@@ -1055,7 +1055,7 @@ int CInputMain::Messenger(LPCHARACTER ch, const char* c_pData, size_t uiBytes)
 
 				if (ch_companion->IsBlockMode(BLOCK_MESSENGER_INVITE))
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The player declines to be added to the messenger."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "The player declines to be added to the messenger.");
 					return sizeof(TPacketCGMessengerAddByVID);
 				}
 
@@ -1066,7 +1066,7 @@ int CInputMain::Messenger(LPCHARACTER ch, const char* c_pData, size_t uiBytes)
 
 				if (ch->GetGMLevel() == GM_PLAYER && ch_companion->GetGMLevel() != GM_PLAYER)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Messenger> GM cannot be added on Messenger."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Messenger> GM cannot be added on Messenger.");
 					return sizeof(TPacketCGMessengerAddByVID);
 				}
 
@@ -1088,14 +1088,14 @@ int CInputMain::Messenger(LPCHARACTER ch, const char* c_pData, size_t uiBytes)
 
 				if (ch->GetGMLevel() == GM_PLAYER && gm_get_level(name) != GM_PLAYER)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Messenger> GM cannot be added on Messenger."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Messenger> GM cannot be added on Messenger.");
 					return CHARACTER_NAME_MAX_LEN;
 				}
 
 				LPCHARACTER tch = CHARACTER_MANAGER::instance().FindPC(name);
 
 				if (!tch)
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s is not in the game."), name);
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "%s is not in the game.", name);
 				else
 				{
 					if (tch == ch) // 자신은 추가할 수 없다.
@@ -1103,7 +1103,7 @@ int CInputMain::Messenger(LPCHARACTER ch, const char* c_pData, size_t uiBytes)
 
 					if (tch->IsBlockMode(BLOCK_MESSENGER_INVITE) == true)
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The player declines to be added to the messenger."));
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "The player declines to be added to the messenger.");
 					}
 					else
 					{
@@ -1225,7 +1225,7 @@ void CInputMain::Exchange(LPCHARACTER ch, const char * data)
 	{
 		if (iPulse - to_ch->GetSafeboxLoadTime() < PASSES_PER_SEC(g_nPortalLimitTime))
 		{
-			to_ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("After you traded you can open a Warehouse after %d seconds."), g_nPortalLimitTime);
+			to_ch->ChatPacketTrans(CHAT_TYPE_INFO, "After you traded you can open a Warehouse after %d seconds.", g_nPortalLimitTime);
 			return;
 		}
 
@@ -1239,7 +1239,7 @@ void CInputMain::Exchange(LPCHARACTER ch, const char * data)
 
 	if (iPulse - ch->GetSafeboxLoadTime() < PASSES_PER_SEC(g_nPortalLimitTime))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("After you traded you can open a Warehouse after %d seconds."), g_nPortalLimitTime);
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "After you traded you can open a Warehouse after %d seconds.", g_nPortalLimitTime);
 		return;
 	}
 
@@ -1255,14 +1255,14 @@ void CInputMain::Exchange(LPCHARACTER ch, const char * data)
 					/*
 					if (to_ch->IsMonarch() || ch->IsMonarch())
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can not trade with the Emperor."), g_nPortalLimitTime);
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "You can not trade with the Emperor.", g_nPortalLimitTime);
 						return;
 					}
 					//END_MONARCH_LIMIT
 					*/
 					if (iPulse - ch->GetSafeboxLoadTime() < PASSES_PER_SEC(g_nPortalLimitTime))
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can trade again in %d seconds."), g_nPortalLimitTime);
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "You can trade again in %d seconds.", g_nPortalLimitTime);
 
 						if (test_server)
 							ch->ChatPacket(CHAT_TYPE_INFO, "[TestOnly][Safebox]Pulse %d LoadTime %d PASS %d", iPulse, ch->GetSafeboxLoadTime(), PASSES_PER_SEC(g_nPortalLimitTime));
@@ -1271,7 +1271,7 @@ void CInputMain::Exchange(LPCHARACTER ch, const char * data)
 
 					if (iPulse - to_ch->GetSafeboxLoadTime() < PASSES_PER_SEC(g_nPortalLimitTime))
 					{
-						to_ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can trade again in %d seconds."), g_nPortalLimitTime);
+						to_ch->ChatPacketTrans(CHAT_TYPE_INFO, "You can trade again in %d seconds.", g_nPortalLimitTime);
 
 
 						if (test_server)
@@ -1281,7 +1281,7 @@ void CInputMain::Exchange(LPCHARACTER ch, const char * data)
 
 					if (ch->GetGold() >= GOLD_MAX)
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You have more than 2 Billion Yang. You cannot trade."));
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "You have more than 2 Billion Yang. You cannot trade.");
 
 						sys_err("[OVERFLOG_GOLD] START (%u) id %u name %s ", ch->GetGold(), ch->GetPlayerID(), ch->GetName());
 						return;
@@ -1299,7 +1299,7 @@ void CInputMain::Exchange(LPCHARACTER ch, const char * data)
 
 					if (ch->GetMyShop() || ch->IsOpenSafebox() || ch->GetShopOwner() || ch->IsCubeOpen())
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot open a private shop as long as you trade with others."));
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot open a private shop as long as you trade with others.");
 						return;
 					}
 
@@ -1331,7 +1331,7 @@ void CInputMain::Exchange(LPCHARACTER ch, const char * data)
 
 				if (GOLD_MAX <= nTotalGold)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The player has more than 2 Billion Yang. You cannot trade with him."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "The player has more than 2 Billion Yang. You cannot trade with him.");
 
 					sys_err("[OVERFLOW_GOLD] ELK_ADD (%lld) id %u name %s ",
 							ch->GetExchange()->GetCompany()->GetOwner()->GetGold(),
@@ -1817,7 +1817,7 @@ void CInputMain::Attack(LPCHARACTER ch, const BYTE header, const char* data)
 				if (HEADER_CG_SHOOT != type->header)
 				{
 					if (test_server)
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Attack :name[%s] Vnum[%d] can't use skill by attack(warning)"), type->type);
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "Attack :name[%s] Vnum[%d] can't use skill by attack(warning)", type->type);
 					return;
 				}
 				break;
@@ -2164,31 +2164,31 @@ void CInputMain::SafeboxCheckin(LPCHARACTER ch, const char * c_pData)
 
 	if (pkItem->GetCell() >= INVENTORY_MAX_NUM && IS_SET(pkItem->GetFlag(), ITEM_FLAG_IRREMOVABLE))
 	{
-	    ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Storage> Cannot move items in safebox."));
+	    ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Storage> Cannot move items in safebox.");
 	    return;
 	}
 
 	if (!pkSafebox->IsEmpty(p->bSafePos, pkItem->GetSize()))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Storages> No movement possible."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Storages> No movement possible.");
 		return;
 	}
 
 	if (pkItem->GetVnum() == UNIQUE_ITEM_SAFEBOX_EXPAND)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Storages> The Item cannot be stored."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Storages> The Item cannot be stored.");
 		return;
 	}
 
 	if( IS_SET(pkItem->GetAntiFlag(), ITEM_ANTIFLAG_SAFEBOX) )
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Storages> The Item cannot be stored."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Storages> The Item cannot be stored.");
 		return;
 	}
 
 	if (true == pkItem->isLocked())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Storages> The Item cannot be stored."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Storages> The Item cannot be stored.");
 		return;
 	}
 
@@ -2201,7 +2201,7 @@ void CInputMain::SafeboxCheckin(LPCHARACTER ch, const char * c_pData)
 			LPITEM costumeWeapon = ch->GetWear(WEAR_COSTUME_WEAPON);
 			if (costumeWeapon && !ch->UnequipItem(costumeWeapon))
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot unequip the costume weapon. Not enough space."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot unequip the costume weapon. Not enough space.");
 				return;
 			}
 		}
@@ -2284,7 +2284,7 @@ void CInputMain::PartyInvite(LPCHARACTER ch, const char * c_pData)
 {
 	if (ch->GetArena())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this in the arena."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this in the arena.");
 		return;
 	}
 
@@ -2305,7 +2305,7 @@ void CInputMain::PartyInviteAnswer(LPCHARACTER ch, const char * c_pData)
 {
 	if (ch->GetArena())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this in the arena."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this in the arena.");
 		return;
 	}
 
@@ -2316,7 +2316,7 @@ void CInputMain::PartyInviteAnswer(LPCHARACTER ch, const char * c_pData)
 	// pInviter 가 ch 에게 파티 요청을 했었다.
 
 	if (!pInviter)
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> The player who invited is not online."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> The player who invited is not online.");
 	else if (!p->accept)
 		pInviter->PartyInviteDeny(ch->GetPlayerID());
 	else
@@ -2328,7 +2328,7 @@ void CInputMain::PartySetState(LPCHARACTER ch, const char* c_pData)
 {
 	if (!CPartyManager::instance().IsEnablePCParty())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> The server cannot execute the Group request."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> The server cannot execute the Group request.");
 		return;
 	}
 
@@ -2339,13 +2339,13 @@ void CInputMain::PartySetState(LPCHARACTER ch, const char* c_pData)
 
 	if (ch->GetParty()->GetLeaderPID() != ch->GetPlayerID())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> Only the Group leader can change this."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> Only the Group leader can change this.");
 		return;
 	}
 
 	if (!ch->GetParty()->IsMember(p->pid))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> The target is no member of your Group."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> The target is no member of your Group.");
 		return;
 	}
 
@@ -2373,7 +2373,7 @@ void CInputMain::PartySetState(LPCHARACTER ch, const char* c_pData)
 				db_clientdesc->DBPacket(HEADER_GD_PARTY_STATE_CHANGE, 0, &pack, sizeof(pack));
 			}
 			/* else
-			   ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> You have failed to set attacker.")); */
+			   ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> You have failed to set attacker."); */
 			break;
 
 		default:
@@ -2386,19 +2386,19 @@ void CInputMain::PartyRemove(LPCHARACTER ch, const char* c_pData)
 {
 	if (ch->GetArena())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this in the arena."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this in the arena.");
 		return;
 	}
 
 	if (!CPartyManager::instance().IsEnablePCParty())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> The server cannot execute the Group request."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> The server cannot execute the Group request.");
 		return;
 	}
 
 	if (ch->GetDungeon())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot kick a player while you are in a dungeon."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot kick a player while you are in a dungeon.");
 		return;
 	}
 
@@ -2412,14 +2412,14 @@ void CInputMain::PartyRemove(LPCHARACTER ch, const char* c_pData)
 	{
 		if (ch->GetDungeon())
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot kick a player while you are in a dungeon."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot kick a player while you are in a dungeon.");
 		}
 		else
 		{
 			// 적룡성에서 파티장이 던젼 밖에서 파티 해산 못하게 막자
 			if(pParty->IsPartyInDungeon(351))
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<파티>던전 안에 파티원이 있어 파티를 해산 할 수 없습니다."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "<파티>던전 안에 파티원이 있어 파티를 해산 할 수 없습니다.");
 				return;
 			}
 
@@ -2435,7 +2435,7 @@ void CInputMain::PartyRemove(LPCHARACTER ch, const char* c_pData)
 				if (B)
 				{
 					//pParty->SendPartyRemoveOneToAll(B);
-					B->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You were kicked from the Group."));
+					B->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You were kicked from the Group.");
 					//pParty->Unlink(B);
 					//CPartyManager::instance().SetPartyMember(B->GetPlayerID(), NULL);
 				}
@@ -2450,7 +2450,7 @@ void CInputMain::PartyRemove(LPCHARACTER ch, const char* c_pData)
 		{
 			if (ch->GetDungeon())
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot leave a Group while being in a dungeon."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot leave a Group while being in a dungeon.");
 			}
 			else
 			{
@@ -2461,7 +2461,7 @@ void CInputMain::PartyRemove(LPCHARACTER ch, const char* c_pData)
 				}
 				else
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You left the Group."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You left the Group.");
 					//pParty->SendPartyRemoveOneToAll(ch);
 					pParty->Quit(ch->GetPlayerID());
 					//pParty->SendPartyRemoveAllToOne(ch);
@@ -2471,7 +2471,7 @@ void CInputMain::PartyRemove(LPCHARACTER ch, const char* c_pData)
 		}
 		else
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot kick Group members."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot kick Group members.");
 		}
 	}
 }
@@ -2486,7 +2486,7 @@ void CInputMain::AnswerMakeGuild(LPCHARACTER ch, const char* c_pData)
 	/* if (get_global_time() - ch->GetQuestFlag("guild_manage.new_disband_time") <
 			CGuildManager::instance().GetDisbandDelay())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> After the deletion of the Guild, you cannot create a new one for %d days."),
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> After the deletion of the Guild, you cannot create a new one for %d days.",
 				quest::CQuestManager::instance().GetEventFlag("guild_disband_delay"));
 		return;
 	} */
@@ -2504,7 +2504,7 @@ void CInputMain::AnswerMakeGuild(LPCHARACTER ch, const char* c_pData)
 
 	if (cp.name[0] == 0 || !check_name(cp.name))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This Guild name is invalid"));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "This Guild name is invalid");
 		return;
 	}
 
@@ -2512,7 +2512,7 @@ void CInputMain::AnswerMakeGuild(LPCHARACTER ch, const char* c_pData)
 
 	if (dwGuildID)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> [%s] Guild was created."), cp.name);
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> [%s] Guild was created.", cp.name);
 
 		int GuildCreateFee = 10000000;
 
@@ -2527,7 +2527,7 @@ void CInputMain::AnswerMakeGuild(LPCHARACTER ch, const char* c_pData)
 		//ch->SendGuildName(dwGuildID);
 	}
 	else
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> Creation of Guild failed."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> Creation of Guild failed.");
 }
 
 void CInputMain::PartyUseSkill(LPCHARACTER ch, const char* c_pData)
@@ -2538,7 +2538,7 @@ void CInputMain::PartyUseSkill(LPCHARACTER ch, const char* c_pData)
 
 	if (ch->GetPlayerID() != ch->GetParty()->GetLeaderPID())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> Only the Group leader can use Group Skills."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> Only the Group leader can use Group Skills.");
 		return;
 	}
 
@@ -2553,7 +2553,7 @@ void CInputMain::PartyUseSkill(LPCHARACTER ch, const char* c_pData)
 				if (pch)
 					ch->GetParty()->SummonToLeader(pch->GetPlayerID());
 				else
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> The target was not found."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> The target was not found.");
 			}
 			break;
 	}
@@ -2615,7 +2615,7 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 	{
 		if (SubHeader != GUILD_SUBHEADER_CG_GUILD_INVITE_ANSWER)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> It does not belong to the Guild."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> It does not belong to the Guild.");
 			return SubPacketLen;
 		}
 	}
@@ -2631,13 +2631,13 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 				if (gold < 0)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> That is not the correct Yang sum."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> That is not the correct Yang sum.");
 					return SubPacketLen;
 				}
 
 				if (ch->GetGold() < gold)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> You do not have enough Yang."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> You do not have enough Yang.");
 					return SubPacketLen;
 				}
 
@@ -2654,7 +2654,7 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 				if (gold < 0)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> That is not the correct Yang sum."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> That is not the correct Yang sum.");
 					return SubPacketLen;
 				}
 
@@ -2669,7 +2669,7 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 				if (!newmember)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> The wanted person cannot be found."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> The wanted person cannot be found.");
 					return SubPacketLen;
 				}
 
@@ -2686,7 +2686,7 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 			{
 				if (pGuild->UnderAnyWar() != 0)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> During a guild war, you cannot kick out other guild members."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> During a guild war, you cannot kick out other guild members.");
 					return SubPacketLen;
 				}
 
@@ -2702,13 +2702,13 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 				{
 					if (member->GetGuild() != pGuild)
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> This person is not in the same Guild."));
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> This person is not in the same Guild.");
 						return SubPacketLen;
 					}
 
 					if (!pGuild->HasGradeAuth(m->grade, GUILD_AUTH_REMOVE_MEMBER))
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> You cannot kick Guild members."));
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> You cannot kick Guild members.");
 						return SubPacketLen;
 					}
 
@@ -2723,14 +2723,14 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 				{
 					if (!pGuild->HasGradeAuth(m->grade, GUILD_AUTH_REMOVE_MEMBER))
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> You cannot kick Guild members."));
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> You cannot kick Guild members.");
 						return SubPacketLen;
 					}
 
 					if (pGuild->RequestRemoveMember(pid))
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> You kicked a Guild member."));
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> You kicked a Guild member.");
 					else
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> The wanted person cannot be found."));
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> The wanted person cannot be found.");
 				}
 			}
 			return SubPacketLen;
@@ -2747,15 +2747,15 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 				if (m->grade != GUILD_LEADER_GRADE)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> You cannot change your Rank name."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> You cannot change your Rank name.");
 				}
 				else if (*c_pData == GUILD_LEADER_GRADE)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> The name of the rank of the Guild master cannot be changed."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> The name of the rank of the Guild master cannot be changed.");
 				}
 				else if (!check_name(gradename))
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> This Rank name is invalid."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> This Rank name is invalid.");
 				}
 				else
 				{
@@ -2773,11 +2773,11 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 				if (m->grade != GUILD_LEADER_GRADE)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> You cannot change your position."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> You cannot change your position.");
 				}
 				else if (*c_pData == GUILD_LEADER_GRADE)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> The powers of the Guild master cannot be changed."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> The powers of the Guild master cannot be changed.");
 				}
 				else
 				{
@@ -2795,7 +2795,7 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 				if (pGuild->GetLevel() >= GUILD_MAX_LEVEL)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> The Guild has already reached maximum level."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> The Guild has already reached maximum level.");
 				}
 				else
 				{
@@ -2804,11 +2804,11 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 					if (pGuild->OfferExp(ch, offer))
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> %u 's Experience used."), offer);
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> %u 's Experience used.", offer);
 					}
 					else
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> Experience usage failed."));
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> Experience usage failed.");
 					}
 				}
 			}
@@ -2821,13 +2821,13 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 				if (offer < 0 || gold < offer || gold < 0 || ch->GetGold() < gold)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> Not enough Yang."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> Not enough Yang.");
 					return SubPacketLen;
 				}
 
 				if (!pGuild->ChargeSP(ch, offer))
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> Dragon ghost was not restored."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> Dragon ghost was not restored.");
 				}
 			}
 			return SubPacketLen;
@@ -2854,7 +2854,7 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 				if (length && !pGuild->HasGradeAuth(m->grade, GUILD_AUTH_NOTICE) && *(c_pData + 1) == '!')
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> You cannot make an announcement."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> You cannot make an announcement.");
 				}
 				else
 				{
@@ -2887,11 +2887,11 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 					return -1;
 
 				if (m->grade != GUILD_LEADER_GRADE)
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> You cannot change your position."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> You cannot change your position.");
 				else if (ch->GetPlayerID() == pid)
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> The rank of the Guild master cannot be changed."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> The rank of the Guild master cannot be changed.");
 				else if (grade == 1)
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> You cannot make yourself Guild master."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> You cannot make yourself Guild master.");
 				else
 					pGuild->ChangeMemberGrade(pid, grade);
 			}
@@ -2916,13 +2916,13 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 				if (m->grade != GUILD_LEADER_GRADE)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> You cannot choose the leader."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> You cannot choose the leader.");
 				}
 				else
 				{
 					if (!pGuild->ChangeMemberGeneral(pid, is_general))
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> You cannot choose more leaders."));
+						ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> You cannot choose more leaders.");
 					}
 				}
 			}
@@ -2966,7 +2966,7 @@ void CInputMain::ItemGive(LPCHARACTER ch, const char* c_pData)
 	if (to_ch)
 		ch->GiveItem(to_ch, p->ItemPos);
 	else
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot trade this Item."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot trade this Item.");
 }
 
 void CInputMain::Hack(LPCHARACTER ch, const char * c_pData)
@@ -2992,7 +2992,7 @@ int CInputMain::MyShop(LPCHARACTER ch, const char * c_pData, size_t uiBytes)
 
 	if (ch->GetGold() >= GOLD_MAX)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You have more than 2 Billion Yang. You cannot trade."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You have more than 2 Billion Yang. You cannot trade.");
 		sys_log(0, "MyShop ==> OverFlow Gold id %u name %s ", ch->GetPlayerID(), ch->GetName());
 		return (iExtraLen);
 	}
@@ -3002,7 +3002,7 @@ int CInputMain::MyShop(LPCHARACTER ch, const char * c_pData, size_t uiBytes)
 
 	if (ch->GetExchange() || ch->IsOpenSafebox() || ch->GetShopOwner() || ch->IsCubeOpen())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot open a private shop as long as you trade with others."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot open a private shop as long as you trade with others.");
 		return (iExtraLen);
 	}
 

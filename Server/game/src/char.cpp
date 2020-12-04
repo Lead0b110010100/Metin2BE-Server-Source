@@ -679,14 +679,14 @@ void CHARACTER::OpenMyShop(const char * c_pszSign, TShopItemTable * pTable, BYTE
 {
 	if (!CanHandleItem()) // @fixme149
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use a private shop now."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You can't use a private shop now.");
 		return;
 	}
 
 #ifndef ENABLE_OPEN_SHOP_WITH_ARMOR
 	if (GetPart(PART_MAIN) > 2)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("To open a shop, you have to take off the armor."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "To open a shop, you have to take off the armor.");
 		return;
 	}
 #endif
@@ -722,7 +722,7 @@ void CHARACTER::OpenMyShop(const char * c_pszSign, TShopItemTable * pTable, BYTE
 	if (GOLD_MAX <= nTotalMoney)
 	{
 		sys_err("[OVERFLOW_GOLD] Overflow (GOLD_MAX) id %u name %s", GetPlayerID(), GetName());
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't open a Warehouse because you carry more than 2 billion Yang."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You can't open a Warehouse because you carry more than 2 billion Yang.");
 		return;
 	}
 
@@ -736,7 +736,7 @@ void CHARACTER::OpenMyShop(const char * c_pszSign, TShopItemTable * pTable, BYTE
 
 	if (CBanwordManager::instance().CheckString(m_stShopSign.c_str(), m_stShopSign.length()))
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't name your Warehouse with an invalid name."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You can't name your Warehouse with an invalid name.");
 		return;
 	}
 
@@ -762,19 +762,19 @@ void CHARACTER::OpenMyShop(const char * c_pszSign, TShopItemTable * pTable, BYTE
 
 			if (item_table && (IS_SET(item_table->dwAntiFlags, ITEM_ANTIFLAG_GIVE | ITEM_ANTIFLAG_MYSHOP)))
 			{
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Error: can't be sold in Warehouse. Please report to GM."));
+				ChatPacketTrans(CHAT_TYPE_INFO, "Error: can't be sold in Warehouse. Please report to GM.");
 				return;
 			}
 
 			if (pkItem->IsEquipped() == true)
 			{
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot sell items you have equipped."));
+				ChatPacketTrans(CHAT_TYPE_INFO, "You cannot sell items you have equipped.");
 				return;
 			}
 
 			if (true == pkItem->isLocked())
 			{
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("사용중인 아이템은 개인상점에서 판매할 수 없습니다."));
+				ChatPacketTrans(CHAT_TYPE_INFO, "사용중인 아이템은 개인상점에서 판매할 수 없습니다.");
 				return;
 			}
 
@@ -4260,7 +4260,7 @@ void CHARACTER::mining_cancel()
 	{
 		sys_log(0, "XXX MINING CANCEL");
 		event_cancel(&m_pkMiningEvent);
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Mining finished."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "Mining finished.");
 	}
 }
 
@@ -4286,7 +4286,7 @@ void CHARACTER::mining(LPCHARACTER chLoad)
 
 	if (!pick || pick->GetType() != ITEM_PICK)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Please get a Pick Axe."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "Please get a Pick Axe.");
 		return;
 	}
 
@@ -4325,7 +4325,7 @@ void CHARACTER::fishing()
 
 		if (IS_SET(dwAttr, ATTR_BLOCK))
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot fish here."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "You cannot fish here.");
 			return;
 		}
 	}
@@ -4335,13 +4335,13 @@ void CHARACTER::fishing()
 	// 낚시대 장착
 	if (!rod || rod->GetType() != ITEM_ROD)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Please choose a Rod."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "Please choose a Rod.");
 		return;
 	}
 
 	if (0 == rod->GetSocket(2))
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("First place the Bait on the Hook."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "First place the Bait on the Hook.");
 		return;
 	}
 
@@ -4367,7 +4367,7 @@ void CHARACTER::fishing_take()
 	}
 	else
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't go fishing without a Rod!"));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You can't go fishing without a Rod!");
 	}
 
 	event_cancel(&m_pkFishingEvent);
@@ -4658,7 +4658,7 @@ bool CHARACTER::RequestToParty(LPCHARACTER leader)
 
 	if (!leader)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot make a request because the Group leader is not online."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot make a request because the Group leader is not online.");
 		return false;
 	}
 
@@ -4679,38 +4679,38 @@ bool CHARACTER::RequestToParty(LPCHARACTER leader)
 			break;
 
 		case PERR_SERVER:
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> The server cannot execute the Group request."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "<Group> The server cannot execute the Group request.");
 			return false;
 
 		case PERR_DIFFEMPIRE:
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot form a Group with players from another Kingdom."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot form a Group with players from another Kingdom.");
 			return false;
 
 		case PERR_DUNGEON:
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot invite players while you are in a dungeon."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot invite players while you are in a dungeon.");
 			return false;
 
 		case PERR_OBSERVER:
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot invite players while you are in Observer Mode."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot invite players while you are in Observer Mode.");
 			return false;
 
 		case PERR_LVBOUNDARY:
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> Only players with a Level difference of -30 to +30 can be invited."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "<Group> Only players with a Level difference of -30 to +30 can be invited.");
 			return false;
 
 		case PERR_LOWLEVEL:
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot invite this player, his Level is too low."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot invite this player, his Level is too low.");
 			return false;
 
 		case PERR_HILEVEL:
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot invite this player, his Level is too high."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot invite this player, his Level is too high.");
 			return false;
 
 		case PERR_ALREADYJOIN:
 			return false;
 
 		case PERR_PARTYISFULL:
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot invite more players into your Group."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot invite more players into your Group.");
 			return false;
 
 		default:
@@ -4726,7 +4726,7 @@ bool CHARACTER::RequestToParty(LPCHARACTER leader)
 	SetPartyRequestEvent(event_create(party_request_event, info, PASSES_PER_SEC(10)));
 
 	leader->ChatPacket(CHAT_TYPE_COMMAND, "PartyRequest %u", (DWORD) GetVID());
-	ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Do you want to join the group of %s?"), leader->GetName());
+	ChatPacketTrans(CHAT_TYPE_INFO, "Do you want to join the group of %s?", leader->GetName());
 	return true;
 }
 
@@ -4780,7 +4780,7 @@ void CHARACTER::AcceptToParty(LPCHARACTER member)
 	event_cancel(&member->m_pkPartyRequestEvent);
 
 	if (!GetParty())
-		member->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The player is not in this Group."));
+		member->ChatPacketTrans(CHAT_TYPE_INFO, "The player is not in this Group.");
 	else
 	{
 		if (GetPlayerID() != GetParty()->GetLeaderPID())
@@ -4790,16 +4790,16 @@ void CHARACTER::AcceptToParty(LPCHARACTER member)
 		switch (errcode)
 		{
 			case PERR_NONE: 		member->PartyJoin(this); return;
-			case PERR_SERVER:		member->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> The server cannot execute the Group request.")); break;
-			case PERR_DUNGEON:		member->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot invite players while you are in a dungeon.")); break;
-			case PERR_OBSERVER: 	member->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot invite players while you are in Observer Mode.")); break;
-			case PERR_LVBOUNDARY:	member->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> Only players with a Level difference of -30 to +30 can be invited.")); break;
-			case PERR_LOWLEVEL: 	member->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot invite this player, his Level is too low.")); break;
-			case PERR_HILEVEL: 		member->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot invite this player, his Level is too high.")); break;
+			case PERR_SERVER:		member->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> The server cannot execute the Group request."); break;
+			case PERR_DUNGEON:		member->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot invite players while you are in a dungeon."); break;
+			case PERR_OBSERVER: 	member->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot invite players while you are in Observer Mode."); break;
+			case PERR_LVBOUNDARY:	member->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> Only players with a Level difference of -30 to +30 can be invited."); break;
+			case PERR_LOWLEVEL: 	member->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot invite this player, his Level is too low."); break;
+			case PERR_HILEVEL: 		member->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot invite this player, his Level is too high."); break;
 			case PERR_ALREADYJOIN: 	break;
 			case PERR_PARTYISFULL: {
-									   ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot invite more players into your Group."));
-									   member->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot join this Group as too many members are already there."));
+									   ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot invite more players into your Group.");
+									   member->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot join this Group as too many members are already there.");
 									   break;
 								   }
 			default: sys_err("Do not process party join error(%d)", errcode);
@@ -4838,12 +4838,12 @@ void CHARACTER::PartyInvite(LPCHARACTER pchInvitee)
 {
 	if (GetParty() && GetParty()->GetLeaderPID() != GetPlayerID())
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You do not have the right to invite someone."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You do not have the right to invite someone.");
 		return;
 	}
 	else if (pchInvitee->IsBlockMode(BLOCK_PARTY_INVITE))
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> %s declines the invitation of your Group."), pchInvitee->GetName());
+		ChatPacketTrans(CHAT_TYPE_INFO, "<Group> %s declines the invitation of your Group.", pchInvitee->GetName());
 		return;
 	}
 
@@ -4855,39 +4855,39 @@ void CHARACTER::PartyInvite(LPCHARACTER pchInvitee)
 			break;
 
 		case PERR_SERVER:
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> The server cannot execute the Group request."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "<Group> The server cannot execute the Group request.");
 			return;
 
 		case PERR_DIFFEMPIRE:
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot form a Group with players from another Kingdom."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot form a Group with players from another Kingdom.");
 			return;
 
 		case PERR_DUNGEON:
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot invite players while you are in a dungeon."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot invite players while you are in a dungeon.");
 			return;
 
 		case PERR_OBSERVER:
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot invite players while you are in Observer Mode."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot invite players while you are in Observer Mode.");
 			return;
 
 		case PERR_LVBOUNDARY:
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> Only players with a Level difference of -30 to +30 can be invited."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "<Group> Only players with a Level difference of -30 to +30 can be invited.");
 			return;
 
 		case PERR_LOWLEVEL:
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot invite this player, his Level is too low."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot invite this player, his Level is too low.");
 			return;
 
 		case PERR_HILEVEL:
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot invite this player, his Level is too high."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot invite this player, his Level is too high.");
 			return;
 
 		case PERR_ALREADYJOIN:
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> %s is already in the Group."), pchInvitee->GetName());
+			ChatPacketTrans(CHAT_TYPE_INFO, "<Group> %s is already in the Group.", pchInvitee->GetName());
 			return;
 
 		case PERR_PARTYISFULL:
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot invite more players into your Group."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot invite more players into your Group.");
 			return;
 
 		default:
@@ -4933,7 +4933,7 @@ void CHARACTER::PartyInviteAccept(LPCHARACTER pchInvitee)
 
 	if (GetParty() && GetParty()->GetLeaderPID() != GetPlayerID())
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You do not have the right to invite someone."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You do not have the right to invite someone.");
 		return;
 	}
 
@@ -4945,36 +4945,36 @@ void CHARACTER::PartyInviteAccept(LPCHARACTER pchInvitee)
 			break;
 
 		case PERR_SERVER:
-			pchInvitee->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> The server cannot execute the Group request."));
+			pchInvitee->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> The server cannot execute the Group request.");
 			return;
 
 		case PERR_DUNGEON:
-			pchInvitee->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot accept an invitation in a dungeon."));
+			pchInvitee->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot accept an invitation in a dungeon.");
 			return;
 
 		case PERR_OBSERVER:
-			pchInvitee->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot invite players while you are in Observer Mode."));
+			pchInvitee->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot invite players while you are in Observer Mode.");
 			return;
 
 		case PERR_LVBOUNDARY:
-			pchInvitee->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> Only players with a Level difference of -30 to +30 can be invited."));
+			pchInvitee->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> Only players with a Level difference of -30 to +30 can be invited.");
 			return;
 
 		case PERR_LOWLEVEL:
-			pchInvitee->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot invite this player, his Level is too low."));
+			pchInvitee->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot invite this player, his Level is too low.");
 			return;
 
 		case PERR_HILEVEL:
-			pchInvitee->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot invite this player, his Level is too high."));
+			pchInvitee->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot invite this player, his Level is too high.");
 			return;
 
 		case PERR_ALREADYJOIN:
-			pchInvitee->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot accept the invitation."));
+			pchInvitee->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot accept the invitation.");
 			return;
 
 		case PERR_PARTYISFULL:
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot invite more players into your Group."));
-			pchInvitee->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot join this Group as too many members are already there."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot invite more players into your Group.");
+			pchInvitee->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot join this Group as too many members are already there.");
 			return;
 
 		default:
@@ -5013,13 +5013,13 @@ void CHARACTER::PartyInviteDeny(DWORD dwPID)
 
 	LPCHARACTER pchInvitee = CHARACTER_MANAGER::instance().FindByPID(dwPID);
 	if (pchInvitee)
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> %s declined your invitation."), pchInvitee->GetName());
+		ChatPacketTrans(CHAT_TYPE_INFO, "<Group> %s declined your invitation.", pchInvitee->GetName());
 }
 
 void CHARACTER::PartyJoin(LPCHARACTER pLeader)
 {
-	pLeader->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> %s joined your Group."), GetName());
-	ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> %s joined your Group."), pLeader->GetName());
+	pLeader->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> %s joined your Group.", GetName());
+	ChatPacketTrans(CHAT_TYPE_INFO, "<Group> %s joined your Group.", pLeader->GetName());
 
 	pLeader->GetParty()->Join(GetPlayerID());
 	pLeader->GetParty()->Link(this);
@@ -5219,7 +5219,7 @@ void CHARACTER::OnClick(LPCHARACTER pkChrCauser)
 				{
 					if ((GetExchange() || IsOpenSafebox() || GetShopOwner()) || IsCubeOpen())
 					{
-						pkChrCauser->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use a private shop now."));
+						pkChrCauser->ChatPacketTrans(CHAT_TYPE_INFO, "You can't use a private shop now.");
 						return;
 					}
 				}
@@ -5228,7 +5228,7 @@ void CHARACTER::OnClick(LPCHARACTER pkChrCauser)
 					// 클릭한 사람이 교환/창고/개인상점/상점이용중이라면 불가
 					if ((pkChrCauser->GetExchange() || pkChrCauser->IsOpenSafebox() || pkChrCauser->GetMyShop() || pkChrCauser->GetShopOwner()) || pkChrCauser->IsCubeOpen() )
 					{
-						pkChrCauser->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use a private shop now."));
+						pkChrCauser->ChatPacketTrans(CHAT_TYPE_INFO, "You can't use a private shop now.");
 						return;
 					}
 
@@ -5236,7 +5236,7 @@ void CHARACTER::OnClick(LPCHARACTER pkChrCauser)
 					//if ((GetExchange() || IsOpenSafebox() || GetShopOwner()))
 					if ((GetExchange() || IsOpenSafebox() || IsCubeOpen()))
 					{
-						pkChrCauser->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This player trades already with another player."));
+						pkChrCauser->ChatPacketTrans(CHAT_TYPE_INFO, "This player trades already with another player.");
 						return;
 					}
 				}
@@ -6017,12 +6017,12 @@ void CHARACTER::ReqSafeboxLoad(const char* pszPassword)
 {
 	if (!*pszPassword || strlen(pszPassword) > SAFEBOX_PASSWORD_MAX_LEN)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Storages> You entered a wrong password."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "<Storages> You entered a wrong password.");
 		return;
 	}
 	else if (m_pkSafebox)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Storages> The storage is already open."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "<Storages> The storage is already open.");
 		return;
 	}
 
@@ -6030,12 +6030,12 @@ void CHARACTER::ReqSafeboxLoad(const char* pszPassword)
 
 	if (iPulse - GetSafeboxLoadTime()  < PASSES_PER_SEC(10))
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Storages> You have to wait 10 seconds to open the storage again."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "<Storages> You have to wait 10 seconds to open the storage again.");
 		return;
 	}
 	else if (GetDistanceFromSafeboxOpen() > 1000)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Storages> The distance between you and the storage is too far to open it."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "<Storages> The distance between you and the storage is too far to open it.");
 		return;
 	}
 	else if (m_bOpeningSafebox)
@@ -7095,13 +7095,13 @@ bool CHARACTER::WarpToPID(DWORD dwPID)
 			}
 			else
 			{
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't teleport to the player."));
+				ChatPacketTrans(CHAT_TYPE_INFO, "You can't teleport to the player.");
 				return false;
 			}
 		}
 		else
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't teleport to the player."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "You can't teleport to the player.");
 			return false;
 		}
 	}
@@ -7115,25 +7115,25 @@ bool CHARACTER::WarpToPID(DWORD dwPID)
 
 		if (!pcci)
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The player is not online."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "The player is not online.");
 			return false;
 		}
 
 		if (pcci->bChannel != g_bChannel)
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The player is in channel %d. You are in channel %d."), pcci->bChannel, g_bChannel);
+			ChatPacketTrans(CHAT_TYPE_INFO, "The player is in channel %d. You are in channel %d.", pcci->bChannel, g_bChannel);
 			return false;
 		}
 		else if (false == IS_SUMMONABLE_ZONE(pcci->lMapIndex))
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't teleport to the player."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "You can't teleport to the player.");
 			return false;
 		}
 		else
 		{
 			if (!CAN_ENTER_ZONE(this, pcci->lMapIndex))
 			{
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't teleport to the player."));
+				ChatPacketTrans(CHAT_TYPE_INFO, "You can't teleport to the player.");
 				return false;
 			}
 
@@ -7200,7 +7200,7 @@ bool CHARACTER::IsHack(bool bSendMsg, bool bCheckShopOwner, int limittime)
 	if (iPulse - GetSafeboxLoadTime() < PASSES_PER_SEC(limittime))
 	{
 		if (bSendMsg)
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot go elsewhere for seconds after opening the Warehouse."), limittime);
+			ChatPacketTrans(CHAT_TYPE_INFO, "You cannot go elsewhere for seconds after opening the Warehouse.", limittime);
 
 		if (test_server)
 			ChatPacket(CHAT_TYPE_INFO, "[TestOnly]Pulse %d LoadTime %d PASS %d", iPulse, GetSafeboxLoadTime(), PASSES_PER_SEC(limittime));
@@ -7213,7 +7213,7 @@ bool CHARACTER::IsHack(bool bSendMsg, bool bCheckShopOwner, int limittime)
 		if (GetExchange() || GetMyShop() || GetShopOwner() || IsOpenSafebox() || IsCubeOpen())
 		{
 			if (bSendMsg)
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot go elsewhere, cannot quit while after a trade."));
+				ChatPacketTrans(CHAT_TYPE_INFO, "You cannot go elsewhere, cannot quit while after a trade.");
 
 			return true;
 		}
@@ -7223,7 +7223,7 @@ bool CHARACTER::IsHack(bool bSendMsg, bool bCheckShopOwner, int limittime)
 		if (GetExchange() || GetMyShop() || IsOpenSafebox() || IsCubeOpen())
 		{
 			if (bSendMsg)
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot go elsewhere, cannot quit while after a trade."));
+				ChatPacketTrans(CHAT_TYPE_INFO, "You cannot go elsewhere, cannot quit while after a trade.");
 
 			return true;
 		}
@@ -7234,7 +7234,7 @@ bool CHARACTER::IsHack(bool bSendMsg, bool bCheckShopOwner, int limittime)
 	if (iPulse - GetExchangeTime()  < PASSES_PER_SEC(limittime))
 	{
 		if (bSendMsg)
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot go elsewhere for %d seconds after trading."), limittime );
+			ChatPacketTrans(CHAT_TYPE_INFO, "You cannot go elsewhere for %d seconds after trading.", limittime );
 		return true;
 	}
 	//END_PREVENT_PORTAL_AFTER_EXCHANGE
@@ -7243,14 +7243,14 @@ bool CHARACTER::IsHack(bool bSendMsg, bool bCheckShopOwner, int limittime)
 	if (iPulse - GetMyShopTime() < PASSES_PER_SEC(limittime))
 	{
 		if (bSendMsg)
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot go elsewhere for %d seconds after trading."), limittime);
+			ChatPacketTrans(CHAT_TYPE_INFO, "You cannot go elsewhere for %d seconds after trading.", limittime);
 		return true;
 	}
 
 	if (iPulse - GetRefineTime() < PASSES_PER_SEC(limittime))
 	{
 		if (bSendMsg)
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot teleport for %d seconds after a trade."), limittime);
+			ChatPacketTrans(CHAT_TYPE_INFO, "You cannot teleport for %d seconds after a trade.", limittime);
 		return true;
 	}
 	//END_PREVENT_ITEM_COPY
@@ -7779,7 +7779,7 @@ void CHARACTER::ChangeChannel(DWORD channelId){
 	}
 	
 	if(lMapIndex >= 10000){
-		this->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't change channel in private map."));
+		this->ChatPacketTrans(CHAT_TYPE_INFO, "You can't change channel in private map.");
 		return;
 	}
 

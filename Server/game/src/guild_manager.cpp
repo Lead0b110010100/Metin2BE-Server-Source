@@ -72,7 +72,7 @@ DWORD CGuildManager::CreateGuild(TGuildCreateParameter& gcp)
 
 	if (!check_name(gcp.name))
 	{
-		gcp.master->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> The Guildname is invalid."));
+		gcp.master->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> The Guildname is invalid.");
 		return 0;
 	}
 
@@ -92,13 +92,13 @@ DWORD CGuildManager::CreateGuild(TGuildCreateParameter& gcp)
 
 		if (!(row[0] && row[0][0] == '0'))
 		{
-			gcp.master->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> This Guild name is already taken."));
+			gcp.master->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> This Guild name is already taken.");
 			return 0;
 		}
 	}
 	else
 	{
-		gcp.master->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> You cannot create a Guild."));
+		gcp.master->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> You cannot create a Guild.");
 		return 0;
 	}
 
@@ -557,7 +557,7 @@ void CGuildManager::RefuseWar(DWORD guild_id1, DWORD guild_id2)
 	if (g1 && g2)
 	{
 		if (g2->GetMasterCharacter())
-			g2->GetMasterCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> %s declined the Guild war."), g1->GetName());
+			g2->GetMasterCharacter()->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> %s declined the Guild war.", g1->GetName());
 	}
 
 	if ( g1 != NULL )
@@ -741,7 +741,7 @@ void CGuildManager::CancelWar(DWORD guild_id1, DWORD guild_id2)
 		LPCHARACTER master1 = g1->GetMasterCharacter();
 
 		if (master1)
-			master1->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> The Guild war is cancelled."));
+			master1->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> The Guild war is cancelled.");
 	}
 
 	if (g2)
@@ -749,7 +749,7 @@ void CGuildManager::CancelWar(DWORD guild_id1, DWORD guild_id2)
 		LPCHARACTER master2 = g2->GetMasterCharacter();
 
 		if (master2)
-			master2->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> The Guild war is cancelled."));
+			master2->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> The Guild war is cancelled.");
 	}
 
 	if (g1 && g2)

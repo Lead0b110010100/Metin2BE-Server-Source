@@ -192,7 +192,7 @@ ACMD(do_add_socket);
 
 ACMD(do_inputall)
 {
-	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Please enter the Order in full length."));
+	ch->ChatPacketTrans(CHAT_TYPE_INFO, "Please enter the Order in full length.");
 }
 
 ACMD(do_show_arena_list);
@@ -778,24 +778,24 @@ void interpret_command(LPCHARACTER ch, const char * argument, size_t len)
 		switch (ch->GetPosition())
 		{
 			case POS_MOUNTING:
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot do this while riding a Horse."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot do this while riding a Horse.");
 				break;
 
 			case POS_DEAD:
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot do this while falling."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot do this while falling.");
 				break;
 
 			case POS_SLEEPING:
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("In my Dreams? What?"));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "In my Dreams? What?");
 				break;
 
 			case POS_RESTING:
 			case POS_SITTING:
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Get up first."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "Get up first.");
 				break;
 				/*
 				   case POS_FIGHTING:
-				   ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Youe life is depending on it. Please concentrate."));
+				   ch->ChatPacketTrans(CHAT_TYPE_INFO, "Youe life is depending on it. Please concentrate.");
 				   break;
 				 */
 			default:
@@ -808,13 +808,13 @@ void interpret_command(LPCHARACTER ch, const char * argument, size_t len)
 
 	if (*cmd_info[icmd].command == '\n')
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This Order does not exist."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "This Order does not exist.");
 		return;
 	}
 
 	if (cmd_info[icmd].gm_level && (cmd_info[icmd].gm_level > ch->GetGMLevel() || cmd_info[icmd].gm_level == GM_DISABLE))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This Order does not exist."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "This Order does not exist.");
 		return;
 	}
 

@@ -278,10 +278,10 @@ namespace mining
 
 #ifdef ENABLE_PICKAXE_RENEWAL
 			{
-				// if (test_server) ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Pickax> PRE %u"), Pick_GetCurExp(*item));
+				// if (test_server) ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Pickax> PRE %u", Pick_GetCurExp(*item));
 				Pick_SetPenaltyExp(*item);
-				// if (test_server) ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Pickax> POST %u"), Pick_GetCurExp(*item));
-				// ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Pickax> The upgrade has failed, and the pickax has lost 10%% of its mastery points."));
+				// if (test_server) ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Pickax> POST %u", Pick_GetCurExp(*item));
+				// ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Pickax> The upgrade has failed, and the pickax has lost 10%% of its mastery points.");
 				rkLogMgr.ItemLog(ch, item, "REFINE PICK FAIL", item->GetName());
 				return 0;
 			}
@@ -312,7 +312,7 @@ namespace mining
 		CItem& pick = *item;
 		Pick_MaxCurExp(pick);
 
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your Mining points are raised to the Limit. (%d)."), Pick_GetCurExp(pick));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Your Mining points are raised to the Limit. (%d).", Pick_GetCurExp(pick));
 	}
 
 	void PracticePick(LPCHARACTER ch, LPITEM item)
@@ -332,20 +332,20 @@ namespace mining
 
 			if (Pick_Refinable(pick))
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your Mining Points are raised to the highest Level."));
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can upgrade your Pick Axe with the help of a Lumberjack."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "Your Mining Points are raised to the highest Level.");
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "You can upgrade your Pick Axe with the help of a Lumberjack.");
 			}
 			else
 			{
 				Pick_IncCurExp(pick);
 
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your Mining Points raised! (%d/%d)"),
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "Your Mining Points raised! (%d/%d)",
 						Pick_GetCurExp(pick), Pick_GetMaxExp(pick));
 
 				if (Pick_Refinable(pick))
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your Mining Points are raised to the highest Level."));
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can upgrade your Pick Axe with the help of a Lumberjack."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "Your Mining Points are raised to the highest Level.");
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "You can upgrade your Pick Axe with the help of a Lumberjack.");
 				}
 			}
 		}
@@ -375,14 +375,14 @@ namespace mining
 		// REFINE_PICK
 		if (!pick || !Pick_Check(*pick))
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Without a Pick Axe you cannot mine."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "Without a Pick Axe you cannot mine.");
 			return 0;
 		}
 		// END_OF_REFINE_PICK
 
 		if (!load)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Nothing to mine here."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "Nothing to mine here.");
 			return 0;
 		}
 
@@ -391,11 +391,11 @@ namespace mining
 		if (number(1, 100) <= iPct)
 		{
 			OreDrop(ch, load->GetRaceNum());
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The mining was successful."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "The mining was successful.");
 		}
 		else
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The mining failed."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "The mining failed.");
 		}
 
 		PracticePick(ch, pick);

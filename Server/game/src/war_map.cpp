@@ -382,8 +382,8 @@ void CWarMap::IncMember(LPCHARACTER ch)
 		++m_iObserverCount;
 		sys_log(0, "WarMap +o %d", m_iObserverCount);
 		ch->SetObserverMode(true);
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can participate in the Guild Battle in Viewer Mode"));
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Click the <End observer mode> icon to leave this war."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You can participate in the Guild Battle in Viewer Mode");
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Click the <End observer mode> icon to leave this war.");
 	}
 
 	UpdateUserCount();

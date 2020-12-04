@@ -671,7 +671,7 @@ bool CHARACTER::DoRefine(LPITEM item, bool bMoneyOnly)
 	{
 		if (!item->CheckItemUseLevel(20) || item->GetType() != ITEM_WEAPON)
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Free advancement is only for weapons up to level 20."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "Free advancement is only for weapons up to level 20.");
 			return false;
 		}
 
@@ -682,7 +682,7 @@ bool CHARACTER::DoRefine(LPITEM item, bool bMoneyOnly)
 
 	if (result_vnum == 0)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("No advancement possible."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "No advancement possible.");
 		return false;
 	}
 
@@ -694,14 +694,14 @@ bool CHARACTER::DoRefine(LPITEM item, bool bMoneyOnly)
 	if (!pProto)
 	{
 		sys_err("DoRefine NOT GET ITEM PROTO %d", item->GetRefinedVnum());
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This Item can't be made better."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "This Item can't be made better.");
 		return false;
 	}
 
 	// REFINE_COST
 	if (GetGold() < cost)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Not enough Yang for an advancement."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "Not enough Yang for an advancement.");
 		return false;
 	}
 
@@ -715,7 +715,7 @@ bool CHARACTER::DoRefine(LPITEM item, bool bMoneyOnly)
 				{
 					ChatPacket(CHAT_TYPE_INFO, "Find %d, count %d, require %d", prt->materials[i].vnum, CountSpecifyItem(prt->materials[i].vnum), prt->materials[i].count);
 				}
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Not enough material for an advancement."));
+				ChatPacketTrans(CHAT_TYPE_INFO, "Not enough material for an advancement.");
 				return false;
 			}
 		}
@@ -847,7 +847,7 @@ bool CHARACTER::DoRefineWithScroll(LPITEM item)
 
 	if (!prt)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("No advancement possible."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "No advancement possible.");
 		return false;
 	}
 
@@ -856,7 +856,7 @@ bool CHARACTER::DoRefineWithScroll(LPITEM item)
 	{
 		if (item->GetRefineLevel() >= 4)
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This Advancement scroll isn't available for you at the moment."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "This Advancement scroll isn't available for you at the moment.");
 			return false;
 		}
 	}
@@ -866,7 +866,7 @@ bool CHARACTER::DoRefineWithScroll(LPITEM item)
 	{
 		if (item->GetRefineLevel() != pkItemScroll->GetValue(1))
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't advance with this Scroll."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "You can't advance with this Scroll.");
 			return false;
 		}
 	}
@@ -874,14 +874,14 @@ bool CHARACTER::DoRefineWithScroll(LPITEM item)
 	{
 		if (item->GetType() != ITEM_METIN || item->GetRefineLevel() != 4)
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot upgrade this item."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "You cannot upgrade this item.");
 			return false;
 		}
 	}
 
 	if (GetGold() < prt->cost)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Not enough Yang for an advancement."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "Not enough Yang for an advancement.");
 		return false;
 	}
 
@@ -907,7 +907,7 @@ bool CHARACTER::DoRefineWithScroll(LPITEM item)
 				{
 					ChatPacket(CHAT_TYPE_INFO, "Find %d, count %d, require %d", prt->materials[i].vnum, CountSpecifyItem(prt->materials[i].vnum), prt->materials[i].count);
 				}
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Not enough material for an advancement."));
+				ChatPacketTrans(CHAT_TYPE_INFO, "Not enough material for an advancement.");
 				return false;
 			}
 		}
@@ -982,7 +982,7 @@ bool CHARACTER::DoRefineWithScroll(LPITEM item)
 	{
 		if (item->GetRefineLevel() >= 4)
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This Advancement scroll isn't available for you at the moment."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "This Advancement scroll isn't available for you at the moment.");
 			return false;
 		}
 	}
@@ -1075,7 +1075,7 @@ bool CHARACTER::RefineInformation(BYTE bCell, BYTE bType, int iAdditionalCell)
 	// REFINE_COST
 	if (bType == REFINE_TYPE_MONEY_ONLY && !GetQuestFlag("deviltower_zone.can_refine"))
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can only be rewarded once for the Demon Tower Quest."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You can only be rewarded once for the Demon Tower Quest.");
 		return false;
 	}
 	// END_OF_REFINE_COST
@@ -1091,7 +1091,7 @@ bool CHARACTER::RefineInformation(BYTE bCell, BYTE bType, int iAdditionalCell)
 	if (p.result_vnum == 0)
 	{
 		sys_err("RefineInformation p.result_vnum == 0");
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This Item can't be made better."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "This Item can't be made better.");
 		return false;
 	}
 
@@ -1099,7 +1099,7 @@ bool CHARACTER::RefineInformation(BYTE bCell, BYTE bType, int iAdditionalCell)
 	{
 		if (bType == 0)
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This Item can't be advanced this way."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "This Item can't be advanced this way.");
 			return false;
 		}
 		else
@@ -1108,8 +1108,8 @@ bool CHARACTER::RefineInformation(BYTE bCell, BYTE bType, int iAdditionalCell)
 
 			if (!itemScroll || item->GetVnum() == itemScroll->GetVnum())
 			{
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't combine identical Advancement Scrolls."));
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The Blessing Scroll and Magic Metal can be combined"));
+				ChatPacketTrans(CHAT_TYPE_INFO, "You can't combine identical Advancement Scrolls.");
+				ChatPacketTrans(CHAT_TYPE_INFO, "The Blessing Scroll and Magic Metal can be combined");
 				return false;
 			}
 		}
@@ -1127,7 +1127,7 @@ bool CHARACTER::RefineInformation(BYTE bCell, BYTE bType, int iAdditionalCell)
 	if (!prt)
 	{
 		sys_err("RefineInformation NOT GET REFINE SET %d", new_item->GetRefineSet());
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This Item can't be made better."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "This Item can't be made better.");
 		return false;
 	}
 
@@ -1139,7 +1139,7 @@ bool CHARACTER::RefineInformation(BYTE bCell, BYTE bType, int iAdditionalCell)
 		// 일본은 제외
 		if (!new_item->CheckItemUseLevel(20) || new_item->GetType() != ITEM_WEAPON)
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Free advancement is only for weapons up to level 20."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "Free advancement is only for weapons up to level 20.");
 			return false;
 		}
 		p.cost = 0;
@@ -1233,7 +1233,7 @@ bool CHARACTER::RefineItem(LPITEM pkItem, LPITEM pkTarget)
 		}
 		else
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("There is no Spirit Stone that can be removed."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "There is no Spirit Stone that can be removed.");
 			return false;
 		}
 	}
@@ -1285,7 +1285,7 @@ bool CHARACTER::GiveRecallItem(LPITEM item)
 
 	if (iEmpireByMapIndex && GetEmpire() != iEmpireByMapIndex)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't save this position."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You can't save this position.");
 		return false;
 	}
 
@@ -1311,7 +1311,7 @@ bool CHARACTER::GiveRecallItem(LPITEM item)
 	}
 	else
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("There isn't enough space in the inventory."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "There isn't enough space in the inventory.");
 		return false;
 	}
 
@@ -1349,7 +1349,7 @@ void CHARACTER::ProcessRecallItem(LPITEM item)
 		case 304:
 			if( GetLevel() < 90 )
 			{
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your level is lower than the Level of the Item."));
+				ChatPacketTrans(CHAT_TYPE_INFO, "Your level is lower than the Level of the Item.");
 				return;
 			}
 			else
@@ -1358,7 +1358,7 @@ void CHARACTER::ProcessRecallItem(LPITEM item)
 
 	if (iEmpireByMapIndex && GetEmpire() != iEmpireByMapIndex)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't teleport to a safe position in a foreign Kingdom."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You can't teleport to a safe position in a foreign Kingdom.");
 		item->SetSocket(0, 0);
 		item->SetSocket(1, 0);
 	}
@@ -1384,7 +1384,7 @@ void CHARACTER::__OpenPrivateShop()
 			ChatPacket(CHAT_TYPE_COMMAND, "OpenPrivateShop");
 			break;
 		default:
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("To open a shop, you have to take off the armor."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "To open a shop, you have to take off the armor.");
 			break;
 	}
 #endif
@@ -1447,7 +1447,7 @@ int CalculateConsume(LPCHARACTER ch)
 		const int needLife = ch->GetMaxHP() * needPercent / 100;
 		if (curLife < needLife)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You don't have enough HP."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "You don't have enough HP.");
 			return -1;
 		}
 
@@ -1476,7 +1476,7 @@ int CalculateConsumeSP(LPCHARACTER lpChar)
 
 	if (curSP < needSP)
 	{
-		lpChar->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You don't have enough Spell Points to use this."));
+		lpChar->ChatPacketTrans(CHAT_TYPE_INFO, "You don't have enough Spell Points to use this.");
 		return -1;
 	}
 
@@ -1501,7 +1501,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 			case LIMIT_LEVEL:
 				if (GetLevel() < limitValue)
 				{
-					ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your level is lower than the Level of the Item."));
+					ChatPacketTrans(CHAT_TYPE_INFO, "Your level is lower than the Level of the Item.");
 					return false;
 				}
 				break;
@@ -1523,13 +1523,13 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 	if ( CArenaManager::instance().IsLimitedItem( GetMapIndex(), item->GetVnum() ) == true )
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this Item in a duel."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this Item in a duel.");
 		return false;
 	}
 #ifdef ENABLE_NEWSTUFF
 	else if (g_NoPotionsOnPVP && CPVPManager::instance().IsFighting(GetPlayerID()) && IsLimitedPotionOnPVP(item->GetVnum()))
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this Item in a duel."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this Item in a duel.");
 		return false;
 	}
 #endif
@@ -1574,7 +1574,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 			{
 				if (item->GetVnum() == 50051 || item->GetVnum() == 50052 || item->GetVnum() == 50053)
 				{
-					ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this Item in a duel."));
+					ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this Item in a duel.");
 					return false;
 				}
 			}
@@ -1601,13 +1601,13 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 				if (!tree)
 				{
-					ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't make a campfire here."));
+					ChatPacketTrans(CHAT_TYPE_INFO, "You can't make a campfire here.");
 					return false;
 				}
 
 				if (tree->IsAttr((long)(GetX()+fx), (long)(GetY()+fy), ATTR_WATER))
 				{
-					ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't make a campfire under water."));
+					ChatPacketTrans(CHAT_TYPE_INFO, "You can't make a campfire under water.");
 					return false;
 				}
 
@@ -1701,7 +1701,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 											}
 											else
 											{
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot open a warehouse in this area."));
+												ChatPacketTrans(CHAT_TYPE_INFO, "You cannot open a warehouse in this area.");
 											}
 										}
 										else
@@ -1740,13 +1740,13 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 			{
 				if (CArenaManager::instance().IsArenaMap(GetMapIndex()) == true)
 				{
-					ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this Item in a duel."));
+					ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this Item in a duel.");
 					return false;
 				}
 #ifdef ENABLE_NEWSTUFF
 				else if (g_NoPotionsOnPVP && CPVPManager::instance().IsFighting(GetPlayerID()) && !IsAllowedPotionOnPVP(item->GetVnum()))
 				{
-					ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this Item in a duel."));
+					ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this Item in a duel.");
 					return false;
 				}
 #endif
@@ -1799,39 +1799,39 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 							switch (dwVnums[i])
 							{
 								case CSpecialItemGroup::GOLD:
-									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You received %d Yang."), dwCounts[i]);
+									ChatPacketTrans(CHAT_TYPE_INFO, "You received %d Yang.", dwCounts[i]);
 									break;
 								case CSpecialItemGroup::EXP:
-									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Mysterious light comes out of this box."));
-									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You received %d Experience Points."), dwCounts[i]);
+									ChatPacketTrans(CHAT_TYPE_INFO, "Mysterious light comes out of this box.");
+									ChatPacketTrans(CHAT_TYPE_INFO, "You received %d Experience Points.", dwCounts[i]);
 									break;
 								case CSpecialItemGroup::MOB:
-									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("A monster came out of the box!"));
+									ChatPacketTrans(CHAT_TYPE_INFO, "A monster came out of the box!");
 									break;
 								case CSpecialItemGroup::SLOW:
-									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("If you inhale the red smoke coming out of the box, you will move faster!"));
+									ChatPacketTrans(CHAT_TYPE_INFO, "If you inhale the red smoke coming out of the box, you will move faster!");
 									break;
 								case CSpecialItemGroup::DRAIN_HP:
-									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The box exploded suddenly! Your HP are lower."));
+									ChatPacketTrans(CHAT_TYPE_INFO, "The box exploded suddenly! Your HP are lower.");
 									break;
 								case CSpecialItemGroup::POISON:
-									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("If you inhale the green smoke coming from the box, poison will spread in your body!"));
+									ChatPacketTrans(CHAT_TYPE_INFO, "If you inhale the green smoke coming from the box, poison will spread in your body!");
 									break;
 #ifdef ENABLE_WOLFMAN_CHARACTER
 								case CSpecialItemGroup::BLEEDING:
-									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("If you inhale the green smoke coming from the box, poison will spread in your body!"));
+									ChatPacketTrans(CHAT_TYPE_INFO, "If you inhale the green smoke coming from the box, poison will spread in your body!");
 									break;
 #endif
 								case CSpecialItemGroup::MOB_GROUP:
-									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("A monster came out of the box!"));
+									ChatPacketTrans(CHAT_TYPE_INFO, "A monster came out of the box!");
 									break;
 								default:
 									if (item_gets[i])
 									{
 										if (dwCounts[i] > 1)
-											ChatPacket(CHAT_TYPE_INFO, LC_TEXT("There are %s of %d in the box."), item_gets[i]->GetName(), dwCounts[i]);
+											ChatPacketTrans(CHAT_TYPE_INFO, "There are %s of %d in the box.", item_gets[i]->GetName(), dwCounts[i]);
 										else
-											ChatPacket(CHAT_TYPE_INFO, LC_TEXT("There is %s in the box."), item_gets[i]->GetName());
+											ChatPacketTrans(CHAT_TYPE_INFO, "There is %s in the box.", item_gets[i]->GetName());
 
 									}
 							}
@@ -1858,7 +1858,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 				{
 					if (get_dword_time() < m_dwLastBoxUseTime+g_BoxUseTimeLimitValue)
 					{
-						ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can only drop Yang once in every 10 seconds."));
+						ChatPacketTrans(CHAT_TYPE_INFO, "You can only drop Yang once in every 10 seconds.");
 						return false;
 					}
 				}
@@ -1879,39 +1879,39 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 						switch (dwVnums[i])
 						{
 						case CSpecialItemGroup::GOLD:
-							ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You received %d Yang."), dwCounts[i]);
+							ChatPacketTrans(CHAT_TYPE_INFO, "You received %d Yang.", dwCounts[i]);
 							break;
 						case CSpecialItemGroup::EXP:
-							ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Mysterious light comes out of this box."));
-							ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You received %d Experience Points."), dwCounts[i]);
+							ChatPacketTrans(CHAT_TYPE_INFO, "Mysterious light comes out of this box.");
+							ChatPacketTrans(CHAT_TYPE_INFO, "You received %d Experience Points.", dwCounts[i]);
 							break;
 						case CSpecialItemGroup::MOB:
-							ChatPacket(CHAT_TYPE_INFO, LC_TEXT("A monster came out of the box!"));
+							ChatPacketTrans(CHAT_TYPE_INFO, "A monster came out of the box!");
 							break;
 						case CSpecialItemGroup::SLOW:
-							ChatPacket(CHAT_TYPE_INFO, LC_TEXT("If you inhale the red smoke coming out of the box, you will move faster!"));
+							ChatPacketTrans(CHAT_TYPE_INFO, "If you inhale the red smoke coming out of the box, you will move faster!");
 							break;
 						case CSpecialItemGroup::DRAIN_HP:
-							ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The box exploded suddenly! Your HP are lower."));
+							ChatPacketTrans(CHAT_TYPE_INFO, "The box exploded suddenly! Your HP are lower.");
 							break;
 						case CSpecialItemGroup::POISON:
-							ChatPacket(CHAT_TYPE_INFO, LC_TEXT("If you inhale the green smoke coming from the box, poison will spread in your body!"));
+							ChatPacketTrans(CHAT_TYPE_INFO, "If you inhale the green smoke coming from the box, poison will spread in your body!");
 							break;
 #ifdef ENABLE_WOLFMAN_CHARACTER
 						case CSpecialItemGroup::BLEEDING:
-							ChatPacket(CHAT_TYPE_INFO, LC_TEXT("If you inhale the green smoke coming from the box, poison will spread in your body!"));
+							ChatPacketTrans(CHAT_TYPE_INFO, "If you inhale the green smoke coming from the box, poison will spread in your body!");
 							break;
 #endif
 						case CSpecialItemGroup::MOB_GROUP:
-							ChatPacket(CHAT_TYPE_INFO, LC_TEXT("A monster came out of the box!"));
+							ChatPacketTrans(CHAT_TYPE_INFO, "A monster came out of the box!");
 							break;
 						default:
 							if (item_gets[i])
 							{
 								if (dwCounts[i] > 1)
-									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("There are %s of %d in the box."), item_gets[i]->GetName(), dwCounts[i]);
+									ChatPacketTrans(CHAT_TYPE_INFO, "There are %s of %d in the box.", item_gets[i]->GetName(), dwCounts[i]);
 								else
-									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("There is %s in the box."), item_gets[i]->GetName());
+									ChatPacketTrans(CHAT_TYPE_INFO, "There is %s in the box.", item_gets[i]->GetName());
 							}
 						}
 					}
@@ -1937,10 +1937,10 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 				if (SkillLevelDown(dwVnum))
 				{
 					ITEM_MANAGER::instance().RemoveItem(item);
-					ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You lowered your Skill Level."));
+					ChatPacketTrans(CHAT_TYPE_INFO, "You lowered your Skill Level.");
 				}
 				else
-					ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't lower your Skill Level."));
+					ChatPacketTrans(CHAT_TYPE_INFO, "You can't lower your Skill Level.");
 			}
 			break;
 
@@ -1948,7 +1948,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 			{
 				if (IsPolymorphed())
 				{
-					ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot read books while transformed."));
+					ChatPacketTrans(CHAT_TYPE_INFO, "You cannot read books while transformed.");
 					return false;
 				}
 
@@ -2006,7 +2006,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 						case USE_ABILITY_UP:
 							if (FindAffect(affect_type, apply_type))
 							{
-								ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The effect is already working."));
+								ChatPacketTrans(CHAT_TYPE_INFO, "The effect is already working.");
 								return false;
 							}
 
@@ -2047,7 +2047,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 						{
 							if (FindAffect(AFFECT_EXP_BONUS_EURO_FREE, aApplyInfo[item->GetValue(1)].bPointType))
 							{
-								ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The effect is already working."));
+								ChatPacketTrans(CHAT_TYPE_INFO, "The effect is already working.");
 							}
 							else
 							{
@@ -2058,7 +2058,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 									if (CPCBangManager::instance().IsPCBangIP(GetDesc()->GetHostName()) == false)
 									{
 										// PC방이 아님!
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This Item can only be used in an Internetcafe."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "This Item can only be used in an Internetcafe.");
 										return false;
 									}
 								}
@@ -2076,7 +2076,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 							{
 								if (quest::CQuestManager::instance().GetEventFlag("arena_potion_limit") > 0)
 								{
-									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this in the arena."));
+									ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this in the arena.");
 									return false;
 								}
 
@@ -2090,14 +2090,14 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 										{
 											if (m_nPotionLimit <= 0)
 											{
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Not allowed here."));
+												ChatPacketTrans(CHAT_TYPE_INFO, "Not allowed here.");
 												return false;
 											}
 										}
 										break;
 
 									default :
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this in the arena."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this in the arena.");
 										return false;
 										break;
 								}
@@ -2105,7 +2105,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 #ifdef ENABLE_NEWSTUFF
 							else if (g_NoPotionsOnPVP && CPVPManager::instance().IsFighting(GetPlayerID()) && !IsAllowedPotionOnPVP(item->GetVnum()))
 							{
-								ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this Item in a duel."));
+								ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this Item in a duel.");
 								return false;
 							}
 #endif
@@ -2157,7 +2157,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 								if (item->GetVnum() == 50085 || item->GetVnum() == 50086)
 								{
 									if (test_server)
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Used Mooncake or Seed."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "Used Mooncake or Seed.");
 									SetUseSeedOrMoonBottleTime();
 								}
 								if (GetDungeon())
@@ -2184,13 +2184,13 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 				{
 					if (CArenaManager::instance().IsArenaMap(GetMapIndex()) == true)
 					{
-						ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this Item in a duel."));
+						ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this Item in a duel.");
 						return false;
 					}
 #ifdef ENABLE_NEWSTUFF
 					else if (g_NoPotionsOnPVP && CPVPManager::instance().IsFighting(GetPlayerID()) && !IsAllowedPotionOnPVP(item->GetVnum()))
 					{
-						ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this Item in a duel."));
+						ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this Item in a duel.");
 						return false;
 					}
 #endif
@@ -2242,7 +2242,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 									*/
 									if (FindAffect(AFFECT_NOG_ABILITY))
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The effect is already working."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "The effect is already working.");
 										return false;
 									}
 									long time = item->GetValue(0);
@@ -2270,7 +2270,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 									// @fixme147 BEGIN
 									if (FindAffect(AFFECT_RAMADAN_ABILITY))
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The effect is already working."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "The effect is already working.");
 										return false;
 									}
 									// @fixme147 END
@@ -2293,7 +2293,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 										{
 											if (CArenaManager::instance().IsArenaMap(pMarriage->ch1->GetMapIndex()) == true)
 											{
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this Item in a duel."));
+												ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this Item in a duel.");
 												break;
 											}
 										}
@@ -2302,7 +2302,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 										{
 											if (CArenaManager::instance().IsArenaMap(pMarriage->ch2->GetMapIndex()) == true)
 											{
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this Item in a duel."));
+												ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this Item in a duel.");
 												break;
 											}
 										}
@@ -2317,7 +2317,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 										WarpToPID(pMarriage->GetOther(GetPlayerID()));
 									}
 									else
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't wear a Wedding Ring if you aren't married."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You can't wear a Wedding Ring if you aren't married.");
 								}
 								break;
 
@@ -2449,7 +2449,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 										}
 										else
 										{
-											ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use the Event Detector from this position."));
+											ChatPacketTrans(CHAT_TYPE_INFO, "You can't use the Event Detector from this position.");
 											return false;
 										}
 									}
@@ -2460,7 +2460,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 									if (distance < 1000.0f)
 									{
 										// 발견!
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The Event Detector vanished with the mysterious light."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "The Event Detector vanished with the mysterious light.");
 
 										// 사용횟수에 따라 주는 아이템을 다르게 한다.
 										struct TEventStoneInfo
@@ -2611,7 +2611,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 									const int STONE_DETECT_MAX_TRY = 10;
 									if (item->GetSocket(0) >= STONE_DETECT_MAX_TRY)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The Event Detector completely vanished."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "The Event Detector completely vanished.");
 										ITEM_MANAGER::instance().RemoveItem(item, "REMOVE (DETECT_EVENT_STONE) 0");
 										AutoGiveItem(27002);
 										return true;
@@ -2692,12 +2692,12 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 											}
 											else
 											{
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("감지기를 작용하였으나 감지되는 영석이 없습니다."));
+												ChatPacketTrans(CHAT_TYPE_INFO, "감지기를 작용하였으나 감지되는 영석이 없습니다.");
 											}
 										}
 										else
 										{
-											ChatPacket(CHAT_TYPE_INFO, LC_TEXT("감지기를 작용하였으나 감지되는 영석이 없습니다."));
+											ChatPacketTrans(CHAT_TYPE_INFO, "감지기를 작용하였으나 감지되는 영석이 없습니다.");
 										}
 
 										if (item->GetSocket(0) >= 6)
@@ -2728,7 +2728,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 									if (r <= 50)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("There is a Stone inside the Clam."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "There is a Stone inside the Clam.");
 										AutoGiveItem(27990);
 									}
 									else
@@ -2742,21 +2742,21 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 										if (r <= prob_table[0])
 										{
-											ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The Clam completely vanished."));
+											ChatPacketTrans(CHAT_TYPE_INFO, "The Clam completely vanished.");
 										}
 										else if (r <= prob_table[1])
 										{
-											ChatPacket(CHAT_TYPE_INFO, LC_TEXT("There is a White pearl inside the Clam."));
+											ChatPacketTrans(CHAT_TYPE_INFO, "There is a White pearl inside the Clam.");
 											AutoGiveItem(27992);
 										}
 										else if (r <= prob_table[2])
 										{
-											ChatPacket(CHAT_TYPE_INFO, LC_TEXT("There is a Blue Pearl inside the Clam."));
+											ChatPacketTrans(CHAT_TYPE_INFO, "There is a Blue Pearl inside the Clam.");
 											AutoGiveItem(27993);
 										}
 										else
 										{
-											ChatPacket(CHAT_TYPE_INFO, LC_TEXT("There is a Red Pearl inside the Clam."));
+											ChatPacketTrans(CHAT_TYPE_INFO, "There is a Red Pearl inside the Clam.");
 											AutoGiveItem(27994);
 										}
 									}
@@ -2788,7 +2788,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 									}
 									else
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot open a warehouse in this area."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You cannot open a warehouse in this area.");
 									}
 								}
 								else
@@ -2808,7 +2808,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 								{
 									if (IsPolymorphed() == true)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot change your state as long as you are transformed."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You cannot change your state as long as you are transformed.");
 										return false;
 									}
 
@@ -2816,13 +2816,13 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 									if (lv < item->GetValue(0))
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("It isn't easy to understand this Book."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "It isn't easy to understand this Book.");
 										return false;
 									}
 
 									if (lv >= item->GetValue(1))
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This Book won't help you."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "This Book won't help you.");
 										return false;
 									}
 
@@ -2848,25 +2848,25 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 								{
 									if (IsPolymorphed())
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot read books while transformed."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You cannot read books while transformed.");
 										return false;
 
 									}
 									if (GetSkillLevel(SKILL_COMBO) == 0 && GetLevel() < 30)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You need Level 30 to understand this."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You need Level 30 to understand this.");
 										return false;
 									}
 
 									if (GetSkillLevel(SKILL_COMBO) == 1 && GetLevel() < 50)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You need Level 50 to understand this."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You need Level 50 to understand this.");
 										return false;
 									}
 
 									if (GetSkillLevel(SKILL_COMBO) >= 2)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't train any more Combos."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You can't train any more Combos.");
 										return false;
 									}
 
@@ -2893,7 +2893,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 								{
 									if (IsPolymorphed())
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot read books while transformed."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You cannot read books while transformed.");
 										return false;
 
 									}
@@ -2901,7 +2901,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 									int iPct = MINMAX(0, item->GetValue(1), 100);
 									if (GetSkillLevel(dwSkillVnum)>=20 || dwSkillVnum-SKILL_LANGUAGE1+1 == GetEmpire())
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You already speak this language fluently."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You already speak this language fluently.");
 										return false;
 									}
 
@@ -2925,7 +2925,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 								{
 									if (IsPolymorphed())
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot read books while transformed."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You cannot read books while transformed.");
 										return false;
 
 									}
@@ -2934,7 +2934,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 									if (GetSkillLevel(dwSkillVnum) >= 10)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't raise your Skills anymore."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You can't raise your Skills anymore.");
 										return false;
 									}
 
@@ -2960,7 +2960,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 								{
 									if (IsPolymorphed() == true)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot change your state as long as you are transformed."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You cannot change your state as long as you are transformed.");
 										return false;
 									}
 
@@ -2993,25 +2993,25 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 									if (GetLevel() < iLevelLimit)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You have to raise your Level to understand this Book."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You have to raise your Level to understand this Book.");
 										return false;
 									}
 
 									if (GetSkillLevel(dwSkillVnum) >= 40)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't raise your Skills anymore."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You can't raise your Skills anymore.");
 										return false;
 									}
 
 									if (GetSkillLevel(dwSkillVnum) < iSkillLevelLowLimit)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("It isn't easy to understand this Book."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "It isn't easy to understand this Book.");
 										return false;
 									}
 
 									if (GetSkillLevel(dwSkillVnum) >= iSkillLevelHighLimit)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't train further with this Book."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You can't train further with this Book.");
 										return false;
 									}
 
@@ -3037,7 +3037,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 								{
 									if (IsPolymorphed())
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot read books while transformed."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You cannot read books while transformed.");
 										return false;
 
 									}
@@ -3046,7 +3046,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 									if (GetSkillLevel(dwSkillVnum)>=40)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't raise your Skills anymore."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You can't raise your Skills anymore.");
 										return false;
 									}
 
@@ -3083,7 +3083,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 								{
 									if (IsPolymorphed())
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot read books while transformed."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You cannot read books while transformed.");
 										return false;
 
 									}
@@ -3092,7 +3092,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 									if (GetSkillLevel(dwSkillVnum)>=40)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't raise your Skills anymore."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You can't raise your Skills anymore.");
 										return false;
 									}
 
@@ -3117,7 +3117,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 								{
 									if (IsPolymorphed())
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot read books while transformed."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You cannot read books while transformed.");
 										return false;
 
 									}
@@ -3126,7 +3126,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 									if (GetLevel() < 50)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You don't have the right Level for Rider Training."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You don't have the right Level for Rider Training.");
 										return false;
 									}
 
@@ -3136,7 +3136,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 										{
 											// 주안술서 사용중에는 시간 제한 무시
 											RemoveAffect(AFFECT_SKILL_NO_BOOK_DELAY);
-											ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You escaped the Evil Ghost Curse with the help of an Exorcism Scroll."));
+											ChatPacketTrans(CHAT_TYPE_INFO, "You escaped the Evil Ghost Curse with the help of an Exorcism Scroll.");
 										}
 										else
 										{
@@ -3149,14 +3149,14 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 											GetSkillLevel(SKILL_HORSE_WILDATTACK) + GetSkillLevel(SKILL_HORSE_CHARGE) + GetSkillLevel(SKILL_HORSE_ESCAPE) >= 60 ||
 											GetSkillLevel(SKILL_HORSE_WILDATTACK_RANGE) + GetSkillLevel(SKILL_HORSE_CHARGE) + GetSkillLevel(SKILL_HORSE_ESCAPE) >= 60)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot read more Riding Guides."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You cannot read more Riding Guides.");
 										return false;
 									}
 
 									if (number(1, 100) <= iPct)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You received Riding Points after reading the Riding Guide."));
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can raise your Riding Skill Level through received Points."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You received Riding Points after reading the Riding Guide.");
+										ChatPacketTrans(CHAT_TYPE_INFO, "You can raise your Riding Skill Level through received Points.");
 										PointChange(POINT_HORSE_SKILL, 1);
 
 										int iReadDelay = number(SKILLBOOK_DELAY_MIN, SKILLBOOK_DELAY_MAX);
@@ -3167,7 +3167,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 									}
 									else
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You did not understand the Riding Guide."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You did not understand the Riding Guide.");
 									}
 #ifdef ENABLE_BOOKS_STACKFIX
 									item->SetCount(item->GetCount() - 1);
@@ -3193,7 +3193,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 									if (delta / 10 > 0)
 									{
 										ChatPacket(CHAT_TYPE_TALKING, LC_TEXT("Your mind is clear. You can concentrate well now."));
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your Rank raised up to %d ."), delta/10);
+										ChatPacketTrans(CHAT_TYPE_INFO, "Your Rank raised up to %d .", delta/10);
 									}
 								}
 								break;
@@ -3204,7 +3204,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 									if (GetAlignment() == 200000)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your rank  cannot raise any more."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "Your rank  cannot raise any more.");
 										return false;
 									}
 
@@ -3220,7 +3220,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 									item->SetCount(item->GetCount()-1);
 
 									ChatPacket(CHAT_TYPE_TALKING, LC_TEXT("Your mind is clear. You can concentrate well now."));
-									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your Rank raised up to %d ."), val);
+									ChatPacketTrans(CHAT_TYPE_INFO, "Your Rank raised up to %d .", val);
 
 									char buf[256 + 1];
 									snprintf(buf, sizeof(buf), "%d %d", old_alignment, GetAlignment() / 10);
@@ -3252,7 +3252,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 											case ARMOR_EAR:
 											case ARMOR_WRIST:
 											case ARMOR_NECK:
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("No metin stone to take out."));
+												ChatPacketTrans(CHAT_TYPE_INFO, "No metin stone to take out.");
 												return false;
 											}
 											break;
@@ -3279,7 +3279,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 									if (socket.size() == 0)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("No metin stone to take out."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "No metin stone to take out.");
 										return false;
 									}
 
@@ -3309,7 +3309,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 									// NEW_HAIR_STYLE_ADD
 									if (GetPart(PART_HAIR) >= 1001)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot dye or bleach your current Hairstyle."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You cannot dye or bleach your current Hairstyle.");
 									}
 									// END_NEW_HAIR_STYLE_ADD
 									else
@@ -3337,7 +3337,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 											}
 											else
 											{
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You need to reach Level %d to be able to dye your Hair again."), last_dye_level+3);
+												ChatPacketTrans(CHAT_TYPE_INFO, "You need to reach Level %d to be able to dye your Hair again.", last_dye_level+3);
 											}
 										}
 									}
@@ -3357,7 +3357,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 										for (int i = 0; i < count; i++)
 										{
 											if (dwVnums[i] == CSpecialItemGroup::GOLD)
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You received %d Yang."), dwCounts[i]);
+												ChatPacketTrans(CHAT_TYPE_INFO, "You received %d Yang.", dwCounts[i]);
 										}
 
 										item->SetCount(item->GetCount() - 1);
@@ -3379,7 +3379,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 										((item->GetVnum() == ITEM_VALENTINE_CHOCOLATE) && (SEX_FEMALE==GET_SEX(this))))
 									{
 										// 성별이 맞지않아 쓸 수 없다.
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This Item can be opened by the other gender only."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "This Item can be opened by the other gender only.");
 										return false;
 									}
 
@@ -3403,7 +3403,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 										((item->GetVnum() == ITEM_WHITEDAY_ROSE) && (SEX_FEMALE==GET_SEX(this))))
 									{
 										// 성별이 맞지않아 쓸 수 없다.
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This Item can be opened by the other gender only."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "This Item can be opened by the other gender only.");
 										return false;
 									}
 
@@ -3435,45 +3435,45 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 											switch (dwVnums[i])
 											{
 											case CSpecialItemGroup::GOLD:
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You received %d Yang."), dwCounts[i]);
+												ChatPacketTrans(CHAT_TYPE_INFO, "You received %d Yang.", dwCounts[i]);
 												break;
 
 											case CSpecialItemGroup::EXP:
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Mysterious light comes out of this box."));
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You received %d Experience Points."), dwCounts[i]);
+												ChatPacketTrans(CHAT_TYPE_INFO, "Mysterious light comes out of this box.");
+												ChatPacketTrans(CHAT_TYPE_INFO, "You received %d Experience Points.", dwCounts[i]);
 												break;
 
 											case CSpecialItemGroup::MOB:
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("A monster came out of the box!"));
+												ChatPacketTrans(CHAT_TYPE_INFO, "A monster came out of the box!");
 												break;
 
 											case CSpecialItemGroup::SLOW:
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("If you inhale the red smoke coming out of the box, you will move faster!"));
+												ChatPacketTrans(CHAT_TYPE_INFO, "If you inhale the red smoke coming out of the box, you will move faster!");
 												break;
 
 											case CSpecialItemGroup::DRAIN_HP:
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The box exploded suddenly! Your HP are lower."));
+												ChatPacketTrans(CHAT_TYPE_INFO, "The box exploded suddenly! Your HP are lower.");
 												break;
 
 											case CSpecialItemGroup::POISON:
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("If you inhale the green smoke coming from the box, poison will spread in your body!"));
+												ChatPacketTrans(CHAT_TYPE_INFO, "If you inhale the green smoke coming from the box, poison will spread in your body!");
 												break;
 #ifdef ENABLE_WOLFMAN_CHARACTER
 											case CSpecialItemGroup::BLEEDING:
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("If you inhale the green smoke coming from the box, poison will spread in your body!"));
+												ChatPacketTrans(CHAT_TYPE_INFO, "If you inhale the green smoke coming from the box, poison will spread in your body!");
 												break;
 #endif
 											case CSpecialItemGroup::MOB_GROUP:
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("A monster came out of the box!"));
+												ChatPacketTrans(CHAT_TYPE_INFO, "A monster came out of the box!");
 												break;
 
 											default:
 												if (item_gets[i])
 												{
 													if (dwCounts[i] > 1)
-														ChatPacket(CHAT_TYPE_INFO, LC_TEXT("There are %s of %d in the box."), item_gets[i]->GetName(), dwCounts[i]);
+														ChatPacketTrans(CHAT_TYPE_INFO, "There are %s of %d in the box.", item_gets[i]->GetName(), dwCounts[i]);
 													else
-														ChatPacket(CHAT_TYPE_INFO, LC_TEXT("There is %s in the box."), item_gets[i]->GetName());
+														ChatPacketTrans(CHAT_TYPE_INFO, "There is %s in the box.", item_gets[i]->GetName());
 												}
 												break;
 											}
@@ -3498,13 +3498,13 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 								{
 									if (CArenaManager::instance().IsArenaMap(GetMapIndex()) == true)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this Item in a duel."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this Item in a duel.");
 										return false;
 									}
 #ifdef ENABLE_NEWSTUFF
 									else if (g_NoPotionsOnPVP && CPVPManager::instance().IsFighting(GetPlayerID()) && !IsAllowedPotionOnPVP(item->GetVnum()))
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this Item in a duel."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this Item in a duel.");
 										return false;
 									}
 #endif
@@ -3522,13 +3522,13 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 								{
 									if (CArenaManager::instance().IsArenaMap(GetMapIndex()) == true)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this Item in a duel."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this Item in a duel.");
 										return false;
 									}
 #ifdef ENABLE_NEWSTUFF
 									else if (g_NoPotionsOnPVP && CPVPManager::instance().IsFighting(GetPlayerID()) && !IsAllowedPotionOnPVP(item->GetVnum()))
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this Item in a duel."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this Item in a duel.");
 										return false;
 									}
 #endif
@@ -3566,7 +3566,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 								{
 									int iGold = item->GetSocket(0);
 									ITEM_MANAGER::instance().RemoveItem(item);
-									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You received %d Yang."), iGold);
+									ChatPacketTrans(CHAT_TYPE_INFO, "You received %d Yang.", iGold);
 									ChangeGold(iGold);
 								}
 								break;
@@ -3584,7 +3584,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 										snprintf(szNotice, sizeof(szNotice), LC_TEXT("King's Blessing restored HP and SP of %s's players."), EMPIRE_NAME(GetEmpire()));
 										SendNoticeMap(szNotice, GetMapIndex(), false);
 
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The Emperor Blessing is active."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "The Emperor Blessing is active.");
 									}
 								}
 								break;
@@ -3625,7 +3625,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 									if (ITEM_COSTUME == item2->GetType()) // @fixme124
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot change the bonus of this Item."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You cannot change the bonus of this Item.");
 										return false;
 									}
 
@@ -3634,13 +3634,13 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 									if (item2->GetAttributeSetIndex() == -1)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot change the bonus of this Item."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You cannot change the bonus of this Item.");
 										return false;
 									}
 
 									if (item2->AddRareAttribute() == true)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You have successfully added stats."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You have successfully added stats.");
 
 										int iAddedIdx = item2->GetRareAttrCount() + 4;
 										char buf[21];
@@ -3660,7 +3660,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 									}
 									else
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot use this Item for other Upgrades."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You cannot use this Item for other Upgrades.");
 									}
 								}
 								break;
@@ -3675,7 +3675,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 									if (ITEM_COSTUME == item2->GetType()) // @fixme124
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot change the bonus of this Item."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You cannot change the bonus of this Item.");
 										return false;
 									}
 
@@ -3684,7 +3684,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 									if (item2->GetAttributeSetIndex() == -1)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot change the bonus of this Item."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You cannot change the bonus of this Item.");
 										return false;
 									}
 
@@ -3698,7 +3698,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 									}
 									else
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("No stats to change."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "No stats to change.");
 									}
 								}
 								break;
@@ -3722,13 +3722,13 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 								{
 									if (CArenaManager::instance().IsArenaMap(GetMapIndex()) == true)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this in the arena."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this in the arena.");
 										return false;
 									}
 #ifdef ENABLE_NEWSTUFF
 									else if (g_NoPotionsOnPVP && CPVPManager::instance().IsFighting(GetPlayerID()) && !IsAllowedPotionOnPVP(item->GetVnum()))
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this Item in a duel."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this Item in a duel.");
 										return false;
 									}
 #endif
@@ -3772,7 +3772,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 										if (-1 == pos)
 										{
-											ChatPacket(CHAT_TYPE_INFO, LC_TEXT("There isn't enough space in the inventory."));
+											ChatPacketTrans(CHAT_TYPE_INFO, "There isn't enough space in the inventory.");
 											break;
 										}
 
@@ -3893,7 +3893,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 									if (get_global_time() - last_use_time < 10*60)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot use it now."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You cannot use it now.");
 										return false;
 									}
 
@@ -3912,7 +3912,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 							{
 								if (quest::CQuestManager::instance().GetEventFlag("arena_potion_limit") > 0)
 								{
-									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this in the arena."));
+									ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this in the arena.");
 									return false;
 								}
 
@@ -3926,21 +3926,21 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 										{
 											if (m_nPotionLimit <= 0)
 											{
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Not allowed here."));
+												ChatPacketTrans(CHAT_TYPE_INFO, "Not allowed here.");
 												return false;
 											}
 										}
 										break;
 
 									default :
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this in the arena."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this in the arena.");
 										return false;
 								}
 							}
 #ifdef ENABLE_NEWSTUFF
 							else if (g_NoPotionsOnPVP && CPVPManager::instance().IsFighting(GetPlayerID()) && !IsAllowedPotionOnPVP(item->GetVnum()))
 							{
-								ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this Item in a duel."));
+								ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this Item in a duel.");
 								return false;
 							}
 #endif
@@ -3992,7 +3992,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 								if (item->GetVnum() == 50085 || item->GetVnum() == 50086)
 								{
 									if (test_server)
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Used Mooncake or Seed."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "Used Mooncake or Seed.");
 									SetUseSeedOrMoonBottleTime();
 								}
 								if (GetDungeon())
@@ -4016,7 +4016,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 						{
 							if (quest::CQuestManager::instance().GetEventFlag("arena_potion_limit") > 0)
 							{
-								ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this in the arena."));
+								ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this in the arena.");
 								return false;
 							}
 
@@ -4032,21 +4032,21 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 									{
 										if (m_nPotionLimit <= 0)
 										{
-											ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Not allowed here."));
+											ChatPacketTrans(CHAT_TYPE_INFO, "Not allowed here.");
 											return false;
 										}
 									}
 									break;
 
 								default :
-									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this in the arena."));
+									ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this in the arena.");
 									return false;
 							}
 						}
 #ifdef ENABLE_NEWSTUFF
 						else if (g_NoPotionsOnPVP && CPVPManager::instance().IsFighting(GetPlayerID()) && !IsAllowedPotionOnPVP(item->GetVnum()))
 						{
-							ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this Item in a duel."));
+							ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this Item in a duel.");
 							return false;
 						}
 #endif
@@ -4174,26 +4174,26 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 							// gm_guild_build, oxevent 맵에서 귀환부 귀환기억부 를 사용못하게 막음
 							if (GetMapIndex() == 200 || GetMapIndex() == 113)
 							{
-								ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot use this from your current position."));
+								ChatPacketTrans(CHAT_TYPE_INFO, "You cannot use this from your current position.");
 								return false;
 							}
 
 							if (CArenaManager::instance().IsArenaMap(GetMapIndex()) == true)
 							{
-								ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this Item in a duel."));
+								ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this Item in a duel.");
 								return false;
 							}
 #ifdef ENABLE_NEWSTUFF
 							else if (g_NoPotionsOnPVP && CPVPManager::instance().IsFighting(GetPlayerID()) && !IsAllowedPotionOnPVP(item->GetVnum()))
 							{
-								ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this Item in a duel."));
+								ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this Item in a duel.");
 								return false;
 							}
 #endif
 
 							if (m_pkWarpEvent)
 							{
-								ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You are ready to teleport so you cannot use the Return Scroll."));
+								ChatPacketTrans(CHAT_TYPE_INFO, "You are ready to teleport so you cannot use the Return Scroll.");
 								return false;
 							}
 
@@ -4230,7 +4230,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 								else
 								{
 									if (test_server)
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You are brought back to the place of origin."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You are brought back to the place of origin.");
 
 									ProcessRecallItem(item);
 								}
@@ -4241,7 +4241,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 								{
 									if (GetDungeon())
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s%s cannot be used in a dungeon."),
+										ChatPacketTrans(CHAT_TYPE_INFO, "%s%s cannot be used in a dungeon.",
 												item->GetName(),
 												"");
 										return false;
@@ -4275,7 +4275,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 							if (item2->GetVnum() >= 28330 && item2->GetVnum() <= 28343) // 영석+3
 							{
-								ChatPacket(CHAT_TYPE_INFO, LC_TEXT("+3 spirit stones can not be upgraded by this item."));
+								ChatPacketTrans(CHAT_TYPE_INFO, "+3 spirit stones can not be upgraded by this item.");
 								return false;
 							}
 
@@ -4287,7 +4287,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 								}
 								else
 								{
-									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The spirit stone can not be advanced by this item."));
+									ChatPacketTrans(CHAT_TYPE_INFO, "The spirit stone can not be advanced by this item.");
 								}
 							}
 							else
@@ -4311,7 +4311,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 							if (ITEM_COSTUME != item2->GetType())
 							{
-								ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot change the bonus of this Item."));
+								ChatPacketTrans(CHAT_TYPE_INFO, "You cannot change the bonus of this Item.");
 								return false;
 							}
 
@@ -4320,13 +4320,13 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 							if (item2->GetAttributeSetIndex() == -1)
 							{
-								ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot change the bonus of this Item."));
+								ChatPacketTrans(CHAT_TYPE_INFO, "You cannot change the bonus of this Item.");
 								return false;
 							}
 
 							if (item2->GetAttributeCount() == 0)
 							{
-								ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You have no upgrade you could possibly change."));
+								ChatPacketTrans(CHAT_TYPE_INFO, "You have no upgrade you could possibly change.");
 								return false;
 							}
 
@@ -4351,7 +4351,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 									break;
 							}
 
-							ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You changed the item bonus."));
+							ChatPacketTrans(CHAT_TYPE_INFO, "You changed the item bonus.");
 
 							item->SetCount(item->GetCount() - 1);
 							break;
@@ -4380,7 +4380,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 							// 그딴거 필요없으니 닥치고 빨리 해달래서 그냥 여기서 막음... -_-
 							if (ITEM_COSTUME == item2->GetType())
 							{
-								ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot change the bonus of this Item."));
+								ChatPacketTrans(CHAT_TYPE_INFO, "You cannot change the bonus of this Item.");
 								return false;
 							}
 
@@ -4400,7 +4400,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 										if (i == ITEM_SOCKET_MAX_NUM)
 										{
-											ChatPacket(CHAT_TYPE_INFO, LC_TEXT("No Stone there to be cleaned."));
+											ChatPacketTrans(CHAT_TYPE_INFO, "No Stone there to be cleaned.");
 											return false;
 										}
 
@@ -4433,13 +4433,13 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 								case USE_CHANGE_ATTRIBUTE2 : // @fixme123
 									if (item2->GetAttributeSetIndex() == -1)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot change the bonus of this Item."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You cannot change the bonus of this Item.");
 										return false;
 									}
 
 									if (item2->GetAttributeCount() == 0)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You have no upgrade you could possibly change."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You have no upgrade you could possibly change.");
 										return false;
 									}
 
@@ -4465,7 +4465,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 											if (dwLastChangeItemAttrSec + dwChangeItemAttrCycle > dwNowSec)
 											{
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can do this only %d minutes after an upgrade. (%d Minutes left)"),
+												ChatPacketTrans(CHAT_TYPE_INFO, "You can do this only %d minutes after an upgrade. (%d Minutes left)",
 														dwChangeItemAttrCycle, dwChangeItemAttrCycle - (dwNowSec - dwLastChangeItemAttrSec));
 												return false;
 											}
@@ -4514,14 +4514,14 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 											}
 											if (!bCanUse)
 											{
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This item can only be used on weapons or armor up to level 40."));
+												ChatPacketTrans(CHAT_TYPE_INFO, "This item can only be used on weapons or armor up to level 40.");
 												break;
 											}
 										}
 										item2->ChangeAttribute();
 									}
 
-									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You changed the item bonus."));
+									ChatPacketTrans(CHAT_TYPE_INFO, "You changed the item bonus.");
 									{
 										char buf[21];
 										snprintf(buf, sizeof(buf), "%u", item2->GetID());
@@ -4534,7 +4534,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 								case USE_ADD_ATTRIBUTE :
 									if (item2->GetAttributeSetIndex() == -1)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot change the bonus of this Item."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You cannot change the bonus of this Item.");
 										return false;
 									}
 
@@ -4560,7 +4560,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 											if (!bCanUse)
 											{
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This item can only be used on weapons or armor up to level 40."));
+												ChatPacketTrans(CHAT_TYPE_INFO, "This item can only be used on weapons or armor up to level 40.");
 												break;
 											}
 										}
@@ -4570,7 +4570,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 										if (number(1, 100) <= aiItemAttributeAddPercent[item2->GetAttributeCount()])
 										{
 											item2->AddAttribute();
-											ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Enhancement successfully added."));
+											ChatPacketTrans(CHAT_TYPE_INFO, "Enhancement successfully added.");
 
 											int iAddedIdx = item2->GetAttributeCount() - 1;
 											LogManager::instance().ItemLog(
@@ -4585,7 +4585,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 										}
 										else
 										{
-											ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Enhancement could not be added."));
+											ChatPacketTrans(CHAT_TYPE_INFO, "Enhancement could not be added.");
 											LogManager::instance().ItemLog(this, item, "ADD_ATTRIBUTE_FAIL", buf);
 										}
 
@@ -4593,7 +4593,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 									}
 									else
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot add any more attributes by using this item."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You cannot add any more attributes by using this item.");
 									}
 									break;
 
@@ -4602,7 +4602,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 									// 재가비서를 통해 속성을 4개 추가 시킨 아이템에 대해서 하나의 속성을 더 붙여준다.
 									if (item2->GetAttributeSetIndex() == -1)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot change the bonus of this Item."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You cannot change the bonus of this Item.");
 										return false;
 									}
 
@@ -4615,7 +4615,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 										if (number(1, 100) <= aiItemAttributeAddPercent[item2->GetAttributeCount()])
 										{
 											item2->AddAttribute();
-											ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Enhancement successfully added."));
+											ChatPacketTrans(CHAT_TYPE_INFO, "Enhancement successfully added.");
 
 											int iAddedIdx = item2->GetAttributeCount() - 1;
 											LogManager::instance().ItemLog(
@@ -4630,7 +4630,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 										}
 										else
 										{
-											ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Enhancement could not be added."));
+											ChatPacketTrans(CHAT_TYPE_INFO, "Enhancement could not be added.");
 											LogManager::instance().ItemLog(this, item, "ADD_ATTRIBUTE2_FAIL", buf);
 										}
 
@@ -4638,11 +4638,11 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 									}
 									else if (item2->GetAttributeCount() == 5)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot use this Item for other Upgrades."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "You cannot use this Item for other Upgrades.");
 									}
 									else if (item2->GetAttributeCount() < 4)
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Please use the Advancement Scroll to add another Upgrade."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "Please use the Advancement Scroll to add another Upgrade.");
 									}
 									else
 									{
@@ -4663,7 +4663,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 											if (setAccessoryBlacklist.count(dwBaseVnum))
 											{
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't add an accessory on this equipment."));
+												ChatPacketTrans(CHAT_TYPE_INFO, "You can't add an accessory on this equipment.");
 												return false;
 											}
 
@@ -4676,12 +4676,12 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 #endif
 												{
 													item2->SetAccessorySocketMaxGrade(item2->GetAccessorySocketMaxGrade() + 1);
-													ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Socket successfully added."));
+													ChatPacketTrans(CHAT_TYPE_INFO, "Socket successfully added.");
 													LogManager::instance().ItemLog(this, item, "ADD_SOCKET_SUCCESS", buf);
 												}
 												else
 												{
-													ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Socket could not be added."));
+													ChatPacketTrans(CHAT_TYPE_INFO, "Socket could not be added.");
 													LogManager::instance().ItemLog(this, item, "ADD_SOCKET_FAIL", buf);
 												}
 
@@ -4689,12 +4689,12 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 											}
 											else
 											{
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot add more Sockets here."));
+												ChatPacketTrans(CHAT_TYPE_INFO, "You cannot add more Sockets here.");
 											}
 										}
 										else
 										{
-											ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot attach a socket into this Item."));
+											ChatPacketTrans(CHAT_TYPE_INFO, "You cannot attach a socket into this Item.");
 										}
 									}
 									break;
@@ -4710,12 +4710,12 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 											if (number(1, 100) <= aiAccessorySocketPutPct[item2->GetAccessorySocketGrade()])
 											{
 												item2->SetAccessorySocketGrade(item2->GetAccessorySocketGrade() + 1);
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Arming successful."));
+												ChatPacketTrans(CHAT_TYPE_INFO, "Arming successful.");
 												LogManager::instance().ItemLog(this, item, "PUT_SOCKET_SUCCESS", buf);
 											}
 											else
 											{
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Arming failed."));
+												ChatPacketTrans(CHAT_TYPE_INFO, "Arming failed.");
 												LogManager::instance().ItemLog(this, item, "PUT_SOCKET_FAIL", buf);
 											}
 
@@ -4724,19 +4724,19 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 										else
 										{
 											if (item2->GetAccessorySocketMaxGrade() == 0)
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You have to use a Diamond before you can add a Socket."));
+												ChatPacketTrans(CHAT_TYPE_INFO, "You have to use a Diamond before you can add a Socket.");
 											else if (item2->GetAccessorySocketMaxGrade() < ITEM_ACCESSORY_SOCKET_MAX_NUM)
 											{
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Here is no Socket with Gems."));
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You have to add a Socket if you want to use a Diamond."));
+												ChatPacketTrans(CHAT_TYPE_INFO, "Here is no Socket with Gems.");
+												ChatPacketTrans(CHAT_TYPE_INFO, "You have to add a Socket if you want to use a Diamond.");
 											}
 											else
-												ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Here no more Gems can be added."));
+												ChatPacketTrans(CHAT_TYPE_INFO, "Here no more Gems can be added.");
 										}
 									}
 									else
 									{
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This Item cannot be equipped."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "This Item cannot be equipped.");
 									}
 									break;
 							}
@@ -4753,7 +4753,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 							if (m_pkFishingEvent)
 							{
-								ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot change the Bait while fishing."));
+								ChatPacketTrans(CHAT_TYPE_INFO, "You cannot change the Bait while fishing.");
 								return false;
 							}
 
@@ -4764,11 +4764,11 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 							if (weapon->GetSocket(2))
 							{
-								ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You exchange the current Bait with %s."), item->GetName());
+								ChatPacketTrans(CHAT_TYPE_INFO, "You exchange the current Bait with %s.", item->GetName());
 							}
 							else
 							{
-								ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Stick the %s Bait to the Hook."), item->GetName());
+								ChatPacketTrans(CHAT_TYPE_INFO, "Stick the %s Bait to the Hook.", item->GetName());
 							}
 
 							weapon->SetSocket(2, item->GetValue(0));
@@ -4785,7 +4785,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 						{
 							if (FindAffect(item->GetValue(0), aApplyInfo[item->GetValue(1)].bPointType))
 							{
-								ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The effect is already working."));
+								ChatPacketTrans(CHAT_TYPE_INFO, "The effect is already working.");
 							}
 							else
 							{
@@ -4796,7 +4796,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 									if (CPCBangManager::instance().IsPCBangIP(GetDesc()->GetHostName()) == false)
 									{
 										// PC방이 아님!
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This Item can only be used in an Internetcafe."));
+										ChatPacketTrans(CHAT_TYPE_INFO, "This Item can only be used in an Internetcafe.");
 										return false;
 									}
 								}
@@ -4826,7 +4826,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 							{
 								if (pSource1 == NULL)
 								{
-									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Not enough ingrediant to creat the potion."));
+									ChatPacketTrans(CHAT_TYPE_INFO, "Not enough ingrediant to creat the potion.");
 									return false;
 								}
 							}
@@ -4835,7 +4835,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 							{
 								if (pSource2 == NULL)
 								{
-									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Not enough ingrediant to creat the potion."));
+									ChatPacketTrans(CHAT_TYPE_INFO, "Not enough ingrediant to creat the potion.");
 									return false;
 								}
 							}
@@ -4844,7 +4844,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 							{
 								if (pSource1->GetCount() < dwSourceCount1)
 								{
-									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Not enough ingredient(%s)."), pSource1->GetName());
+									ChatPacketTrans(CHAT_TYPE_INFO, "Not enough ingredient(%s).", pSource1->GetName());
 									return false;
 								}
 
@@ -4855,7 +4855,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 							{
 								if (pSource2->GetCount() < dwSourceCount2)
 								{
-									ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Not enough ingredient(%s)."), pSource2->GetName());
+									ChatPacketTrans(CHAT_TYPE_INFO, "Not enough ingredient(%s).", pSource2->GetName());
 									return false;
 								}
 
@@ -4866,7 +4866,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 							if (!pBottle || pBottle->GetCount() < 1)
 							{
-								ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Not enough empty bottles."));
+								ChatPacketTrans(CHAT_TYPE_INFO, "Not enough empty bottles.");
 								return false;
 							}
 
@@ -4874,7 +4874,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 							if (number(1, 100) > item->GetValue(5))
 							{
-								ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Failed to create the potion."));
+								ChatPacketTrans(CHAT_TYPE_INFO, "Failed to create the potion.");
 								return false;
 							}
 
@@ -4916,7 +4916,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 					if ((setHmStoneBlacklist.count(item->GetValue(5)) && setHmStoneBlacklist.count(p->alValues[5])) || (item->GetValue(5) == p->alValues[5]))
 					{
-						ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot attach several Spirit Stones of the same kind."));
+						ChatPacketTrans(CHAT_TYPE_INFO, "You cannot attach several Spirit Stones of the same kind.");
 						return false;
 					}
 				}
@@ -4925,7 +4925,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 				{
 					if (!IS_SET(item->GetWearFlag(), WEARABLE_BODY) || !IS_SET(item2->GetWearFlag(), WEARABLE_BODY))
 					{
-						ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot attach this Stone there."));
+						ChatPacketTrans(CHAT_TYPE_INFO, "You cannot attach this Stone there.");
 						return false;
 					}
 				}
@@ -4933,13 +4933,13 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 				{
 					if (!IS_SET(item->GetWearFlag(), WEARABLE_WEAPON))
 					{
-						ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot attach this Stone to a Weapon."));
+						ChatPacketTrans(CHAT_TYPE_INFO, "You cannot attach this Stone to a Weapon.");
 						return false;
 					}
 				}
 				else
 				{
-					ChatPacket(CHAT_TYPE_INFO, LC_TEXT("No slot free."));
+					ChatPacketTrans(CHAT_TYPE_INFO, "No slot free.");
 					return false;
 				}
 
@@ -4953,12 +4953,12 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 						if (1)
 #endif
 						{
-							ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You attached the Stone successfully."));
+							ChatPacketTrans(CHAT_TYPE_INFO, "You attached the Stone successfully.");
 							item2->SetSocket(i, item->GetVnum());
 						}
 						else
 						{
-							ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You did not attach the Stone."));
+							ChatPacketTrans(CHAT_TYPE_INFO, "You did not attach the Stone.");
 							item2->SetSocket(i, ITEM_BROKEN_METIN_VNUM);
 						}
 
@@ -4968,7 +4968,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 					}
 
 				if (i == ITEM_SOCKET_MAX_NUM)
-					ChatPacket(CHAT_TYPE_INFO, LC_TEXT("No slot free."));
+					ChatPacketTrans(CHAT_TYPE_INFO, "No slot free.");
 			}
 			break;
 
@@ -4998,13 +4998,13 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 				if (FindAffect(affect_type, apply_type))
 				{
-					ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The effect is already working."));
+					ChatPacketTrans(CHAT_TYPE_INFO, "The effect is already working.");
 				}
 				else
 				{
 					if (FindAffect(AFFECT_EXP_BONUS_EURO_FREE, POINT_RESIST_MAGIC))
 					{
-						ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The effect is already working."));
+						ChatPacketTrans(CHAT_TYPE_INFO, "The effect is already working.");
 					}
 					else
 					{
@@ -5061,7 +5061,7 @@ bool CHARACTER::UseItem(TItemPos Cell, TItemPos DestCell)
 
 	if (!item->CanUsedBy(this))
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your character class can not use this item."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "Your character class can not use this item.");
 		return false;
 	}
 
@@ -5070,7 +5070,7 @@ bool CHARACTER::UseItem(TItemPos Cell, TItemPos DestCell)
 
 	if (false == FN_check_item_sex(this, item))
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This Item can be used by the other gender only."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "This Item can be used by the other gender only.");
 		return false;
 	}
 
@@ -5079,7 +5079,7 @@ bool CHARACTER::UseItem(TItemPos Cell, TItemPos DestCell)
 	{
 		if (false == IS_SUMMONABLE_ZONE(GetMapIndex()))
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Cannot be used"));
+			ChatPacketTrans(CHAT_TYPE_INFO, "Cannot be used");
 			return false;
 		}
 
@@ -5088,7 +5088,7 @@ bool CHARACTER::UseItem(TItemPos Cell, TItemPos DestCell)
 		//삼거리 관려 맵에서는 귀환부를 막아버린다.
 		if (CThreeWayWar::instance().IsThreeWayWarMapIndex(GetMapIndex()))
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot use a Return Scroll during a Kingdom Battle."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "You cannot use a Return Scroll during a Kingdom Battle.");
 			return false;
 		}
 		int iPulse = thecore_pulse();
@@ -5096,7 +5096,7 @@ bool CHARACTER::UseItem(TItemPos Cell, TItemPos DestCell)
 		//창고 연후 체크
 		if (iPulse - GetSafeboxLoadTime() < PASSES_PER_SEC(g_nPortalLimitTime))
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot use for %d seconds after opening a Warehouse any Return Scroll."), g_nPortalLimitTime);
+			ChatPacketTrans(CHAT_TYPE_INFO, "You cannot use for %d seconds after opening a Warehouse any Return Scroll.", g_nPortalLimitTime);
 
 			if (test_server)
 				ChatPacket(CHAT_TYPE_INFO, "[TestOnly]Pulse %d LoadTime %d PASS %d", iPulse, GetSafeboxLoadTime(), PASSES_PER_SEC(g_nPortalLimitTime));
@@ -5106,7 +5106,7 @@ bool CHARACTER::UseItem(TItemPos Cell, TItemPos DestCell)
 		//거래관련 창 체크
 		if (GetExchange() || GetMyShop() || GetShopOwner() || IsOpenSafebox() || IsCubeOpen())
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot use the Return Scroll as long as you have opened another window."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "You cannot use the Return Scroll as long as you have opened another window.");
 			return false;
 		}
 
@@ -5115,7 +5115,7 @@ bool CHARACTER::UseItem(TItemPos Cell, TItemPos DestCell)
 		{
 			if (iPulse - GetRefineTime() < PASSES_PER_SEC(g_nPortalLimitTime))
 			{
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot teleport for %d seconds after a trade."), g_nPortalLimitTime);
+				ChatPacketTrans(CHAT_TYPE_INFO, "You cannot teleport for %d seconds after a trade.", g_nPortalLimitTime);
 				return false;
 			}
 		}
@@ -5126,7 +5126,7 @@ bool CHARACTER::UseItem(TItemPos Cell, TItemPos DestCell)
 		{
 			if (iPulse - GetMyShopTime() < PASSES_PER_SEC(g_nPortalLimitTime))
 			{
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot use a Return Scroll %d seconds after opening a Warehouse."), g_nPortalLimitTime);
+				ChatPacketTrans(CHAT_TYPE_INFO, "You cannot use a Return Scroll %d seconds after opening a Warehouse.", g_nPortalLimitTime);
 				return false;
 			}
 
@@ -5171,7 +5171,7 @@ bool CHARACTER::UseItem(TItemPos Cell, TItemPos DestCell)
 
 			if (nDistant > nDist)
 			{
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot use the Return Scroll because the distance is too small."));
+				ChatPacketTrans(CHAT_TYPE_INFO, "You cannot use the Return Scroll because the distance is too small.");
 				if (test_server)
 					ChatPacket(CHAT_TYPE_INFO, "PossibleDistant %f nNowDist %f", nDistant,nDist);
 				return false;
@@ -5182,7 +5182,7 @@ bool CHARACTER::UseItem(TItemPos Cell, TItemPos DestCell)
 		//교환 후 시간체크
 		if (iPulse - GetExchangeTime()  < PASSES_PER_SEC(g_nPortalLimitTime))
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("After a trade you cannot use a Return Scroll for %d seconds."), g_nPortalLimitTime);
+			ChatPacketTrans(CHAT_TYPE_INFO, "After a trade you cannot use a Return Scroll for %d seconds.", g_nPortalLimitTime);
 			return false;
 		}
 		//END_PREVENT_PORTAL_AFTER_EXCHANGE
@@ -5194,7 +5194,7 @@ bool CHARACTER::UseItem(TItemPos Cell, TItemPos DestCell)
 	{
 		if (GetExchange() || GetMyShop() || GetShopOwner() || IsOpenSafebox() || IsCubeOpen())
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot open a storage if another Window is already open."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "You cannot open a storage if another Window is already open.");
 			return false;
 		}
 
@@ -5204,7 +5204,7 @@ bool CHARACTER::UseItem(TItemPos Cell, TItemPos DestCell)
 	// @fixme150 BEGIN
 	if (quest::CQuestManager::instance().GetPCForce(GetPlayerID())->IsRunning() == true)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot use this item if you're using quests"));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You cannot use this item if you're using quests");
 		return false;
 	}
 	// @fixme150 END
@@ -5251,7 +5251,7 @@ bool CHARACTER::DropItem(TItemPos Cell, BYTE bCount)
 	{
 		if (get_dword_time() < m_dwLastItemDropTime+g_ItemDropTimeLimitValue)
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can only drop Yang once in every 10 seconds."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "You can only drop Yang once in every 10 seconds.");
 			return false;
 		}
 	}
@@ -5275,7 +5275,7 @@ bool CHARACTER::DropItem(TItemPos Cell, BYTE bCount)
 
 	if (IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_DROP | ITEM_ANTIFLAG_GIVE))
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot drop this Item."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You cannot drop this Item.");
 		return false;
 	}
 
@@ -5317,7 +5317,7 @@ bool CHARACTER::DropItem(TItemPos Cell, BYTE bCount)
 
 	if (pkItemToDrop->AddToGround(GetMapIndex(), pxPos))
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The dropped Item will vanish in 3 minutes."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "The dropped Item will vanish in 3 minutes.");
 #ifdef ENABLE_NEWSTUFF
 		pkItemToDrop->StartDestroyEvent(g_aiItemDestroyTime[ITEM_DESTROY_TIME_DROPITEM]);
 #else
@@ -5347,7 +5347,7 @@ bool CHARACTER::DropGold(GoldType gold)
 	{
 		if (get_dword_time() < m_dwLastGoldDropTime+g_GoldDropTimeLimitValue)
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can only drop Yang once in every 10 seconds."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "You can only drop Yang once in every 10 seconds.");
 			return false;
 		}
 	}
@@ -5373,7 +5373,7 @@ bool CHARACTER::DropGold(GoldType gold)
 #else
 			item->StartDestroyEvent();
 #endif
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The item will disappear in %d minutes."), gold);
+			ChatPacketTrans(CHAT_TYPE_INFO, "The item will disappear in %d minutes.", gold);
 		}
 
 		Save();
@@ -5427,7 +5427,7 @@ bool CHARACTER::MoveItem(TItemPos Cell, TItemPos DestCell, BYTE count)
 			LPITEM costumeWeapon = GetWear(WEAR_COSTUME_WEAPON);
 			if (costumeWeapon && !UnequipItem(costumeWeapon))
 			{
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot unequip the costume weapon. Not enough space."));
+				ChatPacketTrans(CHAT_TYPE_INFO, "You cannot unequip the costume weapon. Not enough space.");
 				return false;
 			}
 
@@ -5441,7 +5441,7 @@ bool CHARACTER::MoveItem(TItemPos Cell, TItemPos DestCell, BYTE count)
 	{
 		if (GetItem(DestCell))	// 장비일 경우 한 곳만 검사해도 된다.
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Alchemy> Already have equipment to wear."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "<Alchemy> Already have equipment to wear.");
 
 			return false;
 		}
@@ -5640,7 +5640,7 @@ void CHARACTER::GiveGold(GoldType iAmount)
 		{
 			if (quest::CQuestManager::instance().GetPCForce(GetPlayerID())->IsRunning() == true)
 			{
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot pickup this item if you're using quests"));
+				ChatPacketTrans(CHAT_TYPE_INFO, "You cannot pickup this item if you're using quests");
 				return false;
 			}
 		}
@@ -5690,7 +5690,7 @@ void CHARACTER::GiveGold(GoldType iAmount)
 
 							if (bCount == 0)
 							{
-								ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s received"), item2->GetName());
+								ChatPacketTrans(CHAT_TYPE_INFO, "%s received", item2->GetName());
 								M2_DESTROY_ITEM(item);
 								if (item2->GetType() == ITEM_QUEST)
 									quest::CQuestManager::instance().PickupItem (GetPlayerID(), item2);
@@ -5706,7 +5706,7 @@ void CHARACTER::GiveGold(GoldType iAmount)
 				if ((iEmptyCell = GetEmptyInventory(item->GetSize())) == -1)
 				{
 					sys_log(0, "No empty inventory pid %u size %ud itemid %u", GetPlayerID(), item->GetSize(), item->GetID());
-					ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You carry too many Items."));
+					ChatPacketTrans(CHAT_TYPE_INFO, "You carry too many Items.");
 					return false;
 				}
 
@@ -5716,7 +5716,7 @@ void CHARACTER::GiveGold(GoldType iAmount)
 				char szHint[32+1];
 				snprintf(szHint, sizeof(szHint), "%s %u %u", item->GetName(), item->GetCount(), item->GetOriginalVnum());
 				LogManager::instance().ItemLog(this, item, "GET", szHint);
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s received"), item->GetName());
+				ChatPacketTrans(CHAT_TYPE_INFO, "%s received", item->GetName());
 
 				if (item->GetType() == ITEM_QUEST)
 					quest::CQuestManager::instance().PickupItem (GetPlayerID(), item);
@@ -5744,7 +5744,7 @@ void CHARACTER::GiveGold(GoldType iAmount)
 
 				if ((iEmptyCell = GetEmptyInventory(item->GetSize())) == -1)
 				{
-					owner->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You carry too many Items."));
+					owner->ChatPacketTrans(CHAT_TYPE_INFO, "You carry too many Items.");
 					return false;
 				}
 			}
@@ -5757,11 +5757,11 @@ void CHARACTER::GiveGold(GoldType iAmount)
 			LogManager::instance().ItemLog(owner, item, "GET", szHint);
 
 			if (owner == this)
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s received"), item->GetName());
+				ChatPacketTrans(CHAT_TYPE_INFO, "%s received", item->GetName());
 			else
 			{
-				owner->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Received Item: %s, %s "), GetName(), item->GetName());
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Item Trade: from %s, %s "), owner->GetName(), item->GetName());
+				owner->ChatPacketTrans(CHAT_TYPE_INFO, "Received Item: %s, %s ", GetName(), item->GetName());
+				ChatPacketTrans(CHAT_TYPE_INFO, "Item Trade: from %s, %s ", owner->GetName(), item->GetName());
 			}
 
 			if (item->GetType() == ITEM_QUEST)
@@ -5831,7 +5831,7 @@ bool CHARACTER::PickupItem(DWORD dwVID)
 
 							if (bCount == 0)
 							{
-								ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s received"), item2->GetName());
+								ChatPacketTrans(CHAT_TYPE_INFO, "%s received", item2->GetName());
 								M2_DESTROY_ITEM(item);
 								if (item2->GetType() == ITEM_QUEST)
 									quest::CQuestManager::instance().PickupItem (GetPlayerID(), item2);
@@ -5846,7 +5846,7 @@ bool CHARACTER::PickupItem(DWORD dwVID)
 				if ((iEmptyCell = GetEmptyInventory(item->GetSize())) == -1)
 				{
 					sys_log(0, "No empty inventory pid %u size %ud itemid %u", GetPlayerID(), item->GetSize(), item->GetID());
-					ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You carry too many Items."));
+					ChatPacketTrans(CHAT_TYPE_INFO, "You carry too many Items.");
 					return false;
 				}
 
@@ -5858,7 +5858,7 @@ bool CHARACTER::PickupItem(DWORD dwVID)
 				
 				snprintf(szHint, sizeof(szHint), "%s %u %u", item->GetName(), item->GetCount(), item->GetOriginalVnum());
 				LogManager::instance().ItemLog(this, item, "GET", szHint);
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s received"), item->GetName());
+				ChatPacketTrans(CHAT_TYPE_INFO, "%s received", item->GetName());
 
 				if (item->GetType() == ITEM_QUEST)
 					quest::CQuestManager::instance().PickupItem (GetPlayerID(), item);
@@ -5911,8 +5911,8 @@ bool CHARACTER::PickupItem(DWORD dwVID)
 
 							if (bCount == 0)
 							{
-								owner->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Received Item: %s, %s "), GetName(), item->GetName());
-								ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Item Trade: from %s, %s "), owner->GetName(), item->GetName());
+								owner->ChatPacketTrans(CHAT_TYPE_INFO, "Received Item: %s, %s ", GetName(), item->GetName());
+								ChatPacketTrans(CHAT_TYPE_INFO, "Item Trade: from %s, %s ", owner->GetName(), item->GetName());
 								M2_DESTROY_ITEM(item);
 								if (item2->GetType() == ITEM_QUEST)
 									quest::CQuestManager::instance().PickupItem(owner->GetPlayerID(), item2);
@@ -5932,7 +5932,7 @@ bool CHARACTER::PickupItem(DWORD dwVID)
 
 				if ((iEmptyCell = GetEmptyInventory(item->GetSize())) == -1)
 				{
-					owner->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You carry too many Items."));
+					owner->ChatPacketTrans(CHAT_TYPE_INFO, "You carry too many Items.");
 					return false;
 				}
 			}
@@ -5946,11 +5946,11 @@ bool CHARACTER::PickupItem(DWORD dwVID)
 			LogManager::instance().ItemLog(owner, item, "GET", szHint);
 
 			if (owner == this)
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s received"), item->GetName());
+				ChatPacketTrans(CHAT_TYPE_INFO, "%s received", item->GetName());
 			else
 			{
-				owner->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Received Item: %s, %s "), GetName(), item->GetName());
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Item Trade: from %s, %s "), owner->GetName(), item->GetName());
+				owner->ChatPacketTrans(CHAT_TYPE_INFO, "Received Item: %s, %s ", GetName(), item->GetName());
+				ChatPacketTrans(CHAT_TYPE_INFO, "Item Trade: from %s, %s ", owner->GetName(), item->GetName());
 			}
 
 
@@ -6047,7 +6047,7 @@ bool CHARACTER::UnequipItem(LPITEM item)
 		LPITEM costumeWeapon = GetWear(WEAR_COSTUME_WEAPON);
 		if (costumeWeapon && !UnequipItem(costumeWeapon))
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot unequip the costume weapon. Not enough space."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "You cannot unequip the costume weapon. Not enough space.");
 			return false;
 		}
 	}
@@ -6092,26 +6092,26 @@ bool CHARACTER::EquipItem(LPITEM item, int iCandidateCell)
 	// 무언가를 탄 상태에서 턱시도 입기 금지
 	if (iWearCell == WEAR_BODY && IsRiding() && (item->GetVnum() >= 11901 && item->GetVnum() <= 11904))
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot wear Tuxido on a horse."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You cannot wear Tuxido on a horse.");
 		return false;
 	}
 
 	if (iWearCell != WEAR_ARROW && IsPolymorphed())
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot change the equipped Items as long as you are transformed."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You cannot change the equipped Items as long as you are transformed.");
 		return false;
 	}
 
 	if (FN_check_item_sex(this, item) == false)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This Item can be used by the other gender only."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "This Item can be used by the other gender only.");
 		return false;
 	}
 
 	//신규 탈것 사용시 기존 말 사용여부 체크
 	if(item->IsRideItem() && IsRiding())
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You are already riding a mount."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You are already riding a mount.");
 		return false;
 	}
 
@@ -6121,7 +6121,7 @@ bool CHARACTER::EquipItem(LPITEM item, int iCandidateCell)
 	if (iWearCell != WEAR_ARROW
 		&& (dwCurTime - GetLastAttackTime() <= 1500 || dwCurTime - m_dwLastSkillTime <= 1500))
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You have to be motionless to equip the Item."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You have to be motionless to equip the Item.");
 		return false;
 	}
 
@@ -6133,7 +6133,7 @@ bool CHARACTER::EquipItem(LPITEM item, int iCandidateCell)
 			LPITEM costumeWeapon = GetWear(WEAR_COSTUME_WEAPON);
 			if (costumeWeapon && costumeWeapon->GetValue(3) != item->GetSubType() && !UnequipItem(costumeWeapon))
 			{
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot unequip the costume weapon. Not enough space."));
+				ChatPacketTrans(CHAT_TYPE_INFO, "You cannot unequip the costume weapon. Not enough space.");
 				return false;
 			}
 		}
@@ -6142,7 +6142,7 @@ bool CHARACTER::EquipItem(LPITEM item, int iCandidateCell)
 			LPITEM costumeWeapon = GetWear(WEAR_COSTUME_WEAPON);
 			if (costumeWeapon && !UnequipItem(costumeWeapon))
 			{
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot unequip the costume weapon. Not enough space."));
+				ChatPacketTrans(CHAT_TYPE_INFO, "You cannot unequip the costume weapon. Not enough space.");
 				return false;
 			}
 		}
@@ -6154,7 +6154,7 @@ bool CHARACTER::EquipItem(LPITEM item, int iCandidateCell)
 			LPITEM pkWeapon = GetWear(WEAR_WEAPON);
 			if (!pkWeapon || pkWeapon->GetType() != ITEM_WEAPON || item->GetValue(3) != pkWeapon->GetSubType())
 			{
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot equip the costume weapon. Wrong equipped weapon."));
+				ChatPacketTrans(CHAT_TYPE_INFO, "You cannot equip the costume weapon. Wrong equipped weapon.");
 				return false;
 			}
 		}
@@ -6572,7 +6572,7 @@ LPITEM CHARACTER::AutoGiveItem(DWORD dwItemVnum, BYTE bCount, int iRarePct, bool
 				if (bCount == 0)
 				{
 					if (bMsg)
-						ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s received"), item->GetName());
+						ChatPacketTrans(CHAT_TYPE_INFO, "%s received", item->GetName());
 
 					return item;
 				}
@@ -6618,7 +6618,7 @@ LPITEM CHARACTER::AutoGiveItem(DWORD dwItemVnum, BYTE bCount, int iRarePct, bool
 	if (iEmptyCell != -1)
 	{
 		if (bMsg)
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s received"), item->GetName());
+			ChatPacketTrans(CHAT_TYPE_INFO, "%s received", item->GetName());
 
 		item->AddToCharacter(this, TItemPos(INVENTORY, iEmptyCell));
 		LogManager::instance().ItemLog(this, item, "SYSTEM", item->GetName());
@@ -6674,7 +6674,7 @@ bool CHARACTER::GiveItem(LPCHARACTER victim, TItemPos Cell)
 	// @fixme150 BEGIN
 	if (quest::CQuestManager::instance().GetPCForce(GetPlayerID())->IsRunning() == true)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot take this item if you're using quests"));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You cannot take this item if you're using quests");
 		return false;
 	}
 	// @fixme150 END
@@ -6780,7 +6780,7 @@ bool CHARACTER::CanReceiveItem(LPCHARACTER from, LPITEM item) const
 			{
 				if (!IsDead())
 				{
-					from->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot feed a living Horse with Herbs."));
+					from->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot feed a living Horse with Herbs.");
 					return false;
 				}
 				return true;
@@ -6789,7 +6789,7 @@ bool CHARACTER::CanReceiveItem(LPCHARACTER from, LPITEM item) const
 			{
 				if (IsDead())
 				{
-					from->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot feed a dead Horse."));
+					from->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot feed a dead Horse.");
 					return false;
 				}
 				return true;
@@ -6807,7 +6807,7 @@ bool CHARACTER::CanReceiveItem(LPCHARACTER from, LPITEM item) const
 			{
 				if (!IsDead())
 				{
-					from->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot feed a living Horse with Herbs."));
+					from->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot feed a living Horse with Herbs.");
 					return false;
 				}
 				return true;
@@ -6816,7 +6816,7 @@ bool CHARACTER::CanReceiveItem(LPCHARACTER from, LPITEM item) const
 			{
 				if (IsDead())
 				{
-					from->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot feed a dead Horse."));
+					from->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot feed a dead Horse.");
 					return false;
 				}
 				return true;
@@ -6834,7 +6834,7 @@ bool CHARACTER::CanReceiveItem(LPCHARACTER from, LPITEM item) const
 			{
 				if (!IsDead())
 				{
-					from->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot feed a living Horse with Herbs."));
+					from->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot feed a living Horse with Herbs.");
 					return false;
 				}
 				return true;
@@ -6843,7 +6843,7 @@ bool CHARACTER::CanReceiveItem(LPCHARACTER from, LPITEM item) const
 			{
 				if (IsDead())
 				{
-					from->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot feed a dead Horse."));
+					from->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot feed a dead Horse.");
 					return false;
 				}
 				return true;
@@ -6893,7 +6893,7 @@ void CHARACTER::ReceiveItem(LPCHARACTER from, LPITEM item)
 			}
 			else
 			{
-				from->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This Item can't be made better."));
+				from->ChatPacketTrans(CHAT_TYPE_INFO, "This Item can't be made better.");
 			}
 			break;
 			// END_OF_DEVILTOWER_NPC
@@ -6910,7 +6910,7 @@ void CHARACTER::ReceiveItem(LPCHARACTER from, LPITEM item)
 			}
 			else
 			{
-				from->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This Item can't be made better."));
+				from->ChatPacketTrans(CHAT_TYPE_INFO, "This Item can't be made better.");
 			}
 			break;
 
@@ -6929,14 +6929,14 @@ void CHARACTER::ReceiveItem(LPCHARACTER from, LPITEM item)
 			{
 				from->ReviveHorse();
 				item->SetCount(item->GetCount()-1);
-				from->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You fed the Horse with Herbs."));
+				from->ChatPacketTrans(CHAT_TYPE_INFO, "You fed the Horse with Herbs.");
 			}
 			else if (item->GetVnum() == ITEM_HORSE_FOOD_1 ||
 					item->GetVnum() == ITEM_HORSE_FOOD_2 ||
 					item->GetVnum() == ITEM_HORSE_FOOD_3)
 			{
 				from->FeedHorse();
-				from->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You fed the Horse."));
+				from->ChatPacketTrans(CHAT_TYPE_INFO, "You fed the Horse.");
 				item->SetCount(item->GetCount()-1);
 				EffectPacket(SE_HPUP_RED);
 			}
@@ -7188,7 +7188,7 @@ bool CHARACTER::ItemProcess_Hair(LPITEM item, int iDestCell)
 	if (item->CheckItemUseLevel(GetLevel()) == false)
 	{
 		// 레벨 제한에 걸림
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You Level is too low to wear this Hairstyle."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You Level is too low to wear this Hairstyle.");
 		return false;
 	}
 
@@ -7222,7 +7222,7 @@ bool CHARACTER::ItemProcess_Hair(LPITEM item, int iDestCell)
 
 	if (hair == GetPart(PART_HAIR))
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You already wear this Hairstyle."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You already wear this Hairstyle.");
 		return true;
 	}
 
@@ -7239,13 +7239,13 @@ bool CHARACTER::ItemProcess_Polymorph(LPITEM item)
 {
 	if (IsPolymorphed())
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You are already transformed."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "You are already transformed.");
 		return false;
 	}
 
 	if (true == IsRiding())
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Not available."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "Not available.");
 		return false;
 	}
 
@@ -7253,7 +7253,7 @@ bool CHARACTER::ItemProcess_Polymorph(LPITEM item)
 
 	if (dwVnum == 0)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("That's the wrong trading item."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "That's the wrong trading item.");
 		item->SetCount(item->GetCount()-1);
 		return false;
 	}
@@ -7262,7 +7262,7 @@ bool CHARACTER::ItemProcess_Polymorph(LPITEM item)
 
 	if (pMob == NULL)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("That's the wrong trading item."));
+		ChatPacketTrans(CHAT_TYPE_INFO, "That's the wrong trading item.");
 		item->SetCount(item->GetCount()-1);
 		return false;
 	}
@@ -7282,7 +7282,7 @@ bool CHARACTER::ItemProcess_Polymorph(LPITEM item)
 				int iPolymorphLevelLimit = MAX(0, 20 - GetLevel() * 3 / 10);
 				if (pMob->m_table.bLevel >= GetLevel() + iPolymorphLevelLimit)
 				{
-					ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't transform into another player who has a higher Level than you."));
+					ChatPacketTrans(CHAT_TYPE_INFO, "You can't transform into another player who has a higher Level than you.");
 					return false;
 				}
 
@@ -7560,7 +7560,7 @@ bool CHARACTER::CanEquipNow(const LPITEM item, const TItemPos& srcCell, const TI
 			case LIMIT_LEVEL:
 				if (GetLevel() < limit)
 				{
-					ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your Level is too low to equip this."));
+					ChatPacketTrans(CHAT_TYPE_INFO, "Your Level is too low to equip this.");
 					return false;
 				}
 				break;
@@ -7568,7 +7568,7 @@ bool CHARACTER::CanEquipNow(const LPITEM item, const TItemPos& srcCell, const TI
 			case LIMIT_STR:
 				if (GetPoint(POINT_ST) < limit)
 				{
-					ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You are not strong enough to equip this."));
+					ChatPacketTrans(CHAT_TYPE_INFO, "You are not strong enough to equip this.");
 					return false;
 				}
 				break;
@@ -7576,7 +7576,7 @@ bool CHARACTER::CanEquipNow(const LPITEM item, const TItemPos& srcCell, const TI
 			case LIMIT_INT:
 				if (GetPoint(POINT_IQ) < limit)
 				{
-					ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your Intelligence it too low to equip this."));
+					ChatPacketTrans(CHAT_TYPE_INFO, "Your Intelligence it too low to equip this.");
 					return false;
 				}
 				break;
@@ -7584,7 +7584,7 @@ bool CHARACTER::CanEquipNow(const LPITEM item, const TItemPos& srcCell, const TI
 			case LIMIT_DEX:
 				if (GetPoint(POINT_DX) < limit)
 				{
-					ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your Agility is too low to equip this."));
+					ChatPacketTrans(CHAT_TYPE_INFO, "Your Agility is too low to equip this.");
 					return false;
 				}
 				break;
@@ -7592,7 +7592,7 @@ bool CHARACTER::CanEquipNow(const LPITEM item, const TItemPos& srcCell, const TI
 			case LIMIT_CON:
 				if (GetPoint(POINT_HT) < limit)
 				{
-					ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You Vitality is too low to equip this."));
+					ChatPacketTrans(CHAT_TYPE_INFO, "You Vitality is too low to equip this.");
 					return false;
 				}
 				break;
@@ -7604,14 +7604,14 @@ bool CHARACTER::CanEquipNow(const LPITEM item, const TItemPos& srcCell, const TI
 		if ((GetWear(WEAR_UNIQUE1) && GetWear(WEAR_UNIQUE1)->IsSameSpecialGroup(item)) ||
 			(GetWear(WEAR_UNIQUE2) && GetWear(WEAR_UNIQUE2)->IsSameSpecialGroup(item)))
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot equip this Item twice."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "You cannot equip this Item twice.");
 			return false;
 		}
 
 		if (marriage::CManager::instance().IsMarriageUniqueItem(item->GetVnum()) &&
 			!marriage::CManager::instance().IsMarried(GetPlayerID()))
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot use this Item if you are not married."));
+			ChatPacketTrans(CHAT_TYPE_INFO, "You cannot use this Item if you are not married.");
 			return false;
 		}
 

@@ -51,13 +51,13 @@ ACMD(do_user_horse_ride)
 		// 말이 아닌 다른탈것을 타고있다.
 		if (ch->GetMountVnum())
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You are already riding a mount."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "You are already riding a mount.");
 			return;
 		}
 
 		if (ch->GetHorse() == NULL)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Please call your Horse first."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "Please call your Horse first.");
 			return;
 		}
 
@@ -74,15 +74,15 @@ ACMD(do_user_horse_back)
 	if (ch->GetHorse() != NULL)
 	{
 		ch->HorseSummon(false);
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You sent back your Horse."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You sent back your Horse.");
 	}
 	else if (ch->IsHorseRiding() == true)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You have to get off your Horse."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You have to get off your Horse.");
 	}
 	else
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Please call your Horse first."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Please call your Horse first.");
 	}
 }
 
@@ -95,9 +95,9 @@ ACMD(do_user_horse_feed)
 	if (ch->GetHorse() == NULL)
 	{
 		if (ch->IsHorseRiding() == false)
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Please call your Horse first."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "Please call your Horse first.");
 		else
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot feed your Horse while sitting on it."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot feed your Horse while sitting on it.");
 		return;
 	}
 
@@ -107,13 +107,13 @@ ACMD(do_user_horse_feed)
 	{
 		ch->RemoveSpecifyItem(dwFood, 1);
 		ch->FeedHorse();
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You gave %s%s to a Horse."),
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You gave %s%s to a Horse.",
 				ITEM_MANAGER::instance().GetTable(dwFood)->szLocaleName,
 				"");
 	}
 	else
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You need %s."), ITEM_MANAGER::instance().GetTable(dwFood)->szLocaleName);
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You need %s.", ITEM_MANAGER::instance().GetTable(dwFood)->szLocaleName);
 	}
 }
 
@@ -333,7 +333,7 @@ EVENTFUNC(timed_event)
 	}
 	else
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%d seconds until shutting off."), info->left_second);
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "%d seconds until shutting off.", info->left_second);
 		--info->left_second;
 	}
 
@@ -366,7 +366,7 @@ EVENTFUNC(change_channel_event)
 	}
 	else
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Change channel in %d seconds."), info->left_second);
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Change channel in %d seconds.", info->left_second);
 		--info->left_second;
 	}
 
@@ -383,7 +383,7 @@ ACMD(do_change_channel)
 	
 	//if (ch->m_pkChangeChannelEvent)
 	//{
-	//	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Change channel canceled."));
+	//	ch->ChatPacketTrans(CHAT_TYPE_INFO, "Change channel canceled.");
 	//	event_cancel(&ch->m_pkChangeChannelEvent);
 	//	return;
 	//}
@@ -394,25 +394,25 @@ ACMD(do_change_channel)
 	}
 	
 	if(channel_number == 99 || g_bChannel == 99){
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't change channel in this map."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You can't change channel in this map.");
 		return;		
 	}
 	
 	if(channel_number == g_bChannel)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You are already in this channel."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You are already in this channel.");
 		return;		
 	}
 	
 	if (ch->IsDead() || !ch->CanWarp())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't do that now. Wait 10 seconds and try again."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You can't do that now. Wait 10 seconds and try again.");
 		return;
 	}
 	
 	if(channel_number <= 0 || channel_number > 6)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("This channel is not valid."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "This channel is not valid.");
 		return;
 	}
 	
@@ -420,7 +420,7 @@ ACMD(do_change_channel)
 	{
 		if (ch->m_pkChangeChannelEvent)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Change channel canceled."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "Change channel canceled.");
 			event_cancel(&ch->m_pkChangeChannelEvent);
 			return;
 		}
@@ -447,7 +447,7 @@ ACMD(do_cmd)
 	/* RECALL_DELAY
 	   if (ch->m_pkRecallEvent != NULL)
 	   {
-	   ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your Logout was cancelled."));
+	   ch->ChatPacketTrans(CHAT_TYPE_INFO, "Your Logout was cancelled.");
 	   event_cancel(&ch->m_pkRecallEvent);
 	   return;
 	   }
@@ -455,7 +455,7 @@ ACMD(do_cmd)
 
 	if (ch->m_pkTimedEvent)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your Logout was cancelled."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Your Logout was cancelled.");
 		event_cancel(&ch->m_pkTimedEvent);
 		return;
 	}
@@ -463,15 +463,15 @@ ACMD(do_cmd)
 	switch (subcmd)
 	{
 		case SCMD_LOGOUT:
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Back to Login Window. Please wait."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "Back to Login Window. Please wait.");
 			break;
 
 		case SCMD_QUIT:
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You will be disconnected from the server. Please wait."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "You will be disconnected from the server. Please wait.");
 			break;
 
 		case SCMD_PHASE_SELECT:
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Changing character. Please wait."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "Changing character. Please wait.");
 			break;
 	}
 
@@ -533,7 +533,7 @@ ACMD(do_mount)
 
 	if (distance > 600.0f)
 	{
-	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Come closer to get off."));
+	ch->ChatPacketTrans(CHAT_TYPE_INFO, "Come closer to get off.");
 	return;
 	}
 
@@ -550,7 +550,7 @@ ACMD(do_mount)
 
 	if (!tch->IsNPC() || !tch->IsMountable())
 	{
-	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot ride that."));
+	ch->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot ride that.");
 	return;
 	}
 
@@ -558,7 +558,7 @@ ACMD(do_mount)
 
 	if (distance > 600.0f)
 	{
-	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Come closer to ride."));
+	ch->ChatPacketTrans(CHAT_TYPE_INFO, "Come closer to ride.");
 	return;
 	}
 
@@ -609,14 +609,14 @@ ACMD(do_restart)
 				//성지 맵일경우에는 체크 하지 않는다.
 				if (false == CThreeWayWar::instance().IsSungZiMapIndex(ch->GetMapIndex()))
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("No new start possible.(%d seconds left) "), iTimeToDead - (180 - g_nPortalLimitTime));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "No new start possible.(%d seconds left) ", iTimeToDead - (180 - g_nPortalLimitTime));
 					return;
 				}
 			}
 #define eFRS_HERESEC	170
 			if (iTimeToDead > eFRS_HERESEC)
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("No new start possible.(%d seconds left) "), iTimeToDead - eFRS_HERESEC);
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "No new start possible.(%d seconds left) ", iTimeToDead - eFRS_HERESEC);
 				return;
 			}
 		}
@@ -633,7 +633,7 @@ ACMD(do_restart)
 			if ((!ch->GetWarMap() || ch->GetWarMap()->GetType() == GUILD_WAR_TYPE_FLAG) ||
 			   	false == CThreeWayWar::instance().IsSungZiMapIndex(ch->GetMapIndex()))
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("No new start possible.(%d seconds left) "), iTimeToDead - (180 - g_nPortalLimitTime));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "No new start possible.(%d seconds left) ", iTimeToDead - (180 - g_nPortalLimitTime));
 				return;
 			}
 		}
@@ -641,7 +641,7 @@ ACMD(do_restart)
 #define eFRS_TOWNSEC	173
 		if (iTimeToDead > eFRS_TOWNSEC)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Still no new start possible in the city. (%d seconds left)"), iTimeToDead - eFRS_TOWNSEC);
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "Still no new start possible in the city. (%d seconds left)", iTimeToDead - eFRS_TOWNSEC);
 			return;
 		}
 	}
@@ -676,7 +676,7 @@ ACMD(do_restart)
 			{
 				if (CThreeWayWar::instance().GetReviveTokenForPlayer(ch->GetPlayerID()) <= 0)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You lost the chance for resurrection. Go back to the City."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "You lost the chance for resurrection. Go back to the City.");
 					ch->WarpSet(EMPIRE_START_X(ch->GetEmpire()), EMPIRE_START_Y(ch->GetEmpire()));
 				}
 				else
@@ -775,7 +775,7 @@ ACMD(do_stat_minus)
 
 	if (ch->IsPolymorphed())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot change your state as long as you are transformed."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot change your state as long as you are transformed.");
 		return;
 	}
 
@@ -842,7 +842,7 @@ ACMD(do_stat)
 
 	if (ch->IsPolymorphed())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot change your state as long as you are transformed."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot change your state as long as you are transformed.");
 		return;
 	}
 
@@ -888,7 +888,7 @@ ACMD(do_pvp)
 {
 	if (ch->GetArena() != NULL || CArenaManager::instance().IsArenaMap(ch->GetMapIndex()) == true)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this in the arena."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this in the arena.");
 		return;
 	}
 
@@ -907,7 +907,7 @@ ACMD(do_pvp)
 
 	if (pkVictim->GetArena() != NULL)
 	{
-		pkVictim->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The player is currently fighting."));
+		pkVictim->ChatPacketTrans(CHAT_TYPE_INFO, "The player is currently fighting.");
 		return;
 	}
 
@@ -924,7 +924,7 @@ ACMD(do_guildskillup)
 
 	if (!ch->GetGuild())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> It does not belong to the Guild."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> It does not belong to the Guild.");
 		return;
 	}
 
@@ -938,7 +938,7 @@ ACMD(do_guildskillup)
 	}
 	else
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> You cannot change the Level of the Guild Skills."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> You cannot change the Level of the Guild Skills.");
 	}
 }
 
@@ -1011,13 +1011,13 @@ ACMD(do_safebox_change_password)
 
 	if (!*arg1 || strlen(arg1)>6)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Storages> You entered a wrong password."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Storages> You entered a wrong password.");
 		return;
 	}
 
 	if (!*arg2 || strlen(arg2)>6)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Storages> You entered a wrong password."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Storages> You entered a wrong password.");
 		return;
 	}
 
@@ -1037,7 +1037,7 @@ ACMD(do_mall_password)
 
 	if (!*arg1 || strlen(arg1) > 6)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Storages> You entered a wrong password."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Storages> You entered a wrong password.");
 		return;
 	}
 
@@ -1045,13 +1045,13 @@ ACMD(do_mall_password)
 
 	if (ch->GetMall())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Storages> The storage is already open."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Storages> The storage is already open.");
 		return;
 	}
 
 	if (iPulse - ch->GetMallLoadTime() < passes_per_sec * 10) // 10초에 한번만 요청 가능
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Storages> You have to wait 10 seconds to open the storage again."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Storages> You have to wait 10 seconds to open the storage again.");
 		return;
 	}
 
@@ -1082,13 +1082,13 @@ ACMD(do_ungroup)
 
 	if (!CPartyManager::instance().IsEnablePCParty())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> The server cannot execute the Group request."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> The server cannot execute the Group request.");
 		return;
 	}
 
 	if (ch->GetDungeon())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You cannot leave a Group while you are in a dungeon."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You cannot leave a Group while you are in a dungeon.");
 		return;
 	}
 
@@ -1101,7 +1101,7 @@ ACMD(do_ungroup)
 	}
 	else
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Group> You left the Group."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Group> You left the Group.");
 		//pParty->SendPartyRemoveOneToAll(ch);
 		pParty->Quit(ch->GetPlayerID());
 		//pParty->SendPartyRemoveAllToOne(ch);
@@ -1154,7 +1154,7 @@ ACMD(do_war)
 	//전쟁중인지 체크한번!
 	if (g->UnderAnyWar())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> Your Guild is already participating in another war."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> Your Guild is already participating in another war.");
 		return;
 	}
 
@@ -1180,7 +1180,7 @@ ACMD(do_war)
 	//마스터인지 체크(길전은 길드장만이 가능)
 	if (gm_pid != ch->GetPlayerID())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> You are not entitled to declare a Guild war."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> You are not entitled to declare a Guild war.");
 		return;
 	}
 
@@ -1189,7 +1189,7 @@ ACMD(do_war)
 
 	if (!opp_g)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> This Guild does not exist."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> This Guild does not exist.");
 		return;
 	}
 
@@ -1200,7 +1200,7 @@ ACMD(do_war)
 			{
 				if (opp_g->UnderAnyWar())
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> This Guild is already participating in a war."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> This Guild is already participating in a war.");
 					return;
 				}
 
@@ -1208,13 +1208,13 @@ ACMD(do_war)
 
 				if (g->GetGuildMoney() < iWarPrice)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> There is not enough Yang to participate in a Guild war."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> There is not enough Yang to participate in a Guild war.");
 					return;
 				}
 
 				if (opp_g->GetGuildMoney() < iWarPrice)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> The Guild does not have enough Yang to participate in a Guild war."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> The Guild does not have enough Yang to participate in a Guild war.");
 					return;
 				}
 			}
@@ -1222,7 +1222,7 @@ ACMD(do_war)
 
 		case GUILD_WAR_SEND_DECLARE:
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You already declared war on this Guild."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "You already declared war on this Guild.");
 				return;
 			}
 			break;
@@ -1231,7 +1231,7 @@ ACMD(do_war)
 			{
 				if (opp_g->UnderAnyWar())
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> This Guild is already participating in a war."));
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> This Guild is already participating in a war.");
 					g->RequestRefuseWar(opp_g->GetID());
 					return;
 				}
@@ -1240,7 +1240,7 @@ ACMD(do_war)
 
 		case GUILD_WAR_RESERVE:
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> This Guild is already noted for another Guild war."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> This Guild is already noted for another Guild war.");
 				return;
 			}
 			break;
@@ -1249,7 +1249,7 @@ ACMD(do_war)
 			return;
 
 		default:
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> This Guild is already participating in another war."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> This Guild is already participating in another war.");
 			g->RequestRefuseWar(opp_g->GetID());
 			return;
 	}
@@ -1259,12 +1259,12 @@ ACMD(do_war)
 		// 길드전을 할 수 있는 조건을 만족하지않는다.
 		if (g->GetLadderPoint() == 0)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> Rank is too low to participate in a Guild war."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> Rank is too low to participate in a Guild war.");
 			sys_log(0, "GuildWar.StartError.NEED_LADDER_POINT");
 		}
 		else if (g->GetMemberCount() < GUILD_WAR_MIN_MEMBER_COUNT)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> At least %d players have to participate in a Guild war."), GUILD_WAR_MIN_MEMBER_COUNT);
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> At least %d players have to participate in a Guild war.", GUILD_WAR_MIN_MEMBER_COUNT);
 			sys_log(0, "GuildWar.StartError.NEED_MINIMUM_MEMBER[%d]", GUILD_WAR_MIN_MEMBER_COUNT);
 		}
 		else
@@ -1278,9 +1278,9 @@ ACMD(do_war)
 	if (!opp_g->CanStartWar(GUILD_WAR_TYPE_FIELD))
 	{
 		if (opp_g->GetLadderPoint() == 0)
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> The Guild does not have enough Rank Points to participate in a Guild war."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> The Guild does not have enough Rank Points to participate in a Guild war.");
 		else if (opp_g->GetMemberCount() < GUILD_WAR_MIN_MEMBER_COUNT)
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> The Guild does not have enough members to participate in a Guild war."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> The Guild does not have enough members to participate in a Guild war.");
 		return;
 	}
 
@@ -1294,7 +1294,7 @@ ACMD(do_war)
 		if (pCCI != NULL)
 			break;
 
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> The Guild master is not online."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> The Guild master is not online.");
 		g->RequestRefuseWar(opp_g->GetID());
 		return;
 
@@ -1310,7 +1310,7 @@ ACMD(do_war)
 		if (pCCI != NULL)
 			break;
 
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> The Guild master is not online."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> The Guild master is not online.");
 		g->RequestRefuseWar(opp_g->GetID());
 		return;
 
@@ -1335,7 +1335,7 @@ ACMD(do_nowar)
 
 	if (gm_pid != ch->GetPlayerID())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> You are not entitled to declare a Guild war."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> You are not entitled to declare a Guild war.");
 		return;
 	}
 
@@ -1343,7 +1343,7 @@ ACMD(do_nowar)
 
 	if (!opp_g)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> This Guild does not exist."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> This Guild does not exist.");
 		return;
 	}
 
@@ -1384,7 +1384,7 @@ ACMD(do_messenger_auth)
 {
 	if (ch->GetArena())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this in the arena."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this in the arena.");
 		return;
 	}
 
@@ -1403,7 +1403,7 @@ ACMD(do_messenger_auth)
 		LPCHARACTER tch = CHARACTER_MANAGER::instance().FindPC(arg2);
 
 		if (tch)
-			tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s declined the invitation."), ch->GetName());
+			tch->ChatPacketTrans(CHAT_TYPE_INFO, "%s declined the invitation.", ch->GetName());
 	}
 
 }
@@ -1489,7 +1489,7 @@ ACMD(do_view_equip)
 
 		   if (ch->GetSP() < iSPCost)
 		   {
-		   ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Not enough mana to see other's equipments."));
+		   ch->ChatPacketTrans(CHAT_TYPE_INFO, "Not enough mana to see other's equipments.");
 		   return;
 		   }
 		   ch->PointChange(POINT_SP, -iSPCost);
@@ -1502,13 +1502,13 @@ ACMD(do_party_request)
 {
 	if (ch->GetArena())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't use this in the arena."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You can't use this in the arena.");
 		return;
 	}
 
 	if (ch->GetParty())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot accept the invitation because you are already in the Group."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot accept the invitation because you are already in the Group.");
 		return;
 	}
 
@@ -1563,14 +1563,14 @@ ACMD(do_monarch_warpto)
 {
 	if (!CMonarch::instance().IsMonarch(ch->GetPlayerID(), ch->GetEmpire()))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Only the Emperor can use this."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Only the Emperor can use this.");
 		return;
 	}
 
 	//군주 쿨타임 검사
 	if (!ch->IsMCOK(CHARACTER::MI_WARP))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Cool Down Time roughly %d seconds."), ch->GetMCLTime(CHARACTER::MI_WARP));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Cool Down Time roughly %d seconds.", ch->GetMCLTime(CHARACTER::MI_WARP));
 		return;
 	}
 
@@ -1581,7 +1581,7 @@ ACMD(do_monarch_warpto)
 	if (!CMonarch::instance().IsMoneyOk(WarpPrice, ch->GetEmpire()))
 	{
 		int NationMoney = CMonarch::instance().GetMoney(ch->GetEmpire());
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Lack of Taxes. Current Capital : %u Needed Capital : %u"), NationMoney, WarpPrice);
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Lack of Taxes. Current Capital : %u Needed Capital : %u", NationMoney, WarpPrice);
 		return;
 	}
 
@@ -1592,7 +1592,7 @@ ACMD(do_monarch_warpto)
 
 	if (!*arg1)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Order: warp to <character name>"));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Order: warp to <character name>");
 		return;
 	}
 
@@ -1606,18 +1606,18 @@ ACMD(do_monarch_warpto)
 		{
 			if (pkCCI->bEmpire != ch->GetEmpire())
 			{
-				ch->ChatPacket (CHAT_TYPE_INFO, LC_TEXT("You cannot teleport to an enemy player."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot teleport to an enemy player.");
 				return;
 			}
 
 			if (pkCCI->bChannel != g_bChannel)
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Adding of player %d into the Channel. (Present Channel %d)"), pkCCI->bChannel, g_bChannel);
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "Adding of player %d into the Channel. (Present Channel %d)", pkCCI->bChannel, g_bChannel);
 				return;
 			}
 			if (!IsMonarchWarpZone(pkCCI->lMapIndex))
 			{
-				ch->ChatPacket (CHAT_TYPE_INFO, LC_TEXT("해당 지역으로 이동할 수 없습니다."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "해당 지역으로 이동할 수 없습니다.");
 				return;
 			}
 
@@ -1628,7 +1628,7 @@ ACMD(do_monarch_warpto)
 			else
 			{
 				//ch->ChatPacket(CHAT_TYPE_INFO, "You warp to (%d, %d)", pos.x, pos.y);
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Transport to %s."), arg1);
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "Transport to %s.", arg1);
 				ch->WarpSet(pos.x, pos.y);
 
 				//군주 돈 삭감
@@ -1649,19 +1649,19 @@ ACMD(do_monarch_warpto)
 	{
 		if (tch->GetEmpire() != ch->GetEmpire())
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot teleport to an enemy player."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot teleport to an enemy player.");
 			return;
 		}
 		if (!IsMonarchWarpZone(tch->GetMapIndex()))
 		{
-			ch->ChatPacket (CHAT_TYPE_INFO, LC_TEXT("해당 지역으로 이동할 수 없습니다."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "해당 지역으로 이동할 수 없습니다.");
 			return;
 		}
 		x = tch->GetX();
 		y = tch->GetY();
 	}
 
-	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Transport to %s."), arg1);
+	ch->ChatPacketTrans(CHAT_TYPE_INFO, "Transport to %s.", arg1);
 	ch->WarpSet(x, y);
 	ch->Stop();
 
@@ -1679,20 +1679,20 @@ ACMD(do_monarch_transfer)
 
 	if (!*arg1)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("USE: transfer <name>"));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "USE: transfer <name>");
 		return;
 	}
 
 	if (!CMonarch::instance().IsMonarch(ch->GetPlayerID(), ch->GetEmpire()))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Only the Emperor can use this."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Only the Emperor can use this.");
 		return;
 	}
 
 	//군주 쿨타임 검사
 	if (!ch->IsMCOK(CHARACTER::MI_TRANSFER))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Cool Down Time roughly %d seconds."), ch->GetMCLTime(CHARACTER::MI_TRANSFER));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Cool Down Time roughly %d seconds.", ch->GetMCLTime(CHARACTER::MI_TRANSFER));
 		return;
 	}
 
@@ -1703,7 +1703,7 @@ ACMD(do_monarch_transfer)
 	if (!CMonarch::instance().IsMoneyOk(WarpPrice, ch->GetEmpire()))
 	{
 		int NationMoney = CMonarch::instance().GetMoney(ch->GetEmpire());
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Lack of Taxes. Current Capital : %u Needed Capital : %u"), NationMoney, WarpPrice);
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Lack of Taxes. Current Capital : %u Needed Capital : %u", NationMoney, WarpPrice);
 		return;
 	}
 
@@ -1718,22 +1718,22 @@ ACMD(do_monarch_transfer)
 		{
 			if (pkCCI->bEmpire != ch->GetEmpire())
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot call players from other kingdoms."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot call players from other kingdoms.");
 				return;
 			}
 			if (pkCCI->bChannel != g_bChannel)
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s is connecting %d channel. (current channel:%d)"), arg1, pkCCI->bChannel, g_bChannel);
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "%s is connecting %d channel. (current channel:%d)", arg1, pkCCI->bChannel, g_bChannel);
 				return;
 			}
 			if (!IsMonarchWarpZone(pkCCI->lMapIndex))
 			{
-				ch->ChatPacket (CHAT_TYPE_INFO, LC_TEXT("해당 지역으로 이동할 수 없습니다."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "해당 지역으로 이동할 수 없습니다.");
 				return;
 			}
 			if (!IsMonarchWarpZone(ch->GetMapIndex()))
 			{
-				ch->ChatPacket (CHAT_TYPE_INFO, LC_TEXT("해당 지역으로 소환할 수 없습니다."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "해당 지역으로 소환할 수 없습니다.");
 				return;
 			}
 
@@ -1745,7 +1745,7 @@ ACMD(do_monarch_transfer)
 			pgg.lY = ch->GetY();
 
 			P2P_MANAGER::instance().Send(&pgg, sizeof(TPacketGGTransfer));
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s is called."), arg1);
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "%s is called.", arg1);
 
 			//군주 돈 삭감
 			CMonarch::instance().SendtoDBDecMoney(WarpPrice, ch->GetEmpire(), ch);
@@ -1754,7 +1754,7 @@ ACMD(do_monarch_transfer)
 		}
 		else
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Cannot find the player."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "Cannot find the player.");
 		}
 
 		return;
@@ -1763,23 +1763,23 @@ ACMD(do_monarch_transfer)
 
 	if (ch == tch)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot call yourself."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot call yourself.");
 		return;
 	}
 
 	if (tch->GetEmpire() != ch->GetEmpire())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot call players from other kingdoms."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot call players from other kingdoms.");
 		return;
 	}
 	if (!IsMonarchWarpZone(tch->GetMapIndex()))
 	{
-		ch->ChatPacket (CHAT_TYPE_INFO, LC_TEXT("해당 지역으로 이동할 수 없습니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "해당 지역으로 이동할 수 없습니다.");
 		return;
 	}
 	if (!IsMonarchWarpZone(ch->GetMapIndex()))
 	{
-		ch->ChatPacket (CHAT_TYPE_INFO, LC_TEXT("해당 지역으로 소환할 수 없습니다."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "해당 지역으로 소환할 수 없습니다.");
 		return;
 	}
 
@@ -1796,24 +1796,24 @@ ACMD(do_monarch_info)
 {
 	if (CMonarch::instance().IsMonarch(ch->GetPlayerID(), ch->GetEmpire()))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("My Emperor Information"));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "My Emperor Information");
 		TMonarchInfo * p = CMonarch::instance().GetMonarch();
 		for (int n = 1; n < 4; ++n)
 		{
 			if (n == ch->GetEmpire())
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("[%s] Monarch : %s Vault : %lld Yang"), EMPIRE_NAME(n), p->name[n], p->money[n]);
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "[%s] Monarch : %s Vault : %lld Yang", EMPIRE_NAME(n), p->name[n], p->money[n]);
 			else
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("[%sLord] : %s "), EMPIRE_NAME(n), p->name[n]);
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "[%sLord] : %s ", EMPIRE_NAME(n), p->name[n]);
 
 		}
 	}
 	else
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Emperor Information"));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Emperor Information");
 		TMonarchInfo * p = CMonarch::instance().GetMonarch();
 		for (int n = 1; n < 4; ++n)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("[%sLord] : %s "), EMPIRE_NAME(n), p->name[n]);
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "[%sLord] : %s ", EMPIRE_NAME(n), p->name[n]);
 
 		}
 	}
@@ -1879,7 +1879,7 @@ ACMD(do_monarch_tax)
 	// 군주 검사
 	if (!ch->IsMonarch())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Only the Emperor can use this."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Only the Emperor can use this.");
 		return;
 	}
 
@@ -1888,12 +1888,12 @@ ACMD(do_monarch_tax)
 	str_to_number(tax,  arg1);
 
 	if (tax < 1 || tax > 50)
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Choose a number between 1 - 50."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Choose a number between 1 - 50.");
 
 	quest::CQuestManager::instance().SetEventFlag("trade_tax", tax);
 
 	// 군주에게 메세지 하나
-	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Taxes are set to %d%%."));
+	ch->ChatPacketTrans(CHAT_TYPE_INFO, "Taxes are set to %d%%.");
 
 	// 공지
 	char szMsg[1024];
@@ -1942,7 +1942,7 @@ ACMD(do_monarch_mob)
 
 	if (!ch->IsMonarch())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Only the Emperor can use this."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Only the Emperor can use this.");
 		return;
 	}
 
@@ -1957,7 +1957,7 @@ ACMD(do_monarch_mob)
 	BYTE mapEmpire = SECTREE_MANAGER::instance().GetEmpireFromMapIndex(ch->GetMapIndex());
 	if (mapEmpire != pcEmpire && mapEmpire != 0)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can use this skill only in your land."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You can use this skill only in your land.");
 		return;
 	}
 #endif
@@ -1968,7 +1968,7 @@ ACMD(do_monarch_mob)
 	// 군주 쿨타임 검사
 	if (!ch->IsMCOK(CHARACTER::MI_SUMMON))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Cool Down Time roughly %d seconds."), ch->GetMCLTime(CHARACTER::MI_SUMMON));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Cool Down Time roughly %d seconds.", ch->GetMCLTime(CHARACTER::MI_SUMMON));
 		return;
 	}
 
@@ -1976,7 +1976,7 @@ ACMD(do_monarch_mob)
 	if (!CMonarch::instance().IsMoneyOk(SummonPrice, ch->GetEmpire()))
 	{
 		int NationMoney = CMonarch::instance().GetMoney(ch->GetEmpire());
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Lack of Taxes. Current Capital : %u Needed Capital : %u"), NationMoney, SummonPrice);
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Lack of Taxes. Current Capital : %u Needed Capital : %u", NationMoney, SummonPrice);
 		return;
 	}
 
@@ -2007,7 +2007,7 @@ ACMD(do_monarch_mob)
 
 	if (0 == cs_dwMonarchMobVnums[count])
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The Monster cannot be called. Check the Mob Number."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "The Monster cannot be called. Check the Mob Number.");
 		return;
 	}
 
@@ -2499,7 +2499,7 @@ ACMD(do_dice)
 	if (ch->GetParty())
 		ch->GetParty()->ChatPacketToAllMember(CHAT_TYPE_INFO, LC_TEXT("%s rolled dice and got %d. (%d-%d)"), ch->GetName(), n, start, end);
 	else
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You rolled dice and got %d. (%d-%d)"), n, start, end);
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You rolled dice and got %d. (%d-%d)", n, start, end);
 #endif
 }
 
@@ -2508,7 +2508,7 @@ ACMD(do_click_safebox)
 {
 	if ((ch->GetGMLevel() <= GM_PLAYER) && (ch->GetDungeon() || ch->GetWarMap()))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot open the safebox in dungeon or at war."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot open the safebox in dungeon or at war.");
 		return;
 	}
 
@@ -2609,7 +2609,7 @@ ACMD(do_ride)
 
 
     // 타거나 내릴 수 없을때
-    ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Please call your Horse first."));
+    ch->ChatPacketTrans(CHAT_TYPE_INFO, "Please call your Horse first.");
 }
 
 #ifdef __AUCTION__

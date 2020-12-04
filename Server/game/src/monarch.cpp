@@ -39,7 +39,7 @@ struct FHealMyEmpire
 
 			if (ch->IsPC() && m_bEmpire == ch->GetEmpire())
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Energy is reflected because of the Emperors Blessing."));
+				ch->ChatPacketTrans(CHAT_TYPE_INFO, "Energy is reflected because of the Emperors Blessing.");
 				ch->PointChange(POINT_HP, ch->GetMaxHP() - ch->GetHP());
 				ch->PointChange(POINT_SP, ch->GetMaxSP() - ch->GetSP());
 				ch->EffectPacket(SE_SPUP_BLUE);
@@ -68,14 +68,14 @@ int CMonarch::HealMyEmpire(LPCHARACTER ch ,DWORD price)
 
 	if (!ch->IsMCOK(CHARACTER::MI_HEAL))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("After %d seconds you can use the Emperors Blessing."), ch->GetMCLTime(CHARACTER::MI_HEAL));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "After %d seconds you can use the Emperors Blessing.", ch->GetMCLTime(CHARACTER::MI_HEAL));
 
 		return 0;
 	}
 
 	if (!IsMoneyOk(price, Empire))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Lack of Taxes. Current Capital : %u Needed Capital : %u"), GetMoney(Empire), price);
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "Lack of Taxes. Current Capital : %u Needed Capital : %u", GetMoney(Empire), price);
 		return 0;
 	}
 
@@ -92,7 +92,7 @@ int CMonarch::HealMyEmpire(LPCHARACTER ch ,DWORD price)
 	ch->SetMC(CHARACTER::MI_HEAL);
 
 	if (test_server)
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("[TEST_ONLY]현재 국고 : %d "), GetMoney(Empire) - price);
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "[TEST_ONLY]현재 국고 : %d ", GetMoney(Empire) - price);
 	return 1;
 }
 

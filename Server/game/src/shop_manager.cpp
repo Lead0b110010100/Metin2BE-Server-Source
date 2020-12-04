@@ -112,7 +112,7 @@ bool CShopManager::StartShopping(LPCHARACTER pkChr, LPCHARACTER pkChrShopKeeper,
 	//PREVENT_TRADE_WINDOW
 	if (pkChr->IsOpenSafebox() || pkChr->GetExchange() || pkChr->GetMyShop() || pkChr->IsCubeOpen())
 	{
-		pkChr->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot trade in the Warehouse if another Trade Window is open."));
+		pkChr->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot trade in the Warehouse if another Trade Window is open.");
 		return false;
 	}
 	//END_PREVENT_TRADE_WINDOW
@@ -211,7 +211,7 @@ void CShopManager::Buy(LPCHARACTER ch, BYTE pos)
 	{
 		if (get_dword_time() < ch->GetLastBuySellTime()+g_BuySellTimeLimitValue)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can only drop Yang once in every 10 seconds."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "You can only drop Yang once in every 10 seconds.");
 			return;
 		}
 	}
@@ -229,7 +229,7 @@ void CShopManager::Buy(LPCHARACTER ch, BYTE pos)
 
 	if (DISTANCE_APPROX(ch->GetX() - ch->GetShopOwner()->GetX(), ch->GetY() - ch->GetShopOwner()->GetY()) > 2000)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You are too far away from the shop to buy."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You are too far away from the shop to buy.");
 		return;
 	}
 
@@ -277,7 +277,7 @@ void CShopManager::Sell(LPCHARACTER ch, BYTE bCell, BYTE bCount)
 	{
 		if (get_dword_time() < ch->GetLastBuySellTime()+g_BuySellTimeLimitValue)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can only drop Yang once in every 10 seconds."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "You can only drop Yang once in every 10 seconds.");
 			return;
 		}
 	}
@@ -298,7 +298,7 @@ void CShopManager::Sell(LPCHARACTER ch, BYTE bCell, BYTE bCount)
 
 	if (DISTANCE_APPROX(ch->GetX()-ch->GetShopOwner()->GetX(), ch->GetY()-ch->GetShopOwner()->GetY())>2000)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You are too far away from the shop to sell."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You are too far away from the shop to sell.");
 		return;
 	}
 
@@ -309,7 +309,7 @@ void CShopManager::Sell(LPCHARACTER ch, BYTE bCell, BYTE bCount)
 
 	if (item->IsEquipped() == true)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot sell items you are already equipped."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot sell items you are already equipped.");
 		return;
 	}
 
@@ -348,7 +348,7 @@ void CShopManager::Sell(LPCHARACTER ch, BYTE bCell, BYTE bCount)
 	if (GOLD_MAX <= nTotalMoney)
 	{
 		sys_err("[OVERFLOW_GOLD] id %u name %s gold %lld", ch->GetPlayerID(), ch->GetName(), ch->GetGold());
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You carry more than 2 Billion Yang, you cannot trade."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "You carry more than 2 Billion Yang, you cannot trade.");
 		return;
 	}
 

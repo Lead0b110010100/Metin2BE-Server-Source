@@ -43,7 +43,7 @@ void CGuild::GuildWarPacket(DWORD dwOppGID, BYTE bWarType, BYTE bWarState)
 		LPCHARACTER ch = *it;
 
 		if (bWarState == GUILD_WAR_ON_WAR)
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Guild> Guild Skills only affect players in war."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Guild> Guild Skills only affect players in war.");
 
 		LPDESC d = ch->GetDesc();
 
@@ -649,7 +649,7 @@ void CGuild::GuildWarEntryAccept(DWORD dwOppGID, LPCHARACTER ch)
 
 	if (gw.state != GUILD_WAR_ON_WAR)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The war is already over."));
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "The war is already over.");
 		return;
 	}
 

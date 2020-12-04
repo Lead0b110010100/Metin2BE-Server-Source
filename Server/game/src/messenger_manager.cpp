@@ -130,7 +130,7 @@ void MessengerManager::RequestToAdd(LPCHARACTER ch, LPCHARACTER target)
 
 	if (quest::CQuestManager::instance().GetPCForce(ch->GetPlayerID())->IsRunning() == true)
 	{
-	    ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("The recipient cannot receive friend invitation."));
+	    ch->ChatPacketTrans(CHAT_TYPE_INFO, "The recipient cannot receive friend invitation.");
 	    return;
 	}
 
@@ -185,7 +185,7 @@ void MessengerManager::__AddToList(MessengerManager::keyA account, MessengerMana
 
 	if (d)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Messenger> You added %s as a friend."), companion.c_str());
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Messenger> You added %s as a friend.", companion.c_str());
 	}
 
 	LPCHARACTER tch = CHARACTER_MANAGER::instance().FindPC(companion.c_str());
@@ -234,7 +234,7 @@ void MessengerManager::__RemoveFromList(MessengerManager::keyA account, Messenge
 	LPDESC d = ch ? ch->GetDesc() : NULL;
 
 	if (d)
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<Messenger> You deleted %s off the list. "), companion.c_str());
+		ch->ChatPacketTrans(CHAT_TYPE_INFO, "<Messenger> You deleted %s off the list. ", companion.c_str());
 }
 
 void MessengerManager::RemoveFromList(MessengerManager::keyA account, MessengerManager::keyA companion)

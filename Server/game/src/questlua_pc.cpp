@@ -463,12 +463,12 @@ namespace quest
 			{
 				if (dwVnums[i] == 1)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You received %d Yang."), dwCounts[i]);
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "You received %d Yang.", dwCounts[i]);
 				}
 				else if (dwVnums[i] == 2)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("A mysterious light appears from the tree."));
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You received %d Experience Points."), dwCounts[i]);
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "A mysterious light appears from the tree.");
+					ch->ChatPacketTrans(CHAT_TYPE_INFO, "You received %d Experience Points.", dwCounts[i]);
 				}
 			}
 		}
@@ -3435,7 +3435,7 @@ teleport_area:
 		//PREVENT_TRADE_WINDOW
 		if (ch->IsOpenSafebox() || ch->GetExchange() || ch->GetMyShop() || ch->IsCubeOpen())
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot trade in the Warehouse if another Trade Window is open."));
+			ch->ChatPacketTrans(CHAT_TYPE_INFO, "You cannot trade in the Warehouse if another Trade Window is open.");
 			return 0;
 		}
 		//END_PREVENT_TRADE_WINDOW
