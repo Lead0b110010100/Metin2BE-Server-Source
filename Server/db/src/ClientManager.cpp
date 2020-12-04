@@ -403,6 +403,11 @@ void CClientManager::QUERY_BOOT(CPeer* peer, TPacketGDBoot * p)
 		sizeof(WORD) + sizeof(WORD) + sizeof(TRefineTable) * m_iRefineTableSize +
 		sizeof(WORD) + sizeof(WORD) + sizeof(TItemAttrTable) * m_vec_itemAttrTable.size() +
 		sizeof(WORD) + sizeof(WORD) + sizeof(TItemAttrTable) * m_vec_itemRareTable.size() +
+#ifdef ENABLE_LANG_SYSTEM
+		sizeof(WORD) + sizeof(WORD) + sizeof(TItemDescTable) * m_map_pkItemDescTable.size() +
+		sizeof(WORD) + sizeof(WORD) + sizeof(TItemNamesTable) * m_map_pkItemNamesTable.size() +
+		sizeof(WORD) + sizeof(WORD) + sizeof(TMobNamesTable) * m_map_pkMobNamesTable.size() +
+#endif
 		sizeof(WORD) + sizeof(WORD) + sizeof(TBanwordTable) * m_vec_banwordTable.size() +
 		sizeof(WORD) + sizeof(WORD) + sizeof(building::TLand) * m_vec_kLandTable.size() +
 		sizeof(WORD) + sizeof(WORD) + sizeof(building::TObjectProto) * m_vec_kObjectProto.size() +
@@ -438,6 +443,11 @@ void CClientManager::QUERY_BOOT(CPeer* peer, TPacketGDBoot * p)
 	sys_log(0, "sizeof(TRefineTable) = %d", sizeof(TRefineTable));
 	sys_log(0, "sizeof(TItemAttrTable) = %d", sizeof(TItemAttrTable));
 	sys_log(0, "sizeof(TItemRareTable) = %d", sizeof(TItemAttrTable));
+#ifdef ENABLE_LANG_SYSTEM
+	sys_log(0, "sizeof(TItemDescTable) = %d", sizeof(TItemDescTable));
+	sys_log(0, "sizeof(TItemNamesTable) = %d", sizeof(TItemNamesTable));
+	sys_log(0, "sizeof(TMobNamesTable) = %d", sizeof(TMobNamesTable));
+#endif
 	sys_log(0, "sizeof(TBanwordTable) = %d", sizeof(TBanwordTable));
 	sys_log(0, "sizeof(TLand) = %d", sizeof(building::TLand));
 	sys_log(0, "sizeof(TObjectProto) = %d", sizeof(building::TObjectProto));
@@ -473,7 +483,33 @@ void CClientManager::QUERY_BOOT(CPeer* peer, TPacketGDBoot * p)
 
 	peer->EncodeWORD(sizeof(TItemAttrTable));
 	peer->EncodeWORD(m_vec_itemRareTable.size());
-	peer->Encode(&m_vec_itemRareTable[0], sizeof(TItemAttrTable) * m_vec_itemRareTable.size());
+	peer->Encode(&m_vec_itemRareTable[0], sizeof(TItemAttrTable)* m_vec_itemRareTable.size());
+
+#ifdef ENABLE_LANG_SYSTEM
+	peer->EncodeWORD(sizeof(TItemDescTable));
+	peer->EncodeWORD(m_map_pkItemDescTable.size());
+
+	itertype(m_map_pkItemDescTable) itItemDesc = m_map_pkItemDescTable.begin();
+
+	while (itItemDesc != m_map_pkItemDescTable.end())
+		peer->Encode((itItemDesc++)->second, sizeof(TItemDescTable));
+
+	peer->EncodeWORD(sizeof(TItemNamesTable));
+	peer->EncodeWORD(m_map_pkItemNamesTable.size());
+
+	itertype(m_map_pkItemNamesTable) itItemNames = m_map_pkItemNamesTable.begin();
+
+	while (itItemNames != m_map_pkItemNamesTable.end())
+		peer->Encode((itItemNames++)->second, sizeof(TItemNamesTable));
+
+	peer->EncodeWORD(sizeof(TMobNamesTable));
+	peer->EncodeWORD(m_map_pkMobNamesTable.size());
+
+	itertype(m_map_pkMobNamesTable) itMobNames = m_map_pkMobNamesTable.begin();
+
+	while (itMobNames != m_map_pkMobNamesTable.end())
+		peer->Encode((itMobNames++)->second, sizeof(TMobNamesTable));
+#endif
 
 	peer->EncodeWORD(sizeof(TBanwordTable));
 	peer->EncodeWORD(m_vec_banwordTable.size());
@@ -1413,6 +1449,9 @@ void CClientManager::QUERY_SETUP(CPeer * peer, DWORD dwHandle, const char * c_pD
 		strlcpy(r.passwd, "TEMP", sizeof(r.passwd));
 		r.iDR = pck->iDR;
 		r.iDM = pck->iDM;
+#ifdef ENABLE_LANG_SYSTEM
+		r.iLang = pck->iLang;
+#endif
 
 		InsertLoginData(pkLD);
 
@@ -1989,6 +2028,9 @@ void CClientManager::QUERY_AUTH_LOGIN(CPeer * pkPeer, DWORD dwHandle, TPacketGDA
 		strlcpy(r.passwd, "TEMP", sizeof(r.passwd));
 		r.iDR = p->iDR;
 		r.iDM = p->iDM;
+#ifdef ENABLE_LANG_SYSTEM
+		r.iLang = p->iLang;
+#endif
 
 		sys_log(0, "AUTH_LOGIN id(%u) login(%s) social_id(%s) login_key(%u), client_key(%u %u %u %u)",
 				p->dwID, p->szLogin, p->szSocialID, p->dwLoginKey,

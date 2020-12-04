@@ -425,7 +425,12 @@ void LocaleService_LoadLocaleStringFile()
 
 	fprintf(stderr, "LocaleService %s\n", g_stLocaleFilename.c_str());
 
+#ifdef ENABLE_LANG_SYSTEM
+	locale_init("locale/germany/locale_de.txt", LANGUAGE_GERMAN);
+	locale_init("locale/germany/locale_en.txt", LANGUAGE_ENGLISH);
+#else
 	locale_init(g_stLocaleFilename.c_str());
+#endif
 }
 
 void LocaleService_LoadEmpireTextConvertTables()

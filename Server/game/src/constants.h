@@ -153,6 +153,17 @@ typedef std::map<DWORD, TItemAttrTable> TItemAttrMap;
 extern TItemAttrMap g_map_itemAttr;
 extern TItemAttrMap g_map_itemRare;
 
+#ifdef ENABLE_LANG_SYSTEM
+typedef std::map<DWORD, TItemDescTable> TItemDescMap;
+extern TItemDescMap g_map_itemDescTable;
+
+typedef std::map<DWORD, TItemNamesTable> TItemNamesMap;
+extern TItemNamesMap g_map_itemNamesTable;
+
+typedef std::map<DWORD, TMobNamesTable> TMobNamesMap;
+extern TMobNamesMap g_map_mobNamesTable;
+#endif
+
 extern const int * aiChainLightningCountBySkillLevel;
 extern const int aiChainLightningCountBySkillLevel_euckr[SKILL_MAX_LEVEL + 1];
 

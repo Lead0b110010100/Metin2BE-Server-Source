@@ -797,6 +797,12 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		void			MonsterChat(BYTE bMonsterChatType);
 		void			SendGreetMessage();
 
+#ifdef ENABLE_LANG_SYSTEM
+		void ChatPacketTrans(BYTE type, const char* format, ...);
+		void ChatPacket(struct packet_chat& pack_chat, const char* format, ...);
+		void LanguageChatPacket(BYTE type, uint8_t language, BYTE empire, const char* format, ...);
+#endif
+
 		void			ResetPoint(int iLv);
 
 		void			SetBlockMode(BYTE bFlag);
@@ -827,6 +833,19 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		void			ResetChatCounter();
 		BYTE			IncreaseChatCounter();
 		BYTE			GetChatCounter() const;
+
+#ifdef ENABLE_LANG_SYSTEM
+public:
+	TItemDescTable* GetItemDescTable(DWORD vnum);
+	TItemNamesTable* GetItemNamesTable(DWORD vnum);
+	TMobNamesTable* GetMobNamesTable(DWORD vnum);
+
+	const char* GetItemName(DWORD dwVnum);
+	const char* GetMobName(DWORD dwVnum);
+	const char* GetItemDescription(DWORD dwVnum);
+
+	int GetLanguage();
+#endif
 
 	protected:
 		DWORD			m_dwPolymorphRace;

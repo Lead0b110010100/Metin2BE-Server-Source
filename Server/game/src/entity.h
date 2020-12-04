@@ -45,7 +45,12 @@ class CEntity
 
 		void			UpdateSectree();
 		void			PacketAround(const void * data, int bytes, LPENTITY except = NULL);
-		void			PacketView(const void * data, int bytes, LPENTITY except = NULL);
+		void			PacketView(const void* data, int bytes, LPENTITY except = NULL);
+
+#ifdef ENABLE_LANG_SYSTEM
+		void ChatPacketAround(std::map<DWORD, std::string> monster_texts, DWORD vid = 0);
+		void ChatPacketView(std::map<DWORD, std::string> monster_texts, DWORD vid = 0);
+#endif
 
 		void			BindDesc(LPDESC _d)     { m_lpDesc = _d; }
 		LPDESC			GetDesc() const			{ return m_lpDesc; }

@@ -535,6 +535,11 @@ void CInputDB::Boot(const char* data)
 	sys_log(0, "sizeof(TRefineTable) = %d", sizeof(TRefineTable));
 	sys_log(0, "sizeof(TItemAttrTable) = %d", sizeof(TItemAttrTable));
 	sys_log(0, "sizeof(TItemRareTable) = %d", sizeof(TItemAttrTable));
+#ifdef ENABLE_LANG_SYSTEM
+	sys_log(0, "sizeof(TItemDescTable) = %d", sizeof(TItemDescTable));
+	sys_log(0, "sizeof(TItemNamesTable) = %d", sizeof(TItemNamesTable));
+	sys_log(0, "sizeof(TMobNamesTable) = %d", sizeof(TMobNamesTable));
+#endif
 	sys_log(0, "sizeof(TBanwordTable) = %d", sizeof(TBanwordTable));
 	sys_log(0, "sizeof(TLand) = %d", sizeof(building::TLand));
 	sys_log(0, "sizeof(TObjectProto) = %d", sizeof(building::TObjectProto));
@@ -728,6 +733,92 @@ void CInputDB::Boot(const char* data)
 	}
 
 	data += size * sizeof(TItemAttrTable);
+
+#ifdef ENABLE_LANG_SYSTEM
+	/*
+	 * ITEM DESC
+	 */
+	if (decode_2bytes(data) != sizeof(TItemDescTable))
+	{
+		sys_err("item_desc table size error");
+		thecore_shutdown();
+		return;
+	}
+	data += 2;
+
+	size = decode_2bytes(data);
+	data += 2;
+	sys_log(0, "BOOT: ITEM_DESC: %d", size);
+
+	if (size)
+	{
+		TItemDescTable* p = (TItemDescTable*)data;
+
+		for (int i = 0; i < size; ++i, ++p)
+		{
+			g_map_itemDescTable[p->vnum] = *p;
+			sys_log(0, "ITEM_DESC[%d] %s", p->vnum, p->de);
+		}
+	}
+
+	data += size * sizeof(TItemDescTable);
+
+	/*
+	 * ITEM NAMES
+	 */
+	if (decode_2bytes(data) != sizeof(TItemNamesTable))
+	{
+		sys_err("item_names table size error");
+		thecore_shutdown();
+		return;
+	}
+	data += 2;
+
+	size = decode_2bytes(data);
+	data += 2;
+	sys_log(0, "BOOT: ITEM_NAMES: %d", size);
+
+	if (size)
+	{
+		TItemNamesTable* p = (TItemNamesTable*)data;
+
+		for (int i = 0; i < size; ++i, ++p)
+		{
+			g_map_itemNamesTable[p->vnum] = *p;
+			sys_log(0, "ITEM_NAMES[%d] %s", p->vnum, p->de);
+		}
+	}
+
+	data += size * sizeof(TItemNamesTable);
+
+	/*
+	 * MOB NAMES
+	 */
+	if (decode_2bytes(data) != sizeof(TMobNamesTable))
+	{
+		sys_err("mob_names table size error");
+		thecore_shutdown();
+		return;
+	}
+	data += 2;
+
+	size = decode_2bytes(data);
+	data += 2;
+	sys_log(0, "BOOT: MOB_NAMES: %d", size);
+
+	if (size)
+	{
+		TMobNamesTable* p = (TMobNamesTable*)data;
+
+		for (int i = 0; i < size; ++i, ++p)
+		{
+			g_map_mobNamesTable[p->vnum] = *p;
+			sys_log(0, "MOB_NAMES[%d] %s", p->vnum, p->de);
+		}
+	}
+
+	data += size * sizeof(TMobNamesTable);
+#endif
 
 
 	/*

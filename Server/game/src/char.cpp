@@ -4178,6 +4178,76 @@ void CHARACTER::ChatPacket(BYTE type, const char * format, ...)
 	sys_err("%s", (const char *)chatbuf);
 }
 
+#ifdef ENABLE_LANG_SYSTEM
+void CHARACTER::ChatPacket(struct packet_chat& pack_chat, const char* format, ...)
+{
+	LPDESC d = GetDesc();
+
+	if (!d || !format)
+		return;
+
+	char chatbuf[CHAT_MAX_LEN + 1];
+	va_list args;
+
+	va_start(args, format);
+	int len = vsnprintf(chatbuf, sizeof(chatbuf), format, args);
+	va_end(args);
+
+	pack_chat.size = sizeof(struct packet_chat) + len;
+
+	TEMP_BUFFER buf;
+	buf.write(&pack_chat, sizeof(struct packet_chat));
+	buf.write(chatbuf, len);
+
+	d->Packet(buf.read_peek(), buf.size());
+
+	if (test_server)
+		sys_log(0, "SEND type: %d, %s %s", pack_chat.type, GetName(), chatbuf);
+}
+
+void CHARACTER::ChatPacketTrans(BYTE type, const char* format, ...)
+{
+	LPDESC d = GetDesc();
+
+	if (!d || !format)
+		return;
+
+	char chatbuf[CHAT_MAX_LEN + 1];
+	va_list args;
+
+	const char* translatedText = LC_TEXT_TRANS(format, GetLanguage());
+
+	va_start(args, format);
+	int len = vsnprintf(chatbuf, sizeof(chatbuf), translatedText, args);
+	va_end(args);
+
+	struct packet_chat pack_chat;
+
+	pack_chat.header = HEADER_GC_CHAT;
+	pack_chat.size = sizeof(struct packet_chat) + len;
+	pack_chat.type = type;
+	pack_chat.id = 0;
+	pack_chat.bEmpire = d->GetEmpire();
+
+	TEMP_BUFFER buf;
+	buf.write(&pack_chat, sizeof(struct packet_chat));
+	buf.write(chatbuf, len);
+
+	d->Packet(buf.read_peek(), buf.size());
+
+	if (test_server)
+		sys_log(0, "SEND type: %d, %s %s", type, GetName(), chatbuf);
+}
+
+int CHARACTER::GetLanguage()
+{
+	if (GetDesc())
+		return GetDesc()->GetAccountTable().iLang;
+
+	return 0;
+}
+#endif
+
 // MINING
 void CHARACTER::mining_take()
 {
@@ -6418,12 +6488,68 @@ void CHARACTER::SpecificEffectPacket(const char filename[MAX_EFFECT_FILE_NAME])
 	PacketAround(&p, sizeof(TPacketGCSpecificEffect));
 }
 
+#ifdef ENABLE_LANG_SYSTEM
 void CHARACTER::MonsterChat(BYTE bMonsterChatType)
 {
 	if (IsPC())
 		return;
 
-	char sbuf[256+1];
+	if (IsMonster())
+	{
+		if (number(0, 60))
+			return;
+	}
+	else
+	{
+		if (bMonsterChatType != MONSTER_CHAT_WAIT)
+			return;
+
+		if (IsGuardNPC())
+		{
+			if (number(0, 6))
+				return;
+		}
+		else
+		{
+			if (number(0, 30))
+				return;
+		}
+	}
+
+	int selectedText = bMonsterChatType * 3 + number(1, 3);
+	std::map<DWORD, std::string> monster_texts;
+
+	for (int lang = 0; lang < LANGUAGE_MAX_NUM; ++lang)
+	{
+		char sbuf[256 + 1];
+
+		if (IsMonster())
+		{
+			snprintf(sbuf, sizeof(sbuf),
+				"(locale[%i].monster_chat[%i] and locale[%i].monster_chat[%i][%d] or '')",
+				lang, GetRaceNum(), lang, GetRaceNum(), selectedText);
+		}
+		else
+		{
+			snprintf(sbuf, sizeof(sbuf), "(locale[%i].monster_chat[%i] and locale[%i].monster_chat[%i][number(1, table.getn(locale[%i].monster_chat[%i]))] or '')", lang, GetRaceNum(), lang, GetRaceNum(), lang, GetRaceNum());
+		}
+
+		std::string szText = quest::ScriptToString(sbuf);
+		monster_texts[lang] = szText;
+	}
+
+	if (monster_texts.empty())
+		return;
+
+	ChatPacketAround(monster_texts, (DWORD)GetVID());
+}
+#else
+void CHARACTER::MonsterChat(BYTE bMonsterChatType)
+{
+	if (IsPC())
+		return;
+
+	char sbuf[256 + 1];
 
 	if (IsMonster())
 	{
@@ -6431,8 +6557,8 @@ void CHARACTER::MonsterChat(BYTE bMonsterChatType)
 			return;
 
 		snprintf(sbuf, sizeof(sbuf),
-				"(locale.monster_chat[%i] and locale.monster_chat[%i][%d] or '')",
-				GetRaceNum(), GetRaceNum(), bMonsterChatType*3 + number(1, 3));
+			"(locale.monster_chat[%i] and locale.monster_chat[%i][%d] or '')",
+			GetRaceNum(), GetRaceNum(), bMonsterChatType * 3 + number(1, 3));
 	}
 	else
 	{
@@ -6460,11 +6586,11 @@ void CHARACTER::MonsterChat(BYTE bMonsterChatType)
 
 	struct packet_chat pack_chat;
 
-	pack_chat.header    = HEADER_GC_CHAT;
-	pack_chat.size	= sizeof(struct packet_chat) + text.size() + 1;
-	pack_chat.type      = CHAT_TYPE_TALKING;
-	pack_chat.id        = GetVID();
-	pack_chat.bEmpire	= 0;
+	pack_chat.header = HEADER_GC_CHAT;
+	pack_chat.size = sizeof(struct packet_chat) + text.size() + 1;
+	pack_chat.type = CHAT_TYPE_TALKING;
+	pack_chat.id = GetVID();
+	pack_chat.bEmpire = 0;
 
 	TEMP_BUFFER buf;
 	buf.write(&pack_chat, sizeof(struct packet_chat));
@@ -6472,6 +6598,7 @@ void CHARACTER::MonsterChat(BYTE bMonsterChatType)
 
 	PacketAround(buf.read_peek(), buf.size());
 }
+#endif
 
 void CHARACTER::SetQuestNPCID(DWORD vid)
 {
@@ -7858,6 +7985,89 @@ void CHARACTER::RefreshSpeed()
 	else
 	{
 		RemoveAffect(AFFECT_GM_SPEED);
+	}
+}
+#endif
+
+#ifdef ENABLE_LANG_SYSTEM
+TItemDescTable* CHARACTER::GetItemDescTable(DWORD vnum)
+{
+	if (vnum == 0)
+		return NULL;
+
+	itertype(g_map_itemDescTable) it = g_map_itemDescTable.find(vnum);
+	sys_log(0, "ITEM_DESC: FIND %u %s", vnum, it == g_map_itemDescTable.end() ? "FALSE" : "TRUE");
+
+	if (it == g_map_itemDescTable.end())
+		return NULL;
+
+	return &it->second;
+}
+
+TItemNamesTable* CHARACTER::GetItemNamesTable(DWORD vnum)
+{
+	if (vnum == 0)
+		return NULL;
+
+	itertype(g_map_itemNamesTable) it = g_map_itemNamesTable.find(vnum);
+	sys_log(0, "ITEM_NAMES: FIND %u %s", vnum, it == g_map_itemNamesTable.end() ? "FALSE" : "TRUE");
+
+	if (it == g_map_itemNamesTable.end())
+		return NULL;
+
+	return &it->second;
+}
+
+const char* CHARACTER::GetItemDescription(DWORD vnum)
+{
+	TItemDescTable* pDescTable = GetItemDescTable(vnum);
+
+	switch (GetLanguage())
+	{
+	case LANGUAGE_ENGLISH:
+		return pDescTable->en;
+	default:
+		return pDescTable->de;
+	}
+}
+
+TMobNamesTable* CHARACTER::GetMobNamesTable(DWORD vnum)
+{
+	if (vnum == 0)
+		return NULL;
+
+	itertype(g_map_mobNamesTable) it = g_map_mobNamesTable.find(vnum);
+	sys_log(0, "MOB_NAMES: FIND %u %s", vnum, it == g_map_mobNamesTable.end() ? "FALSE" : "TRUE");
+
+	if (it == g_map_mobNamesTable.end())
+		return NULL;
+
+	return &it->second;
+}
+
+const char* CHARACTER::GetItemName(DWORD vnum)
+{
+	TItemNamesTable* pNamesTable = GetItemNamesTable(vnum);
+
+	switch (GetLanguage())
+	{
+	case LANGUAGE_ENGLISH:
+		return pNamesTable->en;
+	default:
+		return pNamesTable->de;
+	}
+}
+
+const char* CHARACTER::GetMobName(DWORD vnum)
+{
+	TMobNamesTable* pNamesTable = GetMobNamesTable(vnum);
+
+	switch (GetLanguage())
+	{
+	case LANGUAGE_ENGLISH:
+		return pNamesTable->en;
+	default:
+		return pNamesTable->de;
 	}
 }
 #endif

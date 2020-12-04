@@ -153,6 +153,9 @@ void CClientManager::QUERY_LOGIN_BY_KEY(CPeer * pkPeer, DWORD dwHandle, TPacketG
 	strlcpy(pkTab->status, "OK", sizeof(pkTab->status));
 	pkTab->iDR = r.iDR;
 	pkTab->iDM = r.iDM;
+#ifdef ENABLE_LANG_SYSTEM
+	pkTab->iLang = r.iLang;
+#endif
 
 	ClientHandleInfo * info = new ClientHandleInfo(dwHandle);
 	info->pAccountTable = pkTab;

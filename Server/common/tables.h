@@ -378,6 +378,9 @@ typedef struct SAccountTable
 	TSimplePlayer	players[PLAYER_PER_ACCOUNT];
 	int iDR;
 	int iDM;
+#ifdef ENABLE_LANG_SYSTEM
+	int iLang;
+#endif
 } TAccountTable;
 
 typedef struct SPacketDGCreateSuccess
@@ -1075,6 +1078,9 @@ typedef struct SPacketGDAuthLogin
 	int		iPremiumTimes[PREMIUM_MAX_NUM];
 	int iDR;
 	int iDM;
+#ifdef ENABLE_LANG_SYSTEM
+	int iLang;
+#endif
 } TPacketGDAuthLogin;
 
 typedef struct SPacketGDLoginByKey
@@ -1216,7 +1222,33 @@ typedef struct SPacketLoginOnSetup
 	DWORD   adwClientKey[4];
 	int iDR;
 	int iDM;
+#ifdef ENABLE_LANG_SYSTEM
+	int iLang;
+#endif
 } TPacketLoginOnSetup;
+
+#ifdef ENABLE_LANG_SYSTEM
+typedef struct TItemDescTable
+{
+	DWORD vnum;
+	char de[ITEM_DESCRIPTION_MAX_LEN];
+	char en[ITEM_DESCRIPTION_MAX_LEN];
+} TItemDescTable;
+
+typedef struct TItemNamesTable
+{
+	DWORD vnum;
+	char de[ITEM_NAME_MAX_LEN + 1];
+	char en[ITEM_NAME_MAX_LEN + 1];
+} TItemNamesTable;
+
+typedef struct TMobNamesTable
+{
+	DWORD vnum;
+	char de[CHARACTER_NAME_MAX_LEN + 1];
+	char en[CHARACTER_NAME_MAX_LEN + 1];
+} TMobNamesTable;
+#endif
 
 typedef struct SPacketGDCreateObject
 {

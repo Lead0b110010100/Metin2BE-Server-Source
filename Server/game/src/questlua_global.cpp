@@ -646,10 +646,26 @@ namespace quest
 	{
 		if (lua_isnumber(L,1))
 		{
-			DWORD dwVnum = (DWORD)lua_tonumber(L,1);
-			TItemTable* pTable = ITEM_MANAGER::instance().GetTable(dwVnum);
+#ifdef ENABLE_LANG_SYSTEM
+			LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
+
+			if (!ch)
+			{
+				lua_pushstring(L, "");
+				return 0;
+			}
+
+			TItemNamesTable* pTable = ch->GetItemNamesTable(dwVnum);
+			const char* name = ch->GetItemName(dwVnum);
+
 			if (pTable)
-				lua_pushstring(L,pTable->szLocaleName);
+				lua_pushstring(L, name);
+#else
+			TItemTable* pTable = ITEM_MANAGER::instance().GetTable(dwVnum);
+
+			if (pTable)
+				lua_pushstring(L, pTable->szLocaleName);
+#endif
 			else
 				lua_pushstring(L,"");
 		}
@@ -658,15 +674,75 @@ namespace quest
 		return 1;
 	}
 
+#ifdef ENABLE_LANG_SYSTEM
+	ALUA(_item_description)
+	{
+		if (lua_isnumber(L, 1))
+		{
+			DWORD dwVnum = (DWORD)lua_tonumber(L, 1);
+			LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
+
+			if (!ch)
+			{
+				lua_pushstring(L, "");
+				return 0;
+			}
+
+			TItemDescTable* pTable = ch->GetItemDescTable(dwVnum);
+			const char* desc = ch->GetItemDescription(dwVnum);
+
+			if (pTable)
+				lua_pushstring(L, desc);
+			else
+				lua_pushstring(L, "");
+		}
+		else
+			lua_pushstring(L, "");
+
+		return 1;
+	}
+
+	ALUA(_get_language)
+	{
+		LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
+
+		if (ch)
+		{
+			lua_pushnumber(L, ch->GetLanguage());
+		}
+		else
+		{
+			lua_pushnumber(L, 0);
+		}
+
+		return 1;
+	}
+#endif
+
 	ALUA(_mob_name)
 	{
 		if (lua_isnumber(L, 1))
 		{
-			DWORD dwVnum = (DWORD) lua_tonumber(L,1);
-			const CMob * pkMob = CMobManager::instance().Get(dwVnum);
+#ifdef ENABLE_LANG_SYSTEM
+			LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
+
+			if (!ch)
+			{
+				lua_pushstring(L, "");
+				return 0;
+			}
+
+			TMobNamesTable* pTable = ch->GetMobNamesTable(dwVnum);
+			const char* name = ch->GetMobName(dwVnum);
+
+			if (pTable)
+				lua_pushstring(L, name);
+#else
+			const CMob* pkMob = CMobManager::instance().Get(dwVnum);
 
 			if (pkMob)
 				lua_pushstring(L, pkMob->m_table.szLocaleName);
+#endif
 			else
 				lua_pushstring(L, "");
 		}
@@ -1670,6 +1746,11 @@ namespace quest
 			{	"mysql_direct_query",			_mysql_direct_query				},	// get the number of the affected rows and a table containing 'em [return lua number, lua table]
 			{	"mysql_escape_string",			_mysql_escape_string			},	// escape <str> [return lua string]
 			{	"mysql_password",				_mysql_password					},	// same as the sql function PASSWORD(<str>) [return lua string]
+#endif
+
+#ifdef ENABLE_LANG_SYSTEM
+				{"item_description", _item_description},
+				{"get_language", _get_language},
 #endif
 
 			{	NULL,	NULL	}

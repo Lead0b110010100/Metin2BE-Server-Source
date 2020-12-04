@@ -114,7 +114,10 @@ class CInputMain : public CInputProcessor
 		void		ItemDrop2(LPCHARACTER ch, const char * data);
 		void		ItemMove(LPCHARACTER ch, const char * data);
 		void		ItemPickup(LPCHARACTER ch, const char * data);
-		void		ItemToItem(LPCHARACTER ch, const char * pcData);
+		void		ItemToItem(LPCHARACTER ch, const char* pcData);
+#ifdef ENABLE_LANG_SYSTEM
+		void LangSystem(LPCHARACTER ch, const char* pcData);
+#endif
 		void		QuickslotAdd(LPCHARACTER ch, const char * data);
 		void		QuickslotDelete(LPCHARACTER ch, const char * data);
 		void		QuickslotSwap(LPCHARACTER ch, const char * data);

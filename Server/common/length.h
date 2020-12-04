@@ -43,7 +43,11 @@ enum EMisc
 
 	CHAT_MAX_LEN			= 512,
 
-	QUICKSLOT_MAX_NUM		= 36,
+	QUICKSLOT_MAX_NUM = 36,
+
+#ifdef ENABLE_LANG_SYSTEM
+	ITEM_DESCRIPTION_MAX_LEN = 255,
+#endif
 
 	JOURNAL_MAX_NUM			= 2,
 
@@ -91,6 +95,15 @@ enum EMisc
 	SHOP_TAB_NAME_MAX = 32,
 	SHOP_TAB_COUNT_MAX = 3,
 };
+
+#ifdef ENABLE_LANG_SYSTEM
+enum ELanguages
+{
+	LANGUAGE_GERMAN,
+	LANGUAGE_ENGLISH,
+	LANGUAGE_MAX_NUM
+};
+#endif
 
 #ifdef ENABLE_TARGET_AFFECT
 enum ESimpleAffect

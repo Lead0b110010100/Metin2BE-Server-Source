@@ -120,3 +120,71 @@ void CEntity::SetObserverMode(bool bFlag)
 	}
 }
 
+
+
+#ifdef ENABLE_LANG_SYSTEM
+struct FuncChatPacketAround
+{
+	std::map<DWORD, std::string> m_texts;
+	DWORD m_vid;
+
+	FuncChatPacketAround(std::map<DWORD, std::string> monster_texts, DWORD vid = 0)
+		: m_vid(vid)
+	{
+		m_texts = monster_texts;
+	}
+
+	void operator()(LPENTITY ent)
+	{
+		LPDESC d = ent->GetDesc();
+
+		if (d)
+		{
+			LPCHARACTER ch = d->GetCharacter();
+
+			if (ch)
+			{
+				struct packet_chat pack_chat;
+
+				pack_chat.header = HEADER_GC_CHAT;
+				pack_chat.type = CHAT_TYPE_TALKING;
+				pack_chat.id = m_vid;
+				pack_chat.bEmpire = 0;
+
+				ch->ChatPacket(pack_chat, m_texts[ch->GetLanguage()].c_str());
+			}
+		}
+	}
+};
+
+struct FuncChatPacketView : public FuncChatPacketAround
+{
+	FuncChatPacketView(std::map<DWORD, std::string> monster_texts, DWORD vid) : FuncChatPacketAround(monster_texts, vid)
+	{
+	}
+
+	void operator()(const CEntity::ENTITY_MAP::value_type& v)
+	{
+		FuncChatPacketAround::operator()(v.first);
+	}
+};
+
+void CEntity::ChatPacketAround(std::map<DWORD, std::string> monster_texts, DWORD vid)
+{
+	ChatPacketView(monster_texts, vid);
+}
+
+void CEntity::ChatPacketView(std::map<DWORD, std::string> monster_texts, DWORD vid)
+{
+	if (!GetSectree())
+		return;
+
+	FuncChatPacketView f(monster_texts, vid);
+
+	if (!m_bIsObserver)
+		for_each(m_map_view.begin(), m_map_view.end(), f);
+
+	f(std::make_pair(this, 0));
+}
+#endif
+

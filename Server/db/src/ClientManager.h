@@ -188,6 +188,12 @@ class CClientManager : public CNetBase, public singleton<CClientManager>
 	bool		InitializeObjectTable();
 	bool		InitializeMonarch();
 
+#ifdef ENABLE_LANG_SYSTEM
+	bool InitializeItemDescTable();
+	bool InitializeItemNamesTable();
+	bool InitializeMobNamesTable();
+#endif
+
 	// mob_proto.txt, item_proto.txt에서 읽은 mob_proto, item_proto를 real db에 반영.
 	//	item_proto, mob_proto를 db에 반영하지 않아도, 게임 돌아가는데는 문제가 없지만,
 	//	운영툴 등에서 db의 item_proto, mob_proto를 읽어 쓰기 때문에 문제가 발생한다.
@@ -434,6 +440,12 @@ class CClientManager : public CNetBase, public singleton<CClientManager>
 	std::vector<TBanwordTable>		m_vec_banwordTable;
 	std::vector<TItemAttrTable>		m_vec_itemAttrTable;
 	std::vector<TItemAttrTable>		m_vec_itemRareTable;
+
+#ifdef ENABLE_LANG_SYSTEM
+	std::map<DWORD, TItemDescTable*> m_map_pkItemDescTable;
+	std::map<DWORD, TItemNamesTable*> m_map_pkItemNamesTable;
+	std::map<DWORD, TMobNamesTable*> m_map_pkMobNamesTable;
+#endif
 
 	std::vector<building::TLand>		m_vec_kLandTable;
 	std::vector<building::TObjectProto>	m_vec_kObjectProto;

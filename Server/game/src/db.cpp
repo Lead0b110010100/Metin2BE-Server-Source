@@ -488,6 +488,9 @@ void DBManager::SendAuthLogin(LPDESC d)
 	ptod.dwBillID = pkLD->GetBillID();
 	ptod.iDR = r.iDR;
 	ptod.iDM = r.iDM;
+#ifdef ENABLE_LANG_SYSTEM
+	ptod.iLang = r.iLang;
+#endif
 
 	thecore_memcpy(ptod.iPremiumTimes, pkLD->GetPremiumPtr(), sizeof(ptod.iPremiumTimes));
 	thecore_memcpy(&ptod.adwClientKey, pkLD->GetClientKey(), sizeof(DWORD) * 4);
@@ -905,6 +908,9 @@ void DBManager::AnalyzeReturnQuery(SQLMsg * pMsg)
 						strlcpy(r.social_id, szSocialID, sizeof(r.social_id));
 						r.iDR = iDR;
 						r.iDM = iDM;
+#ifdef ENABLE_LANG_SYSTEM
+						r.iLang = pinfo->iLang;
+#endif
 
 						DESC_MANAGER::instance().ConnectAccount(r.login, d);
 

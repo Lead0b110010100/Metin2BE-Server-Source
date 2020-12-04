@@ -215,7 +215,11 @@ void CHARACTER::HorseSummon(bool bSummon, bool bFromFar, DWORD dwVnum, const cha
 		else
 		{
 			m_chHorse->m_stName = GetName();
-			m_chHorse->m_stName += LC_TEXT("´ÔÀÇ ¸»");
+#ifdef ENABLE_LANG_SYSTEM
+			m_chHorse->m_stName += LC_TEXT_TRANS("Horse", GetLanguage());
+#else
+			m_chHorse->m_stName += LC_TEXT("Horse");
+#endif
 		}
 
 		if (!m_chHorse->Show(GetMapIndex(), x, y, GetZ()))

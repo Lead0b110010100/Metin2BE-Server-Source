@@ -15,6 +15,26 @@ extern std::string g_stLocaleNameColumn;
 
 bool CClientManager::InitializeTables()
 {
+#ifdef ENABLE_LANG_SYSTEM
+	if (!InitializeItemDescTable())
+	{
+		sys_err("InitializeItemDesc FAILED");
+		return false;
+}
+
+	if (!InitializeItemNamesTable())
+	{
+		sys_err("InitializeItemNames FAILED");
+		return false;
+	}
+
+	if (!InitializeMobNamesTable())
+	{
+		sys_err("InitializeMobNames FAILED");
+		return false;
+	}
+#endif
+
 #ifdef ENABLE_PROTO_FROM_DB
 	if (!(bIsProtoReadFromDB?InitializeMobTableFromDB():InitializeMobTable()))
 #else
@@ -397,6 +417,119 @@ bool CClientManager::InitializeQuestItemTable()
 
 	return true;
 }
+
+#ifdef ENABLE_LANG_SYSTEM
+bool CClientManager::InitializeItemDescTable()
+{
+	char query[4096];
+	snprintf(query, sizeof(query), "SELECT vnum, de, en FROM player.item_desc");
+
+	std::unique_ptr<SQLMsg> pkMsg(CDBManager::instance().DirectQuery(query));
+	SQLResult* pRes = pkMsg->Get();
+
+	if (!m_map_pkItemDescTable.empty())
+	{
+		sys_log(0, "RELOAD: item_desc");
+		m_map_pkItemDescTable.clear();
+	}
+
+	if (pRes->uiNumRows == 0)
+		return false;
+
+	while (MYSQL_ROW data = mysql_fetch_row(pRes->pSQLResult))
+	{
+		int col = 0;
+
+		TItemDescTable* k = new TItemDescTable;
+		memset(k, 0, sizeof(TItemDescTable));
+
+		str_to_number(k->vnum, data[col++]);
+		strlcpy(k->de, data[col++], sizeof(k->de));
+		strlcpy(k->en, data[col++], sizeof(k->en));
+
+		sys_log(0, "ITEM_DESC: %d, de: %s, en: %s",
+			k->vnum, k->de, k->en);
+
+		m_map_pkItemDescTable.insert(std::make_pair(k->vnum, k));
+	}
+
+	return true;
+}
+
+bool CClientManager::InitializeItemNamesTable()
+{
+	char query[4096];
+	snprintf(query, sizeof(query), "SELECT vnum, de, en FROM player.item_names");
+
+	std::unique_ptr<SQLMsg> pkMsg(CDBManager::instance().DirectQuery(query));
+	SQLResult* pRes = pkMsg->Get();
+
+	if (!m_map_pkItemNamesTable.empty())
+	{
+		sys_log(0, "RELOAD: item_names");
+		m_map_pkItemNamesTable.clear();
+	}
+
+	if (pRes->uiNumRows == 0)
+		return false;
+
+	while (MYSQL_ROW data = mysql_fetch_row(pRes->pSQLResult))
+	{
+		int col = 0;
+
+		TItemNamesTable* k = new TItemNamesTable;
+		memset(k, 0, sizeof(TItemNamesTable));
+
+		str_to_number(k->vnum, data[col++]);
+		strlcpy(k->de, data[col++], sizeof(k->de));
+		strlcpy(k->en, data[col++], sizeof(k->en));
+
+		sys_log(0, "ITEM_NAMES: %d, de: %s, en: %s",
+			k->vnum, k->de, k->en);
+
+		m_map_pkItemNamesTable.insert(std::make_pair(k->vnum, k));
+	}
+
+	return true;
+}
+
+bool CClientManager::InitializeMobNamesTable()
+{
+	char query[4096];
+	snprintf(query, sizeof(query), "SELECT vnum, de, en FROM player.mob_names");
+
+	std::unique_ptr<SQLMsg> pkMsg(CDBManager::instance().DirectQuery(query));
+	SQLResult* pRes = pkMsg->Get();
+
+	if (!m_map_pkMobNamesTable.empty())
+	{
+		sys_log(0, "RELOAD: mob_names");
+		m_map_pkMobNamesTable.clear();
+	}
+
+	if (pRes->uiNumRows == 0)
+		return false;
+
+	while (MYSQL_ROW data = mysql_fetch_row(pRes->pSQLResult))
+	{
+		int col = 0;
+
+		TMobNamesTable* k = new TMobNamesTable;
+		memset(k, 0, sizeof(TMobNamesTable));
+
+		str_to_number(k->vnum, data[col++]);
+		strlcpy(k->de, data[col++], sizeof(k->de));
+		strlcpy(k->en, data[col++], sizeof(k->en));
+
+		sys_log(0, "MOB_NAMES: %d, de: %s, en: %s",
+			k->vnum, k->de, k->en);
+
+		m_map_pkMobNamesTable.insert(std::make_pair(k->vnum, k));
+	}
+
+	return true;
+}
+#endif
 
 bool CClientManager::InitializeItemTable()
 {

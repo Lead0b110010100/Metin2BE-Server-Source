@@ -2,21 +2,57 @@
 #include "stdafx.h"
 #include "locale_service.h"
 
+#ifdef ENABLE_LANG_SYSTEM
+#include "../../common/length.h"
+#endif
+
 typedef std::map< std::string, std::string > LocaleStringMapType;
 
 LocaleStringMapType localeString;
 
 int g_iUseLocale = 0;
 
-void locale_add(const char **strings)
-{
-	LocaleStringMapType::const_iterator iter = localeString.find( strings[0] );
+#ifdef ENABLE_LANG_SYSTEM
+LocaleStringMapType localeStringEn;
 
-	if( iter == localeString.end() )
+void locale_add(const char** strings, BYTE lang)
+{
+	switch (lang)
 	{
-		localeString.insert( std::make_pair( strings[0], strings[1] ) );
+	case LANGUAGE_ENGLISH:
+	{
+		LocaleStringMapType::const_iterator iter = localeStringEn.find(strings[0]);
+
+		if (iter == localeStringEn.end())
+		{
+			localeStringEn.insert(std::make_pair(strings[0], strings[1]));
+		}
+	}
+	break;
+
+	default:
+	{
+		LocaleStringMapType::const_iterator iter = localeString.find(strings[0]);
+
+		if (iter == localeString.end())
+		{
+			localeString.insert(std::make_pair(strings[0], strings[1]));
+		}
+	}
+	break;
 	}
 }
+#else
+void locale_add(const char** strings)
+{
+	LocaleStringMapType::const_iterator iter = localeString.find(strings[0]);
+
+	if (iter == localeString.end())
+	{
+		localeString.insert(std::make_pair(strings[0], strings[1]));
+	}
+}
+#endif
 
 const char * locale_find(const char *string)
 {
@@ -38,6 +74,48 @@ const char * locale_find(const char *string)
 
 	return iter->second.c_str();
 }
+
+#ifdef ENABLE_LANG_SYSTEM
+const char* locale_find_trans(const char* string, BYTE lang)
+{
+	LocaleStringMapType::const_iterator iter;
+
+	switch (lang)
+	{
+	case LANGUAGE_ENGLISH:
+	{
+		iter = localeStringEn.find(string);
+
+		if (iter == localeStringEn.end())
+		{
+			static char s_line[1024] = "@0949";
+			strlcpy(s_line + 5, string, sizeof(s_line) - 5);
+
+			sys_err("LOCALE_ERROR: \"%s\";", string);
+			return s_line;
+		}
+	}
+	break;
+
+	default:
+	{
+		iter = localeString.find(string);
+
+		if (iter == localeString.end())
+		{
+			static char s_line[1024] = "@0949";
+			strlcpy(s_line + 5, string, sizeof(s_line) - 5);
+
+			sys_err("LOCALE_ERROR: \"%s\";", string);
+			return s_line;
+		}
+	}
+	break;
+	}
+
+	return iter->second.c_str();
+}
+#endif
 
 const char *quote_find_end(const char *string)
 {
@@ -129,7 +207,11 @@ ENCODE:
 
 #define NUM_LOCALES 2
 
-void locale_init(const char *filename)
+#ifdef ENABLE_LANG_SYSTEM
+void locale_init(const char* filename, BYTE lang)
+#else
+void locale_init(const char* filename)
+#endif
 {
 	FILE        *fp = fopen(filename, "rb");
 	char        *buf;
@@ -193,7 +275,11 @@ void locale_init(const char *filename)
 			if (strings[0] == NULL || strings[1] == NULL)
 				break;
 
+#ifdef ENABLE_LANG_SYSTEM
+			locale_add((const char**)strings, lang);
+#else
 			locale_add((const char**)strings);
+#endif
 
 			for (i = 0; i < NUM_LOCALES; i++)
 				if (strings[i])

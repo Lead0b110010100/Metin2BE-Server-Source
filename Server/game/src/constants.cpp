@@ -604,6 +604,12 @@ const int aiArmorSocketQty[ARMOR_NUM_TYPES] =
 TItemAttrMap g_map_itemAttr;
 TItemAttrMap g_map_itemRare;
 
+#ifdef ENABLE_LANG_SYSTEM
+TItemDescMap g_map_itemDescTable;
+TItemNamesMap g_map_itemNamesTable;
+TMobNamesMap g_map_mobNamesTable;
+#endif
+
 const TApplyInfo aApplyInfo[MAX_APPLY_NUM] =
 /*
 {
