@@ -7978,7 +7978,7 @@ void CHARACTER::ToggleGMSpeed()
 
 void CHARACTER::RefreshSpeed()
 {
-	if (GetQuestFlag("gm.speed_mode"))
+	if (GetQuestFlag("gm.speed_mode") && !FindAffect(AFFECT_GM_SPEED))
 	{
 		AddAffect(AFFECT_GM_SPEED, POINT_MOV_SPEED, 1000, AFF_NONE, INFINITE_AFFECT_DURATION, 0, true, true);
 	}
