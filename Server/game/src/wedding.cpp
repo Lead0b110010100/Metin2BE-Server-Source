@@ -168,11 +168,6 @@ namespace marriage
 		m_set_pkChr.insert(ch);
 
 		SendLocalEvent(ch);
-
-		if (ch->GetLevel() < 10)
-		{
-			ch->SetObserverMode(true);
-		}
 	}
 
 	void WeddingMap::DecMember(LPCHARACTER ch)
@@ -182,11 +177,6 @@ namespace marriage
 
 		//sys_log(0, "WeddingMap: DecMember %s", ch->GetName());
 		m_set_pkChr.erase(ch);
-
-		if (ch->GetLevel() < 10)
-		{
-			ch->SetObserverMode(false);
-		}
 	}
 
 	bool WeddingMap::IsMember(LPCHARACTER ch)
