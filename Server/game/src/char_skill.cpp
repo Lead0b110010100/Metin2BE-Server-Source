@@ -1965,35 +1965,47 @@ int CHARACTER::ComputeSkillAtPosition(DWORD dwVnum, const PIXEL_POSITION& posTar
 	}
 }
 
-#ifdef ENABLE_WOLFMAN_CHARACTER
-struct FComputeSkillParty
+struct FPartyBuffMembers
 {
-	FComputeSkillParty(DWORD dwVnum, LPCHARACTER pkAttacker, BYTE bSkillLevel = 0)
-		: m_dwVnum(dwVnum), m_pkAttacker(pkAttacker), m_bSkillLevel(bSkillLevel)
-		{
-		}
+	LPCHARACTER pkBuffer;
+	uint32_t dwSkillVNum;
 
-	void operator () (LPCHARACTER ch)
+	FPartyBuffMembers(LPCHARACTER pkBuffer, uint32_t dwSkillVNum)
 	{
-		m_pkAttacker->ComputeSkill(m_dwVnum, ch, m_bSkillLevel);
+		this->pkBuffer = pkBuffer;
+		this->dwSkillVNum = dwSkillVNum;
 	}
 
-	DWORD m_dwVnum;
-	LPCHARACTER m_pkAttacker;
-	BYTE m_bSkillLevel;
+	void operator()(LPCHARACTER pkVictim)
+	{
+		if (!this->pkBuffer || !pkVictim)
+			return;
+
+		this->pkBuffer->ComputeSkill(this->dwSkillVNum, pkVictim);
+	}
 };
 
-int CHARACTER::ComputeSkillParty(DWORD dwVnum, LPCHARACTER pkVictim, BYTE bSkillLevel)
+int32_t CHARACTER::ComputeSkillParty(uint32_t dwVnum, LPCHARACTER pkVictim, uint32_t dwFlag)
 {
-	FComputeSkillParty f(dwVnum, pkVictim, bSkillLevel);
-	if (GetParty() && GetParty()->GetNearMemberCount())
-		GetParty()->ForEachNearMember(f);
+	if (this->GetParty() && this->GetParty()->GetForceNearMemberCount(this) > 0)
+	{
+		FPartyBuffMembers kFunc(this, dwVnum);
+		this->GetParty()->ForEachNearMember(kFunc);
+	}
 	else
-		f(this);
+	{
+		if (pkVictim && !IS_SET(dwFlag, SKILL_FLAG_ATTACK))
+		{
+			ComputeSkill(dwVnum, pkVictim);
+		}
+		else
+		{
+			ComputeSkill(dwVnum, this);
+		}
+	}
 
 	return BATTLE_NONE;
 }
-#endif
 
 // bSkillLevel 인자가 0이 아닐 경우에는 m_abSkillLevels를 사용하지 않고 강제로
 // bSkillLevel로 계산한다.
@@ -2676,21 +2688,8 @@ bool CHARACTER::UseSkill(DWORD dwVnum, LPCHARACTER pkVictim, bool bUseGrandMaste
 
 	if (IS_SET(pkSk->dwFlag, SKILL_FLAG_SELFONLY))
 		ComputeSkill(dwVnum, this);
-	else if (IS_SET(pkSk->dwFlag, SKILL_FLAG_PARTY) && !GetParty())
-		ComputeSkill(dwVnum, pkVictim);
-	else if (IS_SET(pkSk->dwFlag, SKILL_FLAG_PARTY) && GetParty())
-	{
-		FPartyPIDCollector f;
-		GetParty()->ForEachOnMapMember(f, GetMapIndex());
-		//Fix where you should exit your party to buff someone who is not in your party//
-		if (!pkVictim->GetParty())
-			ComputeSkill(dwVnum, pkVictim);
-		for (std::vector <DWORD>::iterator it = f.vecPIDs.begin(); it != f.vecPIDs.end(); it++)
-		{
-			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(*it);
-			ComputeSkill(dwVnum, ch);
-		}
-	}
+	else if (IS_SET(pkSk->dwFlag, SKILL_FLAG_PARTY))
+		ComputeSkillParty(dwVnum, pkVictim, pkSk->dwFlag);
 	else if (!IS_SET(pkSk->dwFlag, SKILL_FLAG_ATTACK))
 		ComputeSkill(dwVnum, pkVictim);
 	else if (dwVnum == SKILL_BYEURAK)

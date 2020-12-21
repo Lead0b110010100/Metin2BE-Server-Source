@@ -1466,9 +1466,7 @@ public:
 
 		void				ComputePassiveSkill(DWORD dwVnum);
 		int					ComputeSkill(DWORD dwVnum, LPCHARACTER pkVictim, BYTE bSkillLevel = 0);
-#ifdef ENABLE_WOLFMAN_CHARACTER
-		int					ComputeSkillParty(DWORD dwVnum, LPCHARACTER pkVictim, BYTE bSkillLevel = 0);
-#endif
+		int32_t ComputeSkillParty(uint32_t dwVnum, LPCHARACTER pkVictim, uint32_t dwFlag);
 		int					ComputeSkillAtPosition(DWORD dwVnum, const PIXEL_POSITION& posTarget, BYTE bSkillLevel = 0);
 		void				ComputeSkillPoints();
 

@@ -123,6 +123,7 @@ class CParty
 
 		DWORD		GetMemberCount();
 		DWORD		GetNearMemberCount()	{ return m_iCountNearPartyMember; }
+		uint32_t GetForceNearMemberCount(LPCHARACTER buff);
 
 		bool		IsMember(DWORD pid) { return m_memberMap.find(pid) != m_memberMap.end(); }
 

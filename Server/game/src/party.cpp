@@ -1726,3 +1726,24 @@ bool CParty::IsPartyInDungeon(int mapIndex)
 	}
 	return false;
 }
+
+uint32_t CParty::GetForceNearMemberCount(LPCHARACTER buff)
+{
+	uint32_t iNearMember = 0;
+
+	for (TMemberMap::iterator it = m_memberMap.begin(); it != m_memberMap.end(); ++it)
+	{
+		LPCHARACTER ch = it->second.pCharacter;
+
+		if (!ch)
+			continue;
+
+		if (ch == buff)
+			continue;
+
+		if (DISTANCE_APPROX(buff->GetX() - ch->GetX(), buff->GetY() - ch->GetY()) < PARTY_DEFAULT_RANGE)
+			++iNearMember;
+	}
+
+	return iNearMember;
+}
