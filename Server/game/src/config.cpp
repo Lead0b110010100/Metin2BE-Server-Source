@@ -22,7 +22,7 @@
 
 using std::string;
 
-std::set<DWORD> setHorsesThatCantDie { 50506, 20110 };
+std::set<DWORD> setHorsesThatCantDie { 50506, 20110, 20111, 20112, 20113, 20114, 20115, 20116, 20117, 20118, 20119, 20120, 20121 };
 
 BYTE	g_bChannel = 0;
 WORD	mother_port = 50080;
