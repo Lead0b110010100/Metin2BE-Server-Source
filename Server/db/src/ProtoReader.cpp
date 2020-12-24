@@ -77,10 +77,7 @@ int get_Item_Type_Value(string inputString)
 		"ITEM_UNUSED2",	"ITEM_EXTRACT",
 		"ITEM_SECONDARY_COIN",						//33개
 
-		"ITEM_RING",
-		"ITEM_UNUSED3",								//35개 (EItemTypes 값으로 치면 34)
-		"ITEM_PET", "ITEM_MEDIUM", // 36,37
-		"ITEM_GACHA" // 38
+		"ITEM_UNUSED3",								//34개 (EItemTypes 값으로 치면 34)
 	};
 
 

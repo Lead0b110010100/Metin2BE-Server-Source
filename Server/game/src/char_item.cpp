@@ -1728,7 +1728,6 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 		case ITEM_WEAPON:
 		case ITEM_ARMOR:
 		case ITEM_ROD:
-		case ITEM_RING:
 		case ITEM_PICK:
 			if (!item->IsEquipped())
 				EquipItem(item);
@@ -6966,6 +6965,20 @@ bool CHARACTER::IsEquipUniqueItem(DWORD dwItemVnum) const
 			return true;
 	}
 
+	{
+		LPITEM u = GetWear(WEAR_UNIQUE3);
+
+		if (u && u->GetVnum() == dwItemVnum)
+			return true;
+	}
+
+	{
+		LPITEM u = GetWear(WEAR_UNIQUE4);
+
+		if (u && u->GetVnum() == dwItemVnum)
+			return true;
+	}
+
 	// 언어반지인 경우 언어반지(견본) 인지도 체크한다.
 	if (dwItemVnum == UNIQUE_ITEM_RING_OF_LANGUAGE)
 		return IsEquipUniqueItem(UNIQUE_ITEM_RING_OF_LANGUAGE_SAMPLE);
@@ -7342,6 +7355,8 @@ bool CHARACTER::UnEquipSpecialRideUniqueItem()
 {
 	LPITEM Unique1 = GetWear(WEAR_UNIQUE1);
 	LPITEM Unique2 = GetWear(WEAR_UNIQUE2);
+	LPITEM Unique3 = GetWear(WEAR_UNIQUE3);
+	LPITEM Unique4 = GetWear(WEAR_UNIQUE4);
 #ifdef ENABLE_MOUNT_COSTUME_SYSTEM
 	LPITEM MountCostume = GetWear(WEAR_COSTUME_MOUNT);
 #endif
@@ -7359,6 +7374,22 @@ bool CHARACTER::UnEquipSpecialRideUniqueItem()
 		if( UNIQUE_GROUP_SPECIAL_RIDE == Unique2->GetSpecialGroup() )
 		{
 			return UnequipItem(Unique2);
+		}
+	}
+
+	if( NULL != Unique3 )
+	{
+		if( UNIQUE_GROUP_SPECIAL_RIDE == Unique3->GetSpecialGroup() )
+		{
+			return UnequipItem(Unique3);
+		}
+	}
+
+	if( NULL != Unique4 )
+	{
+		if( UNIQUE_GROUP_SPECIAL_RIDE == Unique4->GetSpecialGroup() )
+		{
+			return UnequipItem(Unique4);
 		}
 	}
 
@@ -7602,7 +7633,9 @@ bool CHARACTER::CanEquipNow(const LPITEM item, const TItemPos& srcCell, const TI
 	if (item->GetWearFlag() & WEARABLE_UNIQUE)
 	{
 		if ((GetWear(WEAR_UNIQUE1) && GetWear(WEAR_UNIQUE1)->IsSameSpecialGroup(item)) ||
-			(GetWear(WEAR_UNIQUE2) && GetWear(WEAR_UNIQUE2)->IsSameSpecialGroup(item)))
+			(GetWear(WEAR_UNIQUE2) && GetWear(WEAR_UNIQUE2)->IsSameSpecialGroup(item)) ||
+			(GetWear(WEAR_UNIQUE3) && GetWear(WEAR_UNIQUE3)->IsSameSpecialGroup(item)) ||
+			(GetWear(WEAR_UNIQUE4) && GetWear(WEAR_UNIQUE4)->IsSameSpecialGroup(item)))
 		{
 			ChatPacketTrans(CHAT_TYPE_INFO, "You cannot equip this Item twice.");
 			return false;

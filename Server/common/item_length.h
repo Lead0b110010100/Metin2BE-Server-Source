@@ -79,7 +79,6 @@ enum EItemTypes
 	ITEM_UNUSED2,
 	ITEM_EXTRACT,			//31 추출도구.
 	ITEM_SECONDARY_COIN,	//32 ?? 명도전??
-	ITEM_RING,				//33 반지
 	ITEM_UNUSED3,
 };
 

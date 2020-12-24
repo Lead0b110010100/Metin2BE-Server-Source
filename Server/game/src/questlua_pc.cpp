@@ -2627,6 +2627,8 @@ teleport_area:
 		{
 			LPITEM Unique1 = pChar->GetWear(WEAR_UNIQUE1);
 			LPITEM Unique2 = pChar->GetWear(WEAR_UNIQUE2);
+			LPITEM Unique3 = pChar->GetWear(WEAR_UNIQUE3);
+			LPITEM Unique4 = pChar->GetWear(WEAR_UNIQUE4);
 #ifdef ENABLE_MOUNT_COSTUME_SYSTEM
 			LPITEM MountCostume = pChar->GetWear(WEAR_COSTUME_MOUNT);
 #endif
@@ -2647,6 +2649,26 @@ teleport_area:
 				{
 					lua_pushnumber(L, Unique2->GetVnum());
 					lua_pushnumber(L, Unique2->GetSocket(0)); // @fixme152 (2->0)
+					return 2;
+				}
+			}
+
+			if (NULL != Unique3)
+			{
+				if (UNIQUE_GROUP_SPECIAL_RIDE == Unique3->GetSpecialGroup())
+				{
+					lua_pushnumber(L, Unique3->GetVnum());
+					lua_pushnumber(L, Unique3->GetSocket(0)); // @fixme152 (2->0)
+					return 2;
+				}
+			}
+
+			if (NULL != Unique4)
+			{
+				if (UNIQUE_GROUP_SPECIAL_RIDE == Unique4->GetSpecialGroup())
+				{
+					lua_pushnumber(L, Unique4->GetVnum());
+					lua_pushnumber(L, Unique4->GetSocket(0)); // @fixme152 (2->0)
 					return 2;
 				}
 			}

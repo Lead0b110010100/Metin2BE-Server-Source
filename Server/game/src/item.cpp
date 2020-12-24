@@ -501,7 +501,7 @@ bool CItem::CanUsedBy(LPCHARACTER ch)
 
 int CItem::FindEquipCell(LPCHARACTER ch, int iCandidateCell)
 {
-	if ((0 == GetWearFlag() || ITEM_TOTEM == GetType()) && ITEM_COSTUME != GetType() && ITEM_RING != GetType())
+	if ((0 == GetWearFlag() || ITEM_TOTEM == GetType()) && ITEM_COSTUME != GetType())
 		return -1;
 
 	if (GetVnum() == 71012 || GetVnum() == 70003)
@@ -527,15 +527,6 @@ int CItem::FindEquipCell(LPCHARACTER ch, int iCandidateCell)
 			return WEAR_COSTUME_WEAPON;
 #endif
 	}
-#if !defined(ENABLE_MOUNT_COSTUME_SYSTEM) && !defined(ENABLE_ACCE_COSTUME_SYSTEM)
-	else if (GetType() == ITEM_RING)
-	{
-		if (ch->GetWear(WEAR_RING1))
-			return WEAR_RING2;
-		else
-			return WEAR_RING1;
-	}
-#endif
 	else if (GetWearFlag() & WEARABLE_BODY)
 		return WEAR_BODY;
 	else if (GetWearFlag() & WEARABLE_HEAD)
@@ -556,8 +547,14 @@ int CItem::FindEquipCell(LPCHARACTER ch, int iCandidateCell)
 		return WEAR_ARROW;
 	else if (GetWearFlag() & WEARABLE_UNIQUE)
 	{
-		if (ch->GetWear(WEAR_UNIQUE1))
+		if (!ch->GetWear(WEAR_UNIQUE1))
+			return WEAR_UNIQUE1;
+		else if (!ch->GetWear(WEAR_UNIQUE2))
 			return WEAR_UNIQUE2;
+		else if (!ch->GetWear(WEAR_UNIQUE3))
+			return WEAR_UNIQUE3;
+		else if (!ch->GetWear(WEAR_UNIQUE4))
+			return WEAR_UNIQUE4;
 		else
 			return WEAR_UNIQUE1;
 	}
@@ -847,7 +844,6 @@ bool CItem::IsEquipable() const
 	case ITEM_ROD:
 	case ITEM_PICK:
 	case ITEM_UNIQUE:
-	case ITEM_RING:
 		return true;
 	}
 
@@ -1721,10 +1717,7 @@ static const bool CanPutIntoRing(LPITEM ring, LPITEM item)
 
 bool CItem::CanPutInto(LPITEM item)
 {
-	if(item->GetType() == ITEM_RING)
-		return CanPutIntoRing(item, this);
-
-	else if (item->GetType() != ITEM_ARMOR)
+	if (item->GetType() != ITEM_ARMOR)
 		return false;
 
 	DWORD vnum = item->GetVnum();

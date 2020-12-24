@@ -1140,6 +1140,22 @@ void CHARACTER::ItemDropPenalty(LPCHARACTER pkKiller)
 			SyncQuickslot(QUICKSLOT_TYPE_ITEM, WEAR_UNIQUE2, 255);
 			vec_item.push_back(std::make_pair(pkItem->RemoveFromCharacter(), EQUIPMENT));
 		}
+
+		pkItem = GetWear(WEAR_UNIQUE3);
+
+		if (pkItem && pkItem->GetVnum() == UNIQUE_ITEM_SKIP_ITEM_DROP_PENALTY)
+		{
+			SyncQuickslot(QUICKSLOT_TYPE_ITEM, WEAR_UNIQUE3, 255);
+			vec_item.push_back(std::make_pair(pkItem->RemoveFromCharacter(), EQUIPMENT));
+		}
+
+		pkItem = GetWear(WEAR_UNIQUE4);
+
+		if (pkItem && pkItem->GetVnum() == UNIQUE_ITEM_SKIP_ITEM_DROP_PENALTY)
+		{
+			SyncQuickslot(QUICKSLOT_TYPE_ITEM, WEAR_UNIQUE4, 255);
+			vec_item.push_back(std::make_pair(pkItem->RemoveFromCharacter(), EQUIPMENT));
+		}
 	}
 
 	{

@@ -2573,6 +2573,8 @@ ACMD(do_ride)
 			if (
 				NULL==ch->GetWear(WEAR_UNIQUE1)
 				|| NULL==ch->GetWear(WEAR_UNIQUE2)
+				|| NULL==ch->GetWear(WEAR_UNIQUE3)
+				|| NULL==ch->GetWear(WEAR_UNIQUE4)
 #ifdef ENABLE_MOUNT_COSTUME_SYSTEM
 				|| NULL==ch->GetWear(WEAR_COSTUME_MOUNT)
 #endif
