@@ -10,6 +10,9 @@
 #define isspace iswspace
 #endif
 
+#include <vector>
+#include <map>
+
 #include "../../common/length.h"
 #include "../../common/tables.h"
 #include "../../common/singleton.h"

@@ -62,6 +62,9 @@ void CItem::Initialize()
 
 	m_bSkipSave = false;
 	m_dwLastOwnerPID = 0;
+#ifdef OFFLINE_SHOP
+	m_dwRealID = 0;
+#endif
 }
 
 void CItem::Destroy()
@@ -358,8 +361,11 @@ LPITEM CItem::RemoveFromCharacter()
 		m_wCell = 0;
 
 		SetWindow(RESERVED_WINDOW);
-		Save();
-		return (this);
+#ifdef OFFLINE_SHOP
+		if(!GetRealID())
+			Save();
+			return(this);
+#endif
 	}
 }
 

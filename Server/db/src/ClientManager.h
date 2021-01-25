@@ -32,6 +32,11 @@ size_t CreatePlayerSaveQuery(char * pszQuery, size_t querySize, TPlayerTable * p
 
 class CClientManager : public CNetBase, public singleton<CClientManager>
 {
+#ifdef OFFLINE_SHOP
+	void		ShopName(CPeer * peer, TPacketShopName * p);
+	void		ShopClose(CPeer * peer, TPacketShopClose *p);
+	void		ShopUpdateItem(CPeer * peer, TPacketShopUpdateItem *p);
+#endif
     public:
 	typedef std::list<CPeer *>			TPeerList;
 	typedef boost::unordered_map<DWORD, CPlayerTableCache *> TPlayerTableCacheMap;

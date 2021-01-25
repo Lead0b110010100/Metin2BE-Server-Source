@@ -1319,7 +1319,11 @@ enum EPacketShopSubHeaders
 struct packet_shop_item
 {
 	DWORD       vnum;
-	GoldType       price;
+#ifdef FULL_YANG
+	GoldType	price;
+#else
+	DWORD       price;
+#endif
 	BYTE        count;
 	BYTE		display_pos;
 	long	alSockets[ITEM_SOCKET_MAX_NUM];
@@ -2054,6 +2058,9 @@ typedef struct SPacketCGMyShop
 	BYTE	bHeader;
 	char	szSign[SHOP_SIGN_MAX_LEN + 1];
 	BYTE	bCount;
+	#ifdef OFFLINE_SHOP
+	BYTE	days;
+	#endif
 } TPacketCGMyShop;
 
 typedef struct SPacketGCTime
