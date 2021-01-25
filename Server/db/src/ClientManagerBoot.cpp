@@ -422,7 +422,7 @@ bool CClientManager::InitializeQuestItemTable()
 bool CClientManager::InitializeItemDescTable()
 {
 	char query[4096];
-	snprintf(query, sizeof(query), "SELECT vnum, de, en FROM player.item_desc");
+	snprintf(query, sizeof(query), "SELECT vnum, de, en, tr, ru FROM player.item_desc");
 
 	std::unique_ptr<SQLMsg> pkMsg(CDBManager::instance().DirectQuery(query));
 	SQLResult* pRes = pkMsg->Get();
@@ -446,9 +446,8 @@ bool CClientManager::InitializeItemDescTable()
 		str_to_number(k->vnum, data[col++]);
 		strlcpy(k->de, data[col++], sizeof(k->de));
 		strlcpy(k->en, data[col++], sizeof(k->en));
-
-		sys_log(0, "ITEM_DESC: %d, de: %s, en: %s",
-			k->vnum, k->de, k->en);
+		strlcpy(k->tr, data[col++], sizeof(k->tr));
+		strlcpy(k->ru, data[col++], sizeof(k->ru));
 
 		m_map_pkItemDescTable.insert(std::make_pair(k->vnum, k));
 	}
@@ -459,7 +458,7 @@ bool CClientManager::InitializeItemDescTable()
 bool CClientManager::InitializeItemNamesTable()
 {
 	char query[4096];
-	snprintf(query, sizeof(query), "SELECT vnum, de, en FROM player.item_names");
+	snprintf(query, sizeof(query), "SELECT vnum, de, en, tr, ru FROM player.item_names");
 
 	std::unique_ptr<SQLMsg> pkMsg(CDBManager::instance().DirectQuery(query));
 	SQLResult* pRes = pkMsg->Get();
@@ -483,9 +482,8 @@ bool CClientManager::InitializeItemNamesTable()
 		str_to_number(k->vnum, data[col++]);
 		strlcpy(k->de, data[col++], sizeof(k->de));
 		strlcpy(k->en, data[col++], sizeof(k->en));
-
-		sys_log(0, "ITEM_NAMES: %d, de: %s, en: %s",
-			k->vnum, k->de, k->en);
+		strlcpy(k->tr, data[col++], sizeof(k->tr));
+		strlcpy(k->ru, data[col++], sizeof(k->ru));
 
 		m_map_pkItemNamesTable.insert(std::make_pair(k->vnum, k));
 	}
@@ -496,7 +494,7 @@ bool CClientManager::InitializeItemNamesTable()
 bool CClientManager::InitializeMobNamesTable()
 {
 	char query[4096];
-	snprintf(query, sizeof(query), "SELECT vnum, de, en FROM player.mob_names");
+	snprintf(query, sizeof(query), "SELECT vnum, de, en, tr, en FROM player.mob_names");
 
 	std::unique_ptr<SQLMsg> pkMsg(CDBManager::instance().DirectQuery(query));
 	SQLResult* pRes = pkMsg->Get();
@@ -520,9 +518,8 @@ bool CClientManager::InitializeMobNamesTable()
 		str_to_number(k->vnum, data[col++]);
 		strlcpy(k->de, data[col++], sizeof(k->de));
 		strlcpy(k->en, data[col++], sizeof(k->en));
-
-		sys_log(0, "MOB_NAMES: %d, de: %s, en: %s",
-			k->vnum, k->de, k->en);
+		strlcpy(k->tr, data[col++], sizeof(k->tr));
+		strlcpy(k->ru, data[col++], sizeof(k->ru));
 
 		m_map_pkMobNamesTable.insert(std::make_pair(k->vnum, k));
 	}

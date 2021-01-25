@@ -1233,6 +1233,8 @@ typedef struct TItemDescTable
 	DWORD vnum;
 	char de[ITEM_DESCRIPTION_MAX_LEN];
 	char en[ITEM_DESCRIPTION_MAX_LEN];
+	char tr[ITEM_DESCRIPTION_MAX_LEN];
+	char ru[ITEM_DESCRIPTION_MAX_LEN];
 } TItemDescTable;
 
 typedef struct TItemNamesTable
@@ -1240,6 +1242,8 @@ typedef struct TItemNamesTable
 	DWORD vnum;
 	char de[ITEM_NAME_MAX_LEN + 1];
 	char en[ITEM_NAME_MAX_LEN + 1];
+	char tr[ITEM_NAME_MAX_LEN + 1];
+	char ru[ITEM_NAME_MAX_LEN + 1];
 } TItemNamesTable;
 
 typedef struct TMobNamesTable
@@ -1247,6 +1251,8 @@ typedef struct TMobNamesTable
 	DWORD vnum;
 	char de[CHARACTER_NAME_MAX_LEN + 1];
 	char en[CHARACTER_NAME_MAX_LEN + 1];
+	char tr[CHARACTER_NAME_MAX_LEN + 1];
+	char ru[CHARACTER_NAME_MAX_LEN + 1];
 } TMobNamesTable;
 #endif
 

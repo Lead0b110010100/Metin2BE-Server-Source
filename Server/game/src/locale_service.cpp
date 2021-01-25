@@ -428,6 +428,8 @@ void LocaleService_LoadLocaleStringFile()
 #ifdef ENABLE_LANG_SYSTEM
 	locale_init("locale/germany/locale_de.txt", LANGUAGE_GERMAN);
 	locale_init("locale/germany/locale_en.txt", LANGUAGE_ENGLISH);
+	locale_init("locale/germany/locale_tr.txt", LANGUAGE_TURKISH);
+	locale_init("locale/germany/locale_ru.txt", LANGUAGE_RUSSIAN);
 #else
 	locale_init(g_stLocaleFilename.c_str());
 #endif
