@@ -640,6 +640,16 @@ void CInputLogin::Entergame(LPDESC d, const char * data)
 	ch->StartRecoveryEvent();
 	ch->StartCheckSpeedHackEvent();
 
+#ifdef OFFLINE_SHOP
+	ch->LoadPrivShops();
+	ch->SendShopCost();
+	ch->StartRefreshShopEvent();
+
+#endif
+#ifdef GIFT_SYSTEM
+	ch->StartRefreshGift();
+#endif
+
 	CPVPManager::instance().Connect(ch);
 	CPVPManager::instance().SendList(d);
 

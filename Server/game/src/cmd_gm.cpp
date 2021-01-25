@@ -881,6 +881,10 @@ struct FuncPurge
 		if (!m_bAll && iDist >= 1000)	// 10미터 이상에 있는 것들은 purge 하지 않는다.
 			return;
 
+#ifdef OFFLINE_SHOP
+		if (pkChr->IsPrivShop())
+			return;
+#endif
 		sys_log(0, "PURGE: %s %d", pkChr->GetName(), iDist);
 
 		if (pkChr->IsNPC() && !pkChr->IsPet() && pkChr->GetRider() == NULL)
@@ -2393,6 +2397,11 @@ ACMD(do_set_skill_group)
 	ch->ChatPacket(CHAT_TYPE_INFO, "skill group to %d.", skill_group);
 }
 
+#ifdef OFFLINE_SHOP
+extern void LoadIndexShopLimit();
+extern void LoadShopConfig();
+#endif
+
 ACMD(do_reload)
 {
 	char arg1[256];
@@ -2400,6 +2409,15 @@ ACMD(do_reload)
 
 	if (*arg1)
 	{
+#ifdef OFFLINE_SHOP
+		if (!strcmp(arg1, "shop"))
+		{
+			ch->ChatPacket(CHAT_TYPE_INFO, "Reloading shop_limit,shop_costs.");
+			LoadIndexShopLimit();
+			LoadShopConfig();
+			return;
+		}
+#endif
 		switch (LOWER(*arg1))
 		{
 			case 'u':

@@ -10,6 +10,14 @@ class CItem : public CEntity
 		virtual void	EncodeInsertPacket(LPENTITY entity);
 		virtual void	EncodeRemovePacket(LPENTITY entity);
 
+#ifdef OFFLINE_SHOP
+	public:
+		void		SetRealID(DWORD id)		{ m_dwRealID = id; }
+		DWORD		GetRealID()			{ return m_dwRealID; }
+	protected:
+		DWORD			m_dwRealID;
+#endif
+
 	public:
 		CItem(DWORD dwVnum);
 		virtual ~CItem();

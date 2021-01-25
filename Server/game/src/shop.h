@@ -15,7 +15,11 @@ class CShop
 		typedef struct shop_item
 		{
 			DWORD	vnum;		// 아이템 번호
-			GoldType	price;		// 가격
+			#ifdef FULL_YANG
+			GoldType	price;		// °ˇ°Y
+			#else
+			DWORD	price;		// °ˇ°Y
+			#endif
 			BYTE	count;		// 아이템 개수
 
 			LPITEM	pkItem;
@@ -73,6 +77,22 @@ class CShop
 		std::vector<SHOP_ITEM>		m_itemVector;	// 이 상점에서 취급하는 물건들
 
 		LPCHARACTER			m_pkPC;
+	
+#ifdef OFFLINE_SHOP
+	public:
+		int		GetItemCount();
+		bool	GetItems();
+		void	SetLocked(bool val) { m_bLocked = val; }
+		bool	IsLocked() { return m_bLocked; }
+		void	RemoveGuests(LPCHARACTER except=NULL);
+		void	ClearItems();
+		void	SetPrivShopItems(std::vector<TShopItemTable *> map_shop);
+		LPCHARACTER GetPC() { return m_pkPC; }
+
+	protected:
+		bool					m_bLocked;
+#endif
+
 };
 
 #endif

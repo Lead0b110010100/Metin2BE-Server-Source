@@ -333,6 +333,7 @@ void CHARACTER::DeathPenalty(BYTE bTown)
 			{
 				sys_log(0, "NO_DEATH_PENALTY_AFFECT(%s)", GetName());
 				ChatPacketTrans(CHAT_TYPE_INFO, "You did not lose any Experience because of the Blessing of the Dragon God.");
+				RemoveAffect(AFFECT_NO_DEATH_PENALTY);
 				return;
 			}
 		}

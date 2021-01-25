@@ -82,6 +82,7 @@ void CEntity::ViewRemove(LPENTITY entity, bool recursive)
 		entity->ViewRemove(this, false);
 }
 
+#include "questmanager.h"
 class CFuncViewInsert
 {
 	private:
@@ -103,7 +104,17 @@ class CFuncViewInsert
 				if (DISTANCE_APPROX(ent->GetX() - m_me->GetX(), ent->GetY() - m_me->GetY()) > dwViewRange)
 					return;
 
-			// 나를 대상에 추가
+#ifdef SHOP_DISTANCE
+			if (ent->IsType(ENTITY_CHARACTER) && m_me->IsType(ENTITY_CHARACTER))
+			{
+				LPCHARACTER chMe = (LPCHARACTER)m_me;
+				LPCHARACTER chEnt = (LPCHARACTER)ent;
+				DWORD ViewRange = quest::CQuestManager::instance().GetEventFlag("shop_dist");
+				if (ViewRange>0 && DISTANCE_APPROX(ent->GetX() - m_me->GetX(), ent->GetY() - m_me->GetY()) > ViewRange &&
+					chMe->IsPC() && chEnt->IsNPC() && chEnt->GetRaceNum() == 30000)
+					return;
+			}
+#endif
 			m_me->ViewInsert(ent);
 
 			// 둘다 캐릭터면

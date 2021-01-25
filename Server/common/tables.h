@@ -161,6 +161,12 @@ enum
 	HEADER_GD_SET_DR = 141,
 	HEADER_GD_SET_DM = 142,
 
+#ifdef OFFLINE_SHOP
+	HEADER_GD_SHOP_NAME = 143,
+	HEADER_GD_SHOP_CLOSE = 144,
+	HEADER_GD_SHOP_UPDATE_ITEM = 145,
+#endif
+
 	HEADER_GD_SETUP			= 0xff,
 
 	///////////////////////////////////////////////
@@ -252,6 +258,12 @@ enum
 	HEADER_DG_CREATE_OBJECT		= 140,
 	HEADER_DG_DELETE_OBJECT		= 141,
 	HEADER_DG_UPDATE_LAND		= 142,
+
+#ifdef OFFLINE_SHOP
+	HEADER_DG_SHOP_NAME = 143,
+	HEADER_DG_SHOP_CLOSE = 144,
+	HEADER_DG_SHOP_UPDATE_ITEM = 145,
+#endif
 
 	HEADER_DG_MARRIAGE_ADD		= 150,
 	HEADER_DG_MARRIAGE_UPDATE		= 151,
@@ -608,14 +620,45 @@ typedef struct SSkillTable
 	DWORD	dwTargetRange;
 } TSkillTable;
 
+#ifdef OFFLINE_SHOP
+typedef struct SShopPrice
+{
+	int days;
+	int time;
+	long long price;
+} TShopCost;
+typedef struct command_shop_name
+{
+	DWORD shop_id;
+	char szSign[SHOP_SIGN_MAX_LEN + 1];
+} TPacketShopName;
+typedef struct command_shop_close
+{
+	DWORD shop_id;
+	DWORD pid;
+	bool error;
+} TPacketShopClose;
+typedef struct command_shop_update_item
+{
+	DWORD shop_id;
+	bool	tick;
+	bool	shop_locked;
+	bool	refresh;
+} TPacketShopUpdateItem;
+#endif
+
 typedef struct SShopItemTable
 {
 	DWORD		vnum;
 	BYTE		count;
 
-    TItemPos	pos;			// PC 상점에만 이용
-	GoldType		price;	// PC, shop_table_ex.txt 상점에만 이용
-	BYTE		display_pos; // PC, shop_table_ex.txt 상점에만 이용, 보일 위치.
+    TItemPos	pos;		
+	#ifdef FULL_YANG
+	GoldType		price;
+	#else
+	DWORD		price;
+	#endif
+	BYTE		display_pos;
 } TShopItemTable;
 
 typedef struct SShopTable
