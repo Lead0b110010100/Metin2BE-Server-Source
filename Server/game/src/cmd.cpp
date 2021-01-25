@@ -352,20 +352,6 @@ struct command_info cmd_info[] =
 	{ "eventflag",	do_event_flag,		0,			POS_DEAD,	GM_HIGH_WIZARD	},
 	{ "geteventflag",	do_get_event_flag,	0,			POS_DEAD,	GM_LOW_WIZARD	},
 
-#ifdef GIFT_SYSTEM
-	{ "gift_refresh",	do_gift_refresh,	0,	POS_DEAD,	GM_PLAYER },
-	{ "gift_get", do_gift_get, 0, POS_DEAD,	GM_PLAYER },
-#endif
-#ifdef OFFLINE_SHOP
-	{ "update_shop_item",			do_shop_update_item,				0,	POS_DEAD,	GM_PLAYER },
-	{ "refresh_shop_items",			do_shop_refresh_items,				0,	POS_DEAD,	GM_PLAYER },
-	{ "refresh_shop",				do_shop_refresh,				0,	POS_DEAD,	GM_PLAYER },
-	{ "shop_yang",					do_shop_yang,				0,	POS_DEAD,	GM_PLAYER },
-	{ "shop_name",					do_set_name_shop,				0,	POS_DEAD,	GM_PLAYER },
-	{ "delete_shop",				do_shop_delete,				0,	POS_DEAD,	GM_IMPLEMENTOR },
-	{ "update_shop",				do_shop_update,				0,	POS_DEAD,	GM_IMPLEMENTOR },
-#endif
-
 	{ "item",		do_item,		0,			POS_DEAD,	GM_GOD		},
 
 	{ "mob",		do_mob,			0,			POS_DEAD,	GM_HIGH_WIZARD	},
@@ -684,6 +670,21 @@ struct command_info cmd_info[] =
 	{ "give", do_give, 0, POS_DEAD, GM_IMPLEMENTOR },
 #ifdef GMS_CAN_WALK_REALLY_FAST
 	{ "toggle_gm_speed", do_toggle_gm_speed, 0, POS_DEAD, GM_WIZARD },
+#endif
+
+#ifdef GIFT_SYSTEM
+	{ "gift_refresh",	do_gift_refresh,	0,	POS_DEAD,	GM_PLAYER },
+	{ "gift_get", do_gift_get, 0, POS_DEAD,	GM_PLAYER },
+#endif
+
+#ifdef OFFLINE_SHOP
+	{ "update_shop_item",			do_shop_update_item,				0,	POS_DEAD,	GM_PLAYER },
+	{ "refresh_shop_items",			do_shop_refresh_items,				0,	POS_DEAD,	GM_PLAYER },
+	{ "refresh_shop",				do_shop_refresh,				0,	POS_DEAD,	GM_PLAYER },
+	{ "shop_yang",					do_shop_yang,				0,	POS_DEAD,	GM_PLAYER },
+	{ "shop_name",					do_set_name_shop,				0,	POS_DEAD,	GM_PLAYER },
+	{ "delete_shop",				do_shop_delete,				0,	POS_DEAD,	GM_IMPLEMENTOR },
+	{ "update_shop",				do_shop_update,				0,	POS_DEAD,	GM_IMPLEMENTOR },
 #endif
 
 	{ "\n",		NULL,			0,			POS_DEAD,	GM_IMPLEMENTOR	}  /* 반드시 이 것이 마지막이어야 한다. */

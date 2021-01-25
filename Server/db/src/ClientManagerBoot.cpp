@@ -494,7 +494,7 @@ bool CClientManager::InitializeItemNamesTable()
 bool CClientManager::InitializeMobNamesTable()
 {
 	char query[4096];
-	snprintf(query, sizeof(query), "SELECT vnum, de, en, tr, en FROM player.mob_names");
+	snprintf(query, sizeof(query), "SELECT vnum, de, en, tr, ru FROM player.mob_names");
 
 	std::unique_ptr<SQLMsg> pkMsg(CDBManager::instance().DirectQuery(query));
 	SQLResult* pRes = pkMsg->Get();
