@@ -326,10 +326,15 @@ void CHARACTER::DeathPenalty(BYTE bTown)
 	{
 		REMOVE_BIT(m_pointsInstant.instant_flag, INSTANT_FLAG_DEATH_PENALTY);
 
-		// NO_DEATH_PENALTY_BUG_FIX
-		if (!bTown) // 국제 버전에서는 제자리 부활시만 용신의 가호를 사용한다. (마을 복귀시는 경험치 패널티 없음)
+		if (!bTown)
 		{
-			if (FindAffect(AFFECT_NO_DEATH_PENALTY))
+			if (FindAffect(AFFECT_NO_DEATH_PENALTY_PERM))
+			{
+				sys_log(0, "NO_DEATH_PENALTY_AFFECT_PERM(%s)", GetName());
+				ChatPacketTrans(CHAT_TYPE_INFO, "You did not lose any Experience because of the Blessing of the Dragon God.");
+				return;
+			}
+			else if (FindAffect(AFFECT_NO_DEATH_PENALTY))
 			{
 				sys_log(0, "NO_DEATH_PENALTY_AFFECT(%s)", GetName());
 				ChatPacketTrans(CHAT_TYPE_INFO, "You did not lose any Experience because of the Blessing of the Dragon God.");

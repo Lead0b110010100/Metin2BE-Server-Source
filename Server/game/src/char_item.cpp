@@ -4780,9 +4780,14 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 					case USE_MONEYBAG:
 						break;
 
-					case USE_AFFECT :
+					case USE_AFFECT:
 						{
-							if (FindAffect(item->GetValue(0), aApplyInfo[item->GetValue(1)].bPointType))
+							uint32_t affect = item->GetValue(0);
+
+							if (FindAffect(affect, aApplyInfo[item->GetValue(1)].bPointType) ||
+								(affect == AFFECT_NO_DEATH_PENALTY_PERM && FindAffect(AFFECT_NO_DEATH_PENALTY)) ||
+								(affect == AFFECT_NO_DEATH_PENALTY && FindAffect(AFFECT_NO_DEATH_PENALTY_PERM))
+							)
 							{
 								ChatPacketTrans(CHAT_TYPE_INFO, "The effect is already working.");
 							}
