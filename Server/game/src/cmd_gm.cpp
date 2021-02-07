@@ -4929,3 +4929,24 @@ ACMD(do_give)
 		}
 	}
 }
+
+ACMD(do_config)
+{
+	char arg1[256], arg2[256];
+	two_arguments(argument, arg1, sizeof(arg1), arg2, sizeof(arg2));
+
+	if (!arg1 || !arg2)
+		return;
+
+	std::string configParam = arg1;
+
+	int32_t configValue = 0;
+	str_to_number(configValue, arg2);
+
+	const static std::set<std::string> allowedParams{"transfer_status"};
+
+	if (allowedParams.find(configParam) != allowedParams.end())
+	{
+		ch->SetQuestFlag("config." + configParam, configValue);
+	}
+}

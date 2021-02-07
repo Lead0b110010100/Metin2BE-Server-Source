@@ -494,6 +494,8 @@ void CHARACTER::Initialize()
 #endif
 	memset(&m_tvLastSyncTime, 0, sizeof(m_tvLastSyncTime));
 	m_iSyncHackCount = 0;
+
+	m_transferStartTime = 0;
 }
 
 void CHARACTER::Create(const char * c_pszName, DWORD vid, bool isPC)
@@ -5268,7 +5270,7 @@ void CHARACTER::OnClick(LPCHARACTER pkChrCauser)
 				{
 					if ((GetExchange() || IsOpenSafebox() || GetShopOwner()) || IsCubeOpen())
 					{
-						pkChrCauser->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("´U¸A °L·?Áß(A?°í,±lCZ,»óÁ?)z?´Â °lRÎ»óÁ?R» »çzëÇN Lö lr?R´D´U."));
+						pkChrCauser->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("?? ??Áß(A?°í,?CZ,»ó?)z?´Â ?RÎ»óÁ?R?»çzëÇN L?lr?R??."));
 						return;
 					}
 				}
@@ -5276,12 +5278,12 @@ void CHARACTER::OnClick(LPCHARACTER pkChrCauser)
 				{
 					if ((pkChrCauser->GetExchange() || pkChrCauser->IsOpenSafebox() || pkChrCauser->GetMyShop() || pkChrCauser->GetShopOwner()) || pkChrCauser->IsCubeOpen())
 					{
-						pkChrCauser->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("´U¸A °L·?Áß(A?°í,±lCZ,»óÁ?)z?´Â °lRÎ»óÁ?R» »çzëÇN Lö lr?R´D´U."));
+						pkChrCauser->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("?? ??Áß(A?°í,?CZ,»ó?)z?´Â ?RÎ»óÁ?R?»çzëÇN L?lr?R??."));
 						return;
 					}
 					if ((GetExchange() || IsOpenSafebox() || IsCubeOpen()))
 					{
-						pkChrCauser->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("»ó´ëacRE ´U¸A °L·?¸¦ ÇD°í RÖ´Â ÁßRÔ´D´U."));
+						pkChrCauser->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("»ó´ëacRE ?? ??¸¦ ?°í RÖ´?ÁßRÔ´D?."));
 						return;
 					}
 				}
@@ -7227,6 +7229,16 @@ bool CHARACTER::IsHack(bool bSendMsg, bool bCheckShopOwner, int limittime)
 		return true;
 	}
 
+	if (iPulse - GetTransferStartTime() < PASSES_PER_SEC(limittime))
+	{
+		if (bSendMsg)
+			ChatPacketTrans(CHAT_TYPE_INFO, "You cannot go elsewhere for seconds after opening a transfer.", limittime);
+
+		if (test_server)
+			ChatPacket(CHAT_TYPE_INFO, "[TestOnly]Transfer Pulse %d LoadTime %d PASS %d", iPulse, GetTransferStartTime(), PASSES_PER_SEC(limittime));
+		return true;
+	}
+
 	//°Å·¡°ü·Ã Ã¢ Ã¼Å©
 	if (bCheckShopOwner)
 	{
@@ -7757,6 +7769,9 @@ bool CHARACTER::CanWarp() const
 	if ((iPulse - GetSafeboxLoadTime()) < limit_time)
 		return false;
 
+	if ((iPulse - GetTransferStartTime()) < limit_time)
+		return false;
+
 	if ((iPulse - GetExchangeTime()) < limit_time)
 		return false;
 
@@ -8114,7 +8129,7 @@ void CHARACTER::OpenMyShop(const char * c_pszSign, TShopItemTable * pTable, BYTE
 	}
 	if (days == 0 && GetPart(PART_MAIN) > 2)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("°©zER» atlîlß °lRÎ »óÁ?R» z­ Lö RÖ?R´D´U."));
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("°©zER?atl???R?»ó?R?z­ L?R?R??."));
 		return;
 	}
 
@@ -8164,7 +8179,7 @@ void CHARACTER::OpenMyShop(const char * c_pszSign, TShopItemTable * pTable, BYTE
 		return;
 	}
 #endif
-	if (GetMyShop())	// AI1I 1YAI ?­·Á AÖA¸¸é ´Ý´Â´U.
+	if (GetMyShop())	// AI1I 1YAI ?­·Á A?¸¸?´Ý´Â?.
 	{
 		CloseMyShop();
 		return;
@@ -8183,7 +8198,7 @@ void CHARACTER::OpenMyShop(const char * c_pszSign, TShopItemTable * pTable, BYTE
 	if (GOLD_MAX <= nTotalMoney)
 	{
 		sys_err("[OVERFLOW_GOLD] Overflow (GOLD_MAX) id %u name %s", GetPlayerID(), GetName());
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("20ld lÉR» AE°úÇDz© »óÁ?R» z­Lö°? lr?R´D´U"));
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("20ld l R?AE°ú?z?»ó?R?z­Lö°? lr?R??"));
 		return;
 	}
 #endif
@@ -8206,19 +8221,19 @@ void CHARACTER::OpenMyShop(const char * c_pszSign, TShopItemTable * pTable, BYTE
 
 			if (item_table && (IS_SET(item_table->dwAntiFlags, ITEM_ANTIFLAG_GIVE | ITEM_ANTIFLAG_MYSHOP)))
 			{
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT( "RZ·áC­ lCRELURs °lRÎ»óÁ?z?L­ CÇ¸LÇN Lö lr?R´D´U."));
+				ChatPacket(CHAT_TYPE_INFO, LC_TEXT( "RZ·áC­ lCRELURs ?RÎ»óÁ?z?L­ CÇ¸L? L?lr?R??."));
 				return;
 			}
 
 			if (pkItem->IsEquipped())
 			{
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT( "RlsnÁßRÎ lCRELURs °lRÎ»óÁ?z?L­ CÇ¸LÇN Lö lr?R´D´U."));
+				ChatPacket(CHAT_TYPE_INFO, LC_TEXT( "RlsnÁßR?lCRELURs ?RÎ»óÁ?z?L­ CÇ¸L? L?lr?R??."));
 				return;
 			}
 
 			if (pkItem->isLocked())
 			{
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT( "»çzëÁßRÎ lCRELURs °lRÎ»óÁ?z?L­ CÇ¸LÇN Lö lr?R´D´U."));
+				ChatPacket(CHAT_TYPE_INFO, LC_TEXT( "»çzëÁ??lCRELURs ?RÎ»óÁ?z?L­ CÇ¸L? L?lr?R??."));
 				return;
 			}
 			if (pkItem->GetOwner() != this)
@@ -8251,13 +8266,13 @@ void CHARACTER::OpenMyShop(const char * c_pszSign, TShopItemTable * pTable, BYTE
 #ifdef STRING_PROTECTION
 	if (CBanwordManager::instance().CheckString(m_stShopSign.c_str(), m_stShopSign.length()) != "")
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT( "snLÓlîlS Rslî°? C÷ÇÔµC »óÁ? RE¸§R¸·Î »óÁ?R» z­ Lö lr?R´D´U."));
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT( "snL??S Rslî°? C÷ÇÔµC »ó? RE¸§R¸·?»ó?R?z­ L?lr?R??."));
 		return;
 	}
 #else
 	if (CBanwordManager::instance().CheckString(m_stShopSign.c_str(), m_stShopSign.length()))
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT( "snLÓlîlS Rslî°? C÷ÇÔµC »óÁ? RE¸§R¸·Î »óÁ?R» z­ Lö lr?R´D´U."));
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT( "snL??S Rslî°? C÷ÇÔµC »ó? RE¸§R¸·?»ó?R?z­ L?lr?R??."));
 		return;
 	}
 #endif
@@ -8960,3 +8975,92 @@ void CHARACTER::RefreshGift()
 		ChatPacket(CHAT_TYPE_COMMAND, "gift_info %d", GetGiftPages());
 }
 #endif
+
+bool CHARACTER::CanTransferGold(const int64_t& gold)
+{
+	if (gold <= 0)
+		return false;
+
+	if (GetGold() < gold)
+		return false;
+
+	return true;
+}
+
+bool CHARACTER::CanReceiveGold(const int64_t& gold)
+{
+	if (GetGold() + gold >= GOLD_MAX)
+		return false;
+
+	return true;
+}
+
+void CHARACTER::TransferGold(const LPCHARACTER tch, const int64_t& gold)
+{
+	ChangeGold(-gold);
+	tch->ChangeGold(gold);
+}
+
+bool CHARACTER::CanTransferItem(const TItemPos& pos)
+{
+	if (!pos.IsDefaultInventoryPosition())
+		return false;
+
+	LPITEM item = nullptr;
+
+	if (!(item = GetInventoryItem(pos.cell)))
+		return false;
+
+	if (item->IsExchanging() || item->IsEquipped())
+		return false;
+
+	return true;
+}
+
+bool CHARACTER::CanReceiveItem(const uint8_t& size)
+{
+	if (size <= 0)
+		return false;
+
+	int32_t emptyCell = GetEmptyInventory(size);
+
+	if (emptyCell < 0)
+		return false;
+
+	return true;
+}
+
+void CHARACTER::TransferItem(const LPCHARACTER tch, LPITEM item)
+{
+	SyncQuickslot(QUICKSLOT_TYPE_ITEM, item->GetCell(), 255);
+
+	item->RemoveFromCharacter();
+	item->AddToCharacter(tch, TItemPos(INVENTORY, tch->GetEmptyInventory(item->GetSize())));
+
+	ITEM_MANAGER::instance().FlushDelayedSave(item);
+}
+
+void CHARACTER::GiveItem(const uint32_t vnum, const TPlayerItemAttribute* attributes, const long* sockets)
+{
+	LPITEM item = AutoGiveItem(vnum);
+
+	if (!item)
+		return;
+
+	item->SetSockets(sockets);
+	item->SetAttributes(attributes);
+
+	ITEM_MANAGER::instance().FlushDelayedSave(item);
+}
+
+void CHARACTER::SendTransferStatus()
+{
+	LPDESC d = GetDesc();
+
+	if (!d)
+		return;
+
+	TPacketGCTransferStatus transferStatusPacket;
+	transferStatusPacket.status = GetQuestFlag("config.transfer_status");
+	d->Packet(&transferStatusPacket, sizeof(transferStatusPacket));
+}

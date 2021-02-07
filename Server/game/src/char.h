@@ -548,7 +548,7 @@ typedef struct SGiftItem
 	DWORD count;
 #endif
 	DWORD	vnum;
-	long	alSockets[ITEM_SOCKET_MAX_NUM];	// LNÄDarCL
+	long	alSockets[ITEM_SOCKET_MAX_NUM];	// LN?arCL
 
 	TPlayerItemAttribute    aAttr[ITEM_ATTRIBUTE_MAX_NUM];
 	char szFrom[101];
@@ -2258,6 +2258,26 @@ public:
 		int				GetGiftPages() { return m_mapGiftGrid.size(); }
 		int				GetLastGiftPage() { return m_dwLastGiftPage; }
 #endif
+
+public:
+	void TransferGold(const LPCHARACTER tch, const int64_t& gold);
+	void TransferItem(const LPCHARACTER tch, LPITEM item);
+	void GiveItem(const uint32_t vnum, const TPlayerItemAttribute* attributes, const long* sockets);
+
+	bool CanTransferGold(const int64_t& gold);
+	bool CanReceiveGold(const int64_t& gold);
+
+	bool CanTransferItem(const TItemPos& pos);
+	bool CanReceiveItem(const uint8_t& size);
+
+	void SendTransferStatus();
+
+public:
+	int32_t GetTransferStartTime() const { return m_transferStartTime; }
+	void SetTransferStartTime() { m_transferStartTime = thecore_pulse(); }
+
+private:
+	int32_t m_transferStartTime;
 };
 
 #ifdef ENABLE_TARGET_AFFECT

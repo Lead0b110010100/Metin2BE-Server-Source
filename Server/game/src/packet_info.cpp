@@ -237,6 +237,7 @@ CPacketInfoCG::CPacketInfoCG()
 #endif
 
 	Set(HEADER_CG_WHISPER_DETAILS, sizeof(TPacketCGWhisperDetails), "WhisperDetails", true);
+	Set(HEADER_CG_TRANSFER, sizeof(TPacketCGTransfer), "Transfer", true);
 
 }
 
@@ -287,6 +288,10 @@ CPacketInfoGG::CPacketInfoGG()
 
 	Set(HEADER_GG_CHECK_WHISPER_DETAILS, sizeof(TPacketGGCheckWhisperDetails), "CheckWhisperDetails", false);
 	Set(HEADER_GG_RECV_WHISPER_DETAILS, sizeof(TPacketGGRecvWhisperDetails), "RecvWhisperDetails", false);
+
+	Set(HEADER_GG_CAN_RECEIVE_TRANSFER_REQUEST, sizeof(TPacketGGCanReceiveTransferRequest), "CanReceiveTransferRequest", false);
+	Set(HEADER_GG_CAN_RECEIVE_TRANSFER_RESPONSE, sizeof(TPacketGGCanReceiveTransferResponse), "CanReceiveTransferResponse", false);
+	Set(HEADER_GG_RECEIVE_TRANSFER, sizeof(TPacketGGReceiveTransfer), "ReceiveTransfer", false);
 }
 
 CPacketInfoGG::~CPacketInfoGG()

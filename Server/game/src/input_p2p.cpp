@@ -21,6 +21,8 @@
 #include "questmanager.h"
 #include "pcbang.h"
 #include "skill.h"
+#include "item.h"
+#include "item_manager.h"
 #include "threeway_war.h"
 
 
@@ -621,6 +623,94 @@ int CInputP2P::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 				tp.language = data->language;
 				tp.empire = data->empire;
 				d_sender->Packet(&tp, sizeof(TPacketGCWhisperDetails));
+			}
+		}
+		break;
+
+		case HEADER_GG_CAN_RECEIVE_TRANSFER_REQUEST:
+		{
+			TPacketGGCanReceiveTransferRequest* data = (TPacketGGCanReceiveTransferRequest*)c_pData;
+			LPCHARACTER tch = CHARACTER_MANAGER::instance().FindPC(data->targetName);
+
+			if (tch)
+			{
+				if (tch->GetQuestFlag("config.transfer_status") == 0)
+					return (iExtraLen);
+
+				CCI* pkCCI = P2P_MANAGER::instance().Find(data->senderName);
+
+				if (pkCCI)
+				{
+					TPacketGGCanReceiveTransferResponse p;
+					strlcpy(p.targetName, data->targetName, sizeof(p.targetName));
+					strlcpy(p.senderName, data->senderName, sizeof(p.senderName));
+					p.gold = tch->CanReceiveGold(data->gold) ? data->gold : -1;
+					p.pos = tch->CanReceiveItem(data->itemSize) ? data->pos : NPOS;
+					pkCCI->pkDesc->Packet(&p, sizeof(p));
+				}
+
+				tch->SetTransferStartTime();
+			}
+		}
+		break;
+
+		case HEADER_GG_CAN_RECEIVE_TRANSFER_RESPONSE:
+		{
+			TPacketGGCanReceiveTransferResponse* data = (TPacketGGCanReceiveTransferResponse*)c_pData;
+			LPCHARACTER tch = CHARACTER_MANAGER::instance().FindPC(data->senderName);
+
+			if (tch)
+			{
+				CCI* pkCCI = P2P_MANAGER::instance().Find(data->targetName);
+
+				if (pkCCI)
+				{
+					TPacketGGReceiveTransfer p;
+
+					if (tch->CanTransferGold(data->gold))
+					{
+						tch->ChangeGold(-data->gold);
+					}
+
+					if (!(data->pos == NPOS) && tch->CanTransferItem(data->pos))
+					{
+						LPITEM item = tch->GetInventoryItem(data->pos.cell);
+
+						if (item)
+						{
+							p.itemVnum = item->GetVnum();
+							memcpy(p.aAttr, item->GetAttributes(), sizeof(p.aAttr));
+							memcpy(p.alSockets, item->GetSockets(), sizeof(p.alSockets));
+							M2_DESTROY_ITEM(item->RemoveFromCharacter());
+						}
+					}
+
+					strlcpy(p.targetName, data->targetName, sizeof(p.targetName));
+					p.gold = data->gold;
+					p.pos = data->pos;
+
+					pkCCI->pkDesc->Packet(&p, sizeof(p));
+				}
+			}
+			break;
+		}
+
+		case HEADER_GG_RECEIVE_TRANSFER:
+		{
+			TPacketGGReceiveTransfer* data = (TPacketGGReceiveTransfer*)c_pData;
+			LPCHARACTER tch = CHARACTER_MANAGER::instance().FindPC(data->targetName);
+
+			if (tch)
+			{
+				if (data->gold > 0)
+				{
+					tch->ChangeGold(data->gold);
+				}
+
+				if (!(data->pos == NPOS))
+				{
+					tch->GiveItem(data->itemVnum, data->aAttr, data->alSockets);
+				}
 			}
 		}
 		break;

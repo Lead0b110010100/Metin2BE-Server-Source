@@ -112,6 +112,7 @@ enum
 
 	HEADER_CG_STATE_CHECKER					= 206,
 	HEADER_CG_WHISPER_DETAILS = 220,
+	HEADER_CG_TRANSFER = 222,
 
 	HEADER_CG_CLIENT_VERSION			= 0xfd,
 	HEADER_CG_CLIENT_VERSION2			= 0xf1,
@@ -310,6 +311,7 @@ enum
 	HEADER_GC_CHARACTER_DRAGON_POINT = 222,
 	HEADER_GC_CHARACTER_DRAGON_POINT_CHANGE = 223,
 	HEADER_GC_WHISPER_DETAILS = 225,
+	HEADER_GC_TRANSFER_STATUS = 229,
 
 
 	/////////////////////////////////////////////////////////////////////////////
@@ -352,6 +354,9 @@ enum
 	HEADER_GG_GIVE_ITEM = 40,
 	HEADER_GG_CHECK_WHISPER_DETAILS = 48,
 	HEADER_GG_RECV_WHISPER_DETAILS = 49,
+	HEADER_GG_CAN_RECEIVE_TRANSFER_REQUEST = 50,
+	HEADER_GG_CAN_RECEIVE_TRANSFER_RESPONSE = 51,
+	HEADER_GG_RECEIVE_TRANSFER = 52,
 };
 
 #pragma pack(1)
@@ -2550,6 +2555,50 @@ typedef struct SPacketGGRecvWhisperDetails
 	uint8_t language;
 	uint8_t empire;
 } TPacketGGRecvWhisperDetails;
+
+struct TPacketCGTransfer
+{
+	uint8_t header = HEADER_CG_TRANSFER;
+	char targetName[CHARACTER_NAME_MAX_LEN + 1];
+	int64_t gold;
+	TItemPos pos;
+};
+
+struct TPacketGCTransferStatus
+{
+	uint8_t header = HEADER_GC_TRANSFER_STATUS;
+	bool status;
+};
+
+struct TPacketGGCanReceiveTransferRequest
+{
+	uint8_t header = HEADER_GG_CAN_RECEIVE_TRANSFER_REQUEST;
+	char targetName[CHARACTER_NAME_MAX_LEN + 1];
+	char senderName[CHARACTER_NAME_MAX_LEN + 1];
+	int64_t gold;
+	TItemPos pos;
+	int8_t itemSize;
+};
+
+struct TPacketGGCanReceiveTransferResponse
+{
+	uint8_t header = HEADER_GG_CAN_RECEIVE_TRANSFER_RESPONSE;
+	char targetName[CHARACTER_NAME_MAX_LEN + 1];
+	char senderName[CHARACTER_NAME_MAX_LEN + 1];
+	int64_t gold;
+	TItemPos pos;
+};
+
+struct TPacketGGReceiveTransfer
+{
+	uint8_t header = HEADER_GG_RECEIVE_TRANSFER;
+	char targetName[CHARACTER_NAME_MAX_LEN + 1];
+	int64_t gold;
+	TItemPos pos;
+	uint32_t itemVnum;
+	TPlayerItemAttribute aAttr[ITEM_ATTRIBUTE_MAX_NUM];
+	long alSockets[ITEM_SOCKET_MAX_NUM];
+};
 
 #pragma pack()
 #endif

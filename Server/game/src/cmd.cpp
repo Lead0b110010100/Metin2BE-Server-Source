@@ -36,6 +36,7 @@ ACMD(do_shop_update);
 ACMD(do_shop_delete);
 ACMD(do_shop_update_item);
 #endif
+ACMD(do_config);
 
 #ifdef GMS_CAN_WALK_REALLY_FAST
 ACMD(do_toggle_gm_speed);
@@ -686,6 +687,8 @@ struct command_info cmd_info[] =
 	{ "delete_shop",				do_shop_delete,				0,	POS_DEAD,	GM_IMPLEMENTOR },
 	{ "update_shop",				do_shop_update,				0,	POS_DEAD,	GM_IMPLEMENTOR },
 #endif
+
+	{"config", do_config, 0, POS_DEAD, GM_PLAYER},
 
 	{ "\n",		NULL,			0,			POS_DEAD,	GM_IMPLEMENTOR	}  /* 반드시 이 것이 마지막이어야 한다. */
 };

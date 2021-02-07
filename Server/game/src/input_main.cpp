@@ -3377,6 +3377,10 @@ int CInputMain::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 				CXTrapManager::instance().Verify_CSStep3(d->GetCharacter(), p->bPacketData);
 			}
 			break;
+
+		case HEADER_CG_TRANSFER:
+			Transfer(ch, c_pData);
+			break;
 	}
 	return (iExtraLen);
 }
@@ -3464,3 +3468,60 @@ void CInputMain::WhisperDetails(LPCHARACTER ch, const char *c_pData)
 	}
 }
 
+void CInputMain::Transfer(LPCHARACTER ch, const char* c_pData)
+{
+	TPacketCGTransfer* p = (TPacketCGTransfer*)c_pData;
+
+	LPDESC d = ch->GetDesc();
+
+	if (!d)
+		return;
+
+	if (strcmp(p->targetName, ch->GetName()) == 0)
+		return;
+
+	LPCHARACTER tch = CHARACTER_MANAGER::Instance().FindPC(p->targetName);
+
+	LPITEM item = ch->GetInventoryItem(p->pos.cell);
+
+	if (tch)
+	{
+		if (tch->GetQuestFlag("config.transfer_status") == 0)
+		{
+			ch->ChatPacket(CHAT_TYPE_INFO, "Der Gegen?er m?hte keine Transferanfragen.");
+			return;
+		}
+
+		if (ch->CanTransferGold(p->gold) && tch->CanReceiveGold(p->gold))
+		{
+			ch->ChatPacket(CHAT_TYPE_INFO, "Du hast %d Gold versendet.", p->gold);
+			ch->TransferGold(tch, p->gold);
+		}
+
+		if (item && ch->CanTransferItem(p->pos) && tch->CanReceiveItem(item->GetSize()))
+			ch->TransferItem(tch, item);
+
+		tch->SetTransferStartTime();
+	}
+	else
+	{
+		CCI* pkCCI = P2P_MANAGER::instance().Find(p->targetName);
+
+		if (pkCCI)
+		{
+			TPacketGGCanReceiveTransferRequest newPacket;
+			strlcpy(newPacket.targetName, p->targetName, sizeof(newPacket.targetName));
+			strlcpy(newPacket.senderName, ch->GetName(), sizeof(newPacket.senderName));
+			newPacket.gold = p->gold;
+			newPacket.pos = p->pos;
+			newPacket.itemSize = item ? item->GetSize() : 0;
+			pkCCI->pkDesc->Packet(&newPacket, sizeof(newPacket));
+		}
+		else
+		{
+			ch->ChatPacket(CHAT_TYPE_INFO, "There is no one ( %s ) by that name!", p->targetName);
+		}
+	}
+
+	ch->SetTransferStartTime();
+}

@@ -167,6 +167,7 @@ class CInputMain : public CInputProcessor
 		void		TargetInfoLoad(LPCHARACTER ch, const char* c_pData);
 #endif
 		void WhisperDetails(LPCHARACTER ch, const char *c_pData);
+		void Transfer(LPCHARACTER ch, const char *c_pData);
 };
 
 class CInputDead : public CInputMain

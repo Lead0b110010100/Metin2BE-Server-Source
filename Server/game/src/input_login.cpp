@@ -836,6 +836,8 @@ void CInputLogin::Entergame(LPDESC d, const char * data)
 
 	bool bInGMList = ch->SetGMState(ch->GetName(), true);
 	ch->RefreshGMStateInformation(bInGMList);
+	
+	ch->SendTransferStatus();
 }
 
 void CInputLogin::Empire(LPDESC d, const char * c_pData)
